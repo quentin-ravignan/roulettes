@@ -262,9 +262,55 @@ input[type=date]{color-scheme:dark}
 .submit{border:0;font:inherit;font-weight:700;font-size:1.05rem;cursor:pointer;align-self:flex-start}
 .form-done{background:rgba(61,220,240,.1);border:1px solid var(--cyan);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:10px}
 .form-done a{color:var(--cyan);font-weight:700}
+
+/* ===== village mode ===== */
+.village{background:#120c26;padding:0}
+#vcv{display:block;width:100%;height:clamp(440px,76vh,760px);touch-action:none;cursor:pointer;outline:none}
+.vbar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:14px 16px 6px;background:var(--night-2);border-top:1px solid var(--line)}
+.vbar button{font:inherit;font-weight:700;font-size:.92rem;cursor:pointer;border-radius:999px;padding:8px 14px;border:1.5px solid var(--line);background:var(--night);color:var(--cream)}
+.vbar button:hover{border-color:var(--cyan);color:var(--cyan)}
+.vhelp{margin:0;text-align:center;color:var(--muted);font-size:.9rem;padding:6px 16px 16px;background:var(--night-2)}
+.vhelp button{font:inherit;color:var(--cyan);background:none;border:0;text-decoration:underline;cursor:pointer;padding:0}
+body.vm main>section:not(#village){position:absolute;left:-10000px;top:0;width:min(1120px,100vw);visibility:hidden}
+body.noscroll{overflow:hidden}
+.place{width:min(1180px,96vw);max-width:96vw;height:min(92vh,1100px);max-height:96dvh;padding:0;border:0;border-radius:22px;background:var(--night);color:var(--cream);overflow:hidden}
+.place[open]{display:flex;flex-direction:column}
+.place::backdrop{background:rgba(10,6,24,.72);backdrop-filter:blur(3px)}
+.place-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 16px 12px 20px;background:var(--night-2);border-bottom:1px solid var(--line);flex:none}
+.place-title{font-family:var(--display);font-weight:400;font-size:clamp(1rem,3vw,1.4rem);margin:0;color:var(--yellow)}
+.place-close{font:inherit;font-weight:700;cursor:pointer;border-radius:999px;padding:8px 14px;border:1.5px solid var(--line);background:var(--night);color:var(--cream);white-space:nowrap}
+.place-close:hover{border-color:var(--pink);color:var(--pink)}
+.place-body{flex:1;overflow:auto;-webkit-overflow-scrolling:touch}
+@media (max-width:700px){.place{width:100vw;max-width:100vw;height:100dvh;max-height:100dvh;border-radius:0}}
+/* bar */
+.bar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:22px}
+.bar>div{background:var(--night-2);border:1px solid var(--line);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.bar h3{font-family:var(--display);font-weight:400;font-size:1.35rem;color:var(--pink)}
+.bar .btns{display:flex;flex-wrap:wrap;gap:8px}
+.bar .btns button{font:inherit;font-weight:700;cursor:pointer;border-radius:14px;padding:10px 12px;border:1.5px solid var(--line);background:var(--night);color:var(--cream);font-size:.95rem}
+.bar .btns button:hover{border-color:var(--yellow)}
+.sfm-btns button{font-size:1.9rem!important;padding:8px 16px!important}
+.bar-msg{min-height:3em;color:var(--cream);font-weight:500}
+.sfm-score{font-family:var(--display);color:var(--yellow);font-size:1.1rem}
+.sip{display:inline-block;animation:sip .6s ease}
+@keyframes sip{0%{transform:scale(.6) rotate(-10deg);opacity:0}60%{transform:scale(1.2) rotate(6deg);opacity:1}100%{transform:scale(1)}}
+@media (max-width:760px){.bar{grid-template-columns:1fr}}
+/* cart */
+.add{font:inherit;font-weight:700;cursor:pointer;border-radius:12px;padding:10px 12px;border:0;background:var(--ink);color:var(--yellow);margin-top:8px}
+.add:hover{background:var(--pink-deep);color:#fff}
+.add-err{color:var(--pink-deep);font-weight:700;font-size:.9rem;min-height:1.2em}
+.cart{margin-top:22px;background:var(--night);color:var(--cream);border-radius:18px;padding:18px 20px;display:flex;flex-direction:column;gap:10px}
+.cart h3{font-family:var(--display);font-weight:400;color:var(--yellow);font-size:1.3rem}
+.cart ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.cart li{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid var(--line);padding-bottom:6px}
+.cart li button{font:inherit;cursor:pointer;background:none;border:1px solid var(--line);color:var(--cream);border-radius:8px;padding:2px 8px}
+.cart .order{align-self:flex-start;text-decoration:none;font-weight:700;background:#25d366;color:#0b2a17;border-radius:12px;padding:12px 18px}
+.cart .order[aria-disabled="true"]{opacity:.45;pointer-events:none}
+.cart small{color:var(--muted)}
 </style>
 </head>
 <body>
+<script>try{if(localStorage.getItem("rl-classic")!=="1")document.body.classList.add("vm")}catch(e){document.body.classList.add("vm")}</script>
 
 
 <div class="stripe" aria-hidden="true"><i></i><i></i><i></i></div>
@@ -284,6 +330,18 @@ input[type=date]{color-scheme:dark}
 </header>
 
 <main>
+<section id="village" class="village" aria-label="Le village Roulettes : balade-toi en skate pour découvrir le club">
+  <canvas id="vcv" tabindex="0" aria-label="Village Roulettes vu du dessus. Flèches ou Z Q S D pour rouler, Entrée pour entrer dans un lieu, ou utilise les boutons dessous."></canvas>
+  <div class="vbar" role="navigation" aria-label="Lieux du village">
+    <button type="button" data-place="club">🏠 Le club</button>
+    <button type="button" data-place="inscription">☎️ Inscription &amp; contact</button>
+    <button type="button" data-place="spots">🗺️ Spots</button>
+    <button type="button" data-place="riders">🍹 Bar des riders</button>
+    <button type="button" data-place="shop">👕 Shop</button>
+    <button type="button" data-place="game">⬇️ La descente (game)</button>
+  </div>
+  <p class="vhelp"><span id="vhelp-txt">Roule avec les flèches ou Z Q S D, Entrée pour entrer. Sur mobile : touche un lieu.</span> · <button type="button" id="to-classic">Voir le site en version classique</button></p>
+</section>
 <section id="accueil" class="night">
   <div class="wrap hero">
     <div class="text">
@@ -299,7 +357,7 @@ input[type=date]{color-scheme:dark}
   </div>
 </section>
 
-<section class="statement">
+<section id="projet" class="statement">
   <div class="wrap">
     <p class="eyebrow">Le projet</p>
     <h2>Faire rouler <span>les filles.</span></h2>
@@ -307,7 +365,7 @@ input[type=date]{color-scheme:dark}
   </div>
 </section>
 
-<section class="cream">
+<section id="valeurs" class="cream">
   <div class="wrap">
     <div class="head">
       <p class="eyebrow">Nos valeurs</p>
@@ -523,6 +581,30 @@ input[type=date]{color-scheme:dark}
         </tbody></table>
       </div>
     </div>
+    <div class="bar">
+      <div>
+        <h3>Le comptoir</h3>
+        <p class="muted">Sans alcool, on roule après !</p>
+        <div class="btns" id="drinks">
+          <button type="button" data-d="Diabolo menthe" data-e="🍹">🍹 Diabolo menthe</button>
+          <button type="button" data-d="Sirop grenadine" data-e="🥤">🥤 Grenadine</button>
+          <button type="button" data-d="Limonade" data-e="🍋">🍋 Limonade</button>
+          <button type="button" data-d="Chocolat chaud" data-e="☕">☕ Chocolat chaud</button>
+        </div>
+        <p class="bar-msg" id="drink-msg" aria-live="polite">Qu'est-ce que je te sers ?</p>
+      </div>
+      <div>
+        <h3>Shi-fu-mi contre Minou</h3>
+        <p class="muted">Minou, le chat barman, ne perd jamais… ou presque.</p>
+        <div class="btns sfm-btns" id="sfm">
+          <button type="button" data-c="0" aria-label="Pierre">✊</button>
+          <button type="button" data-c="1" aria-label="Feuille">✋</button>
+          <button type="button" data-c="2" aria-label="Ciseaux">✌️</button>
+        </div>
+        <p class="bar-msg" id="sfm-msg" aria-live="polite">Choisis : pierre, feuille ou ciseaux !</p>
+        <p class="sfm-score" id="sfm-score">Toi 0 – 0 Minou</p>
+      </div>
+    </div>
   </div>
 </section>
 <section id="shop" class="shop">
@@ -536,20 +618,25 @@ input[type=date]{color-scheme:dark}
       <article class="product">
         <img src="shop-logo.jpg" alt="T-shirt noir avec le logo Roulettes : le chat skateur dans le cercle néon" loading="lazy" width="900" height="900">
         <div class="pbody"><h3>Le Logo</h3><p>Le chat skateur du club, en couleurs néon, sur fond noir.</p>
-          <div class="sizes" role="group" aria-label="Taille"><button type="button" aria-pressed="false">6 ans</button><button type="button" aria-pressed="false">8 ans</button><button type="button" aria-pressed="false">10 ans</button><button type="button" aria-pressed="false">12 ans</button><button type="button" aria-pressed="false">S</button><button type="button" aria-pressed="false">M</button><button type="button" aria-pressed="false">L</button><button type="button" aria-pressed="false">XL</button></div></div>
+          <div class="sizes" role="group" aria-label="Taille"><button type="button" aria-pressed="false">6 ans</button><button type="button" aria-pressed="false">8 ans</button><button type="button" aria-pressed="false">10 ans</button><button type="button" aria-pressed="false">12 ans</button><button type="button" aria-pressed="false">S</button><button type="button" aria-pressed="false">M</button><button type="button" aria-pressed="false">L</button><button type="button" aria-pressed="false">XL</button></div><p class="add-err" aria-live="polite"></p><button type="button" class="add">Ajouter au panier</button></div>
       </article>
       <article class="product">
         <img src="shop-flames.jpg" alt="T-shirt noir avec ROULETTES en lettres jaunes entourées de flammes et PARIS 19E dessous" loading="lazy" width="900" height="900">
         <div class="pbody"><h3>Flames</h3><p>ROULETTES en flammes jaunes et orange, façon magazine de skate des années 80.</p>
-          <div class="sizes" role="group" aria-label="Taille"><button type="button" aria-pressed="false">6 ans</button><button type="button" aria-pressed="false">8 ans</button><button type="button" aria-pressed="false">10 ans</button><button type="button" aria-pressed="false">12 ans</button><button type="button" aria-pressed="false">S</button><button type="button" aria-pressed="false">M</button><button type="button" aria-pressed="false">L</button><button type="button" aria-pressed="false">XL</button></div></div>
+          <div class="sizes" role="group" aria-label="Taille"><button type="button" aria-pressed="false">6 ans</button><button type="button" aria-pressed="false">8 ans</button><button type="button" aria-pressed="false">10 ans</button><button type="button" aria-pressed="false">12 ans</button><button type="button" aria-pressed="false">S</button><button type="button" aria-pressed="false">M</button><button type="button" aria-pressed="false">L</button><button type="button" aria-pressed="false">XL</button></div><p class="add-err" aria-live="polite"></p><button type="button" class="add">Ajouter au panier</button></div>
       </article>
       <article class="product">
         <img src="shop-wheel.jpg" alt="T-shirt noir avec un grand emblème jaune en forme de roue de skate, barré d’un bandeau ROULETTES" loading="lazy" width="900" height="900">
         <div class="pbody"><h3>Wheel</h3><p>Une roue de skate jaune géante et son bandeau ROULETTES, esprit hip-hop 90's.</p>
-          <div class="sizes" role="group" aria-label="Taille"><button type="button" aria-pressed="false">6 ans</button><button type="button" aria-pressed="false">8 ans</button><button type="button" aria-pressed="false">10 ans</button><button type="button" aria-pressed="false">12 ans</button><button type="button" aria-pressed="false">S</button><button type="button" aria-pressed="false">M</button><button type="button" aria-pressed="false">L</button><button type="button" aria-pressed="false">XL</button></div></div>
+          <div class="sizes" role="group" aria-label="Taille"><button type="button" aria-pressed="false">6 ans</button><button type="button" aria-pressed="false">8 ans</button><button type="button" aria-pressed="false">10 ans</button><button type="button" aria-pressed="false">12 ans</button><button type="button" aria-pressed="false">S</button><button type="button" aria-pressed="false">M</button><button type="button" aria-pressed="false">L</button><button type="button" aria-pressed="false">XL</button></div><p class="add-err" aria-live="polite"></p><button type="button" class="add">Ajouter au panier</button></div>
       </article>
     </div>
-    <p class="shop-note">Prix et commandes : bientôt ! En attendant, demande à Laurène pendant les cours.</p>
+    <div class="cart" id="cart">
+      <h3>Ton panier</h3>
+      <ul id="cart-list"><li><span>Ton panier est vide : choisis une taille et ajoute un t-shirt.</span></li></ul>
+      <a class="order" id="cart-order" href="#" target="_blank" rel="noopener" aria-disabled="true">Commander sur WhatsApp</a>
+      <small>La commande part en message WhatsApp au club : on te confirme le prix et quand récupérer ton t-shirt.</small>
+    </div>
   </div>
 </section>
 
@@ -610,6 +697,10 @@ input[type=date]{color-scheme:dark}
   </div>
 </section>
 </main>
+<dialog class="place" id="place" aria-labelledby="place-title">
+  <div class="place-head"><h2 class="place-title" id="place-title">Lieu</h2><button type="button" class="place-close" id="place-close">✕ Retour au village</button></div>
+  <div class="place-body" id="place-body"></div>
+</dialog>
 
 <footer>
   <div class="wrap foot">
@@ -626,6 +717,7 @@ document.querySelectorAll('.sizes').forEach(function(g){g.addEventListener('clic
   var links=[].slice.call(document.querySelectorAll('.nav a.link'));
   var ids=links.map(function(a){return a.getAttribute('href').slice(1)});
   function update(){
+    if(document.body.classList.contains('vm')){links.forEach(function(a){a.classList.remove('on')});return}
     var y=window.scrollY+120,cur=ids[0];
     ids.forEach(function(id){var el=document.getElementById(id);if(el&&el.offsetTop<=y)cur=id});
     links.forEach(function(a){a.classList.toggle('on',a.getAttribute('href')==='#'+cur)});
@@ -1223,6 +1315,277 @@ document.querySelectorAll('.sizes').forEach(function(g){g.addEventListener('clic
   }
   function loop(now){var dt=Math.min((now-(last||now))/1000,1/30);last=now;t+=dt;update(dt);draw();requestAnimationFrame(loop)}
   requestAnimationFrame(loop);
+})();
+</script>
+
+<script>
+/* ===== Village Roulettes: top-down (3/4) world, the cat rides to each place ===== */
+(function(){
+  var body=document.body,cv=document.getElementById('vcv');if(!cv)return;
+  var ctx=cv.getContext('2d'),WW=1400,WH=1000,TOUCH=matchMedia('(hover:none)').matches;
+  var PLACES={
+    club:{title:'Le club',sections:['accueil','projet','valeurs'],label:'LE CLUB'},
+    inscription:{title:'La cabine · Inscription & contact',sections:['inscription','contact'],label:'INSCRIPTION · CONTACT'},
+    spots:{title:'Le plan des spots',sections:['spots'],label:'SPOTS'},
+    riders:{title:'Le bar du crew',sections:['riders'],label:'BAR · RIDERS'},
+    shop:{title:'Le shop Roulettes',sections:['shop'],label:'SHOP'},
+    game:{title:'La descente · Skate Cat Run',sections:['game'],label:'LA DESCENTE'}
+  };
+  var HASH={accueil:'club',projet:'club',valeurs:'club',inscription:'inscription',contact:'inscription','form-inscription':'inscription',spots:'spots',riders:'riders',shop:'shop',game:'game'};
+  // buildings: roof rect (x,y,w,d) + front wall of height `wall`; door x
+  var B=[
+    {id:'club',x:110,y:96,w:320,d:150,wall:66,door:270,roof:'#3b2b6e',wallc:'#efe0c0',kind:'club'},
+    {id:'riders',x:880,y:84,w:370,d:160,wall:66,door:1065,roof:'#5b1f40',wallc:'#2c1f4f',kind:'bar'},
+    {id:'shop',x:895,y:636,w:340,d:128,wall:66,door:1065,roof:'#1d4d6b',wallc:'#fbf4e6',kind:'shop'},
+    {id:'inscription',x:520,y:618,w:58,d:46,wall:74,door:549,roof:'#9e1f2b',wallc:'#d23a42',kind:'booth'},
+    {id:'spots',x:150,y:672,w:220,d:22,wall:100,door:260,kind:'map'}
+  ];
+  B.forEach(function(b){b.base=b.y+b.d+b.wall;b.zone={x:b.door-38,y:b.base-6,w:76,h:46}});
+  var TREES=[[60,430],[480,74],[520,330],[70,590],[430,940],[850,430],[1320,450],[1340,610],[820,940],[1350,940],[590,930],[60,930],[1300,70],[620,90]];
+  var TABLES=[[935,350],[1000,368],[1140,368],[1205,350]];
+  var FOUNT={x:700,y:515,r:22};
+  var rider={x:700,y:410,vx:0,vy:0,a:Math.PI/2,moved:0};
+  var keys={},target=null,near=null,gameLock=false,t=0,last=0,running=false,s=1,camX=0,camY=0,vw=0,vh=0,dpr=1,promptBox=null;
+  var logo=document.querySelector('.brand img');
+
+  // ---------- sizing
+  function resize(){dpr=Math.min(window.devicePixelRatio||1,2);var w=cv.clientWidth,h=cv.clientHeight;cv.width=w*dpr;cv.height=h*dpr;s=Math.max(h/640,w/WW);vw=w/s;vh=h/s}
+  window.addEventListener('resize',resize);resize();
+
+  // ---------- helpers
+  function rr(x,y,w,h,r){r=Math.min(r,w/2,h/2);ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
+  function circ(x,y,r){ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill()}
+  function tri(a,b,c,d,e,f){ctx.beginPath();ctx.moveTo(a,b);ctx.lineTo(c,d);ctx.lineTo(e,f);ctx.closePath();ctx.fill()}
+  function label(txt,x,y,col){ctx.font='700 15px Bungee, Impact, sans-serif';var w=ctx.measureText(txt).width+22,bob=Math.sin(t*2.2+x)*3;
+    ctx.fillStyle='rgba(21,13,46,.88)';rr(x-w/2,y-30+bob,w,26,13);ctx.fill();ctx.strokeStyle=col;ctx.lineWidth=2;rr(x-w/2,y-30+bob,w,26,13);ctx.stroke();
+    ctx.fillStyle=col;ctx.textAlign='center';ctx.fillText(txt,x,y-11+bob);ctx.textAlign='left';ctx.fillStyle='rgba(21,13,46,.88)';tri(x-6,y-4+bob,x+6,y-4+bob,x,y+3+bob)}
+
+  // ---------- ground
+  function ground(){
+    ctx.fillStyle='#2c5a44';ctx.fillRect(0,0,WW,WH);
+    ctx.fillStyle='rgba(255,255,255,.035)';for(var i=0;i<140;i++){var gx=(i*397)%WW,gy=(i*251)%WH;circ(gx,gy,10+(i%5)*4)}
+    // sidewalks
+    ctx.fillStyle='#7b7698';ctx.fillRect(0,448,WW,134);ctx.fillRect(628,0,144,WH);
+    // roads
+    ctx.fillStyle='#2d2843';ctx.fillRect(0,470,WW,90);ctx.fillRect(650,0,100,WH);
+    // the descent: darker towards the bottom + chevrons
+    var g=ctx.createLinearGradient(0,600,0,WH);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,.45)');ctx.fillStyle=g;ctx.fillRect(650,600,100,WH-600);
+    ctx.strokeStyle='rgba(255,225,77,.85)';ctx.lineWidth=6;ctx.lineCap='round';
+    for(var cy=720;cy<WH;cy+=56){var o=((t*40)%56);ctx.beginPath();ctx.moveTo(680,cy+o-16);ctx.lineTo(700,cy+o);ctx.lineTo(720,cy+o-16);ctx.stroke()}
+    ctx.lineCap='butt';
+    // dashed centre lines
+    ctx.strokeStyle='rgba(251,244,230,.5)';ctx.lineWidth=3;ctx.setLineDash([22,18]);
+    ctx.beginPath();ctx.moveTo(0,515);ctx.lineTo(580,515);ctx.moveTo(820,515);ctx.lineTo(WW,515);ctx.moveTo(700,0);ctx.lineTo(700,400);ctx.stroke();ctx.setLineDash([]);
+    // plaza (cobbles)
+    ctx.fillStyle='#6a6488';circ(700,515,118);ctx.strokeStyle='rgba(0,0,0,.18)';ctx.lineWidth=1.5;
+    for(var r=20;r<118;r+=16){ctx.beginPath();ctx.arc(700,515,r,0,Math.PI*2);ctx.stroke()}
+    ctx.strokeStyle='#3ddcf0';ctx.lineWidth=4;ctx.beginPath();ctx.arc(700,515,118,0,Math.PI*2);ctx.stroke();
+    // crosswalks
+    ctx.fillStyle='rgba(251,244,230,.75)';for(var k=0;k<5;k++){ctx.fillRect(560,476+k*18,14,10);ctx.fillRect(826,476+k*18,14,10);ctx.fillRect(656+k*19,394,10,14);ctx.fillRect(656+k*19,624,10,14)}
+    // painted word on the descent
+    ctx.save();ctx.translate(700,880);ctx.fillStyle='rgba(255,79,168,.85)';ctx.font='26px Bungee, Impact, sans-serif';ctx.textAlign='center';ctx.fillText('GAME',0,0);ctx.restore();
+    // paths to doors
+    ctx.fillStyle='#7b7698';ctx.fillRect(1043,310,44,138);ctx.fillRect(248,312,44,136);ctx.fillRect(1043,830,44,40);ctx.fillRect(527,738,44,30);
+  }
+
+  // ---------- buildings & props
+  function building(b){
+    var x=b.x,y=b.y,w=b.w,d=b.d,h=b.wall;
+    ctx.fillStyle='rgba(0,0,0,.28)';rr(x+10,y+14,w,d+h,8);ctx.fill();
+    if(b.kind==='map'){ // sign board on two posts
+      ctx.fillStyle='#4a3a22';ctx.fillRect(x+30,y+d,10,h);ctx.fillRect(x+w-40,y+d,10,h);
+      ctx.fillStyle='#1d4f9c';rr(x,y,w,d+60,8);ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=3;rr(x+5,y+5,w-10,d+50,6);ctx.stroke();
+      ctx.fillStyle='#5da36a';rr(x+14,y+14,w-28,d+32,4);ctx.fill();ctx.strokeStyle='#fbf4e6';ctx.lineWidth=3;
+      ctx.beginPath();ctx.moveTo(x+14,y+40);ctx.lineTo(x+w-14,y+44);ctx.moveTo(x+90,y+14);ctx.lineTo(x+110,y+d+46);ctx.moveTo(x+150,y+14);ctx.lineTo(x+140,y+d+46);ctx.stroke();
+      [[x+50,y+30],[x+120,y+60],[x+180,y+28],[x+70,y+66]].forEach(function(q){ctx.fillStyle='#ff4fa8';circ(q[0],q[1],5);ctx.fillStyle='#fff';circ(q[0],q[1],2)});
+      return}
+    // roof
+    ctx.fillStyle=b.roof;rr(x,y,w,d,6);ctx.fill();
+    ctx.strokeStyle='rgba(0,0,0,.18)';ctx.lineWidth=2;for(var ry=y+14;ry<y+d;ry+=14){ctx.beginPath();ctx.moveTo(x+6,ry);ctx.lineTo(x+w-6,ry);ctx.stroke()}
+    ctx.fillStyle='rgba(255,255,255,.08)';ctx.fillRect(x,y,w,6);
+    // front wall
+    ctx.fillStyle=b.wallc;ctx.fillRect(x,y+d,w,h);ctx.fillStyle='rgba(0,0,0,.12)';ctx.fillRect(x,y+d,w,5);
+    // door
+    ctx.fillStyle='#3a2414';rr(b.door-15,y+d+h-42,30,42,4);ctx.fill();ctx.fillStyle='#e0b64a';circ(b.door+8,y+d+h-20,2.5);
+    if(b.kind==='club'){
+      if(logo&&logo.complete)ctx.drawImage(logo,x+w/2-62,y+d/2-62,124,124);
+      ctx.fillStyle='#5b8fd9';[x+40,x+90,x+w-130,x+w-80].forEach(function(wx){rr(wx,y+d+14,34,26,3);ctx.fill()});
+      ctx.fillStyle='#ff4fa8';ctx.font='15px Bungee, Impact, sans-serif';ctx.textAlign='center';ctx.fillText('ROULETTES',b.door,y+d+12);ctx.textAlign='left';
+    }else if(b.kind==='bar'){
+      for(var i=0;i<w;i+=26){ctx.fillStyle=(i/26)%2?'#ff4fa8':'#fbf4e6';ctx.fillRect(x+i,y+d+h-60,26,14)}
+      ctx.fillStyle='#ffe14d';[x+30,x+100,x+w-150,x+w-80].forEach(function(wx){rr(wx,y+d+18,44,24,3);ctx.fill()});
+      ctx.shadowColor='#ff4fa8';ctx.shadowBlur=14+6*Math.sin(t*5);ctx.fillStyle='#ff9fd0';ctx.font='22px Bungee, Impact, sans-serif';ctx.textAlign='center';ctx.fillText('BAR',b.door,y+d-14);ctx.shadowBlur=0;ctx.textAlign='left';
+    }else if(b.kind==='shop'){
+      for(var j=0;j<w;j+=24){ctx.fillStyle=(j/24)%2?'#ffe14d':'#150d2e';ctx.fillRect(x+j,y+d,24,16)}
+      [[x+40,'#ff4fa8'],[x+100,'#3ddcf0'],[x+w-150,'#ffe14d'],[x+w-90,'#ff4fa8']].forEach(function(q){ctx.fillStyle='#bfe8f5';rr(q[0],y+d+20,50,34,3);ctx.fill();
+        ctx.fillStyle='#150d2e';ctx.beginPath();var cx=q[0]+25,cy=y+d+26;ctx.moveTo(cx-12,cy);ctx.lineTo(cx-5,cy-3);ctx.lineTo(cx+5,cy-3);ctx.lineTo(cx+12,cy);ctx.lineTo(cx+9,cy+6);ctx.lineTo(cx+6,cy+4);ctx.lineTo(cx+6,cy+22);ctx.lineTo(cx-6,cy+22);ctx.lineTo(cx-6,cy+4);ctx.lineTo(cx-9,cy+6);ctx.closePath();ctx.fill();ctx.fillStyle=q[1];circ(cx,cy+9,3.5)});
+      ctx.fillStyle='#fff';ctx.font='20px Bungee, Impact, sans-serif';ctx.textAlign='center';ctx.fillText('SHOP',b.door,y+d-14);ctx.textAlign='left';
+    }else if(b.kind==='booth'){
+      ctx.fillStyle='#bfe8f5';ctx.fillRect(x+8,y+d+18,w-16,h-24);ctx.fillStyle='#d23a42';ctx.fillRect(x+w/2-2,y+d+18,4,h-24);
+      ctx.fillStyle='#fff';ctx.font='700 8px Space Grotesk, sans-serif';ctx.textAlign='center';ctx.fillText('TÉLÉPHONE',x+w/2,y+d+12);ctx.textAlign='left';
+      ctx.fillStyle='#150d2e';circ(x+w/2,y+d/2,8);
+    }
+  }
+  function tree(x,y){ctx.fillStyle='rgba(0,0,0,.25)';ctx.beginPath();ctx.ellipse(x+8,y+6,26,12,0,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#5a3a22';ctx.fillRect(x-4,y-18,8,22);ctx.fillStyle='#1f6b3f';circ(x,y-34,26);ctx.fillStyle='#2f8a52';circ(x-8,y-40,16);circ(x+9,y-30,14);ctx.fillStyle='rgba(255,255,255,.08)';circ(x-10,y-46,8)}
+  function table(x,y){ctx.fillStyle='rgba(0,0,0,.25)';circ(x+5,y+4,14);ctx.fillStyle='#fbf4e6';circ(x,y,12);ctx.fillStyle='#ff4fa8';circ(x,y-20,18);ctx.fillStyle='#fbf4e6';tri(x,y-38,x-6,y-20,x+6,y-20);ctx.fillStyle='#3ddcf0';circ(x,y-20,4)}
+  function fountain(){var x=FOUNT.x,y=FOUNT.y;ctx.fillStyle='rgba(0,0,0,.3)';circ(x+6,y+6,24);ctx.fillStyle='#1f5a3d';circ(x,y,22);ctx.fillStyle='#2f7a52';circ(x,y-6,15);ctx.fillStyle='#3ddcf0';circ(x,y-6,5+Math.sin(t*6))}
+
+  // ---------- the cat on its board, seen from above
+  function cat(){
+    var x=rider.x,y=rider.y,sp=Math.hypot(rider.vx,rider.vy);
+    ctx.save();ctx.translate(x,y);
+    ctx.fillStyle='rgba(0,0,0,.3)';ctx.beginPath();ctx.ellipse(4,6,28,14,rider.a,0,Math.PI*2);ctx.fill();
+    ctx.rotate(rider.a);
+    ctx.fillStyle='#ffe14d';[[-15,-11],[11,-11],[-15,7],[11,7]].forEach(function(w){ctx.fillRect(w[0],w[1],6,4)});
+    ctx.fillStyle='#ff4fa8';rr(-24,-8,48,16,8);ctx.fill();ctx.fillStyle='#150d2e';ctx.fillRect(-16,-2,32,4);
+    // tail
+    ctx.strokeStyle='#e8913a';ctx.lineWidth=5;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(-6,2);ctx.quadraticCurveTo(-22,12+Math.sin(t*10)*4,-30,4);ctx.stroke();
+    // arms
+    ctx.strokeStyle='#e8913a';ctx.lineWidth=4;var sw=Math.sin(t*8)*(sp>30?3:0);ctx.beginPath();ctx.moveTo(-4,-10);ctx.lineTo(-14+sw,-20);ctx.moveTo(4,10);ctx.lineTo(14-sw,20);ctx.stroke();
+    // body (yellow tee) and head with cap
+    ctx.fillStyle='#ffe14d';ctx.beginPath();ctx.ellipse(0,0,9,13,0,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#e8913a';circ(2,0,9.5);
+    ctx.fillStyle='#e8913a';tri(-4,-7,-1,-14,4,-7);tri(-4,7,-1,14,4,7);ctx.fillStyle='#ff9ec8';tri(-2,-8,-1,-11,2,-8);tri(-2,8,-1,11,2,8);
+    ctx.fillStyle='#3fa660';ctx.beginPath();ctx.arc(1,0,7,Math.PI*.5,Math.PI*1.5);ctx.fill();rr(3,-6,8,12,4);ctx.fill();
+    ctx.restore();
+  }
+
+  // ---------- physics
+  function solids(){var r=[];B.forEach(function(b){r.push({x:b.x,y:b.kind==='map'?b.y+b.d+40:b.y,w:b.w,h:b.kind==='map'?b.wall-30:b.d+b.wall})});return r}
+  var RECTS=solids(),CIRC=TREES.map(function(q){return{x:q[0],y:q[1]-6,r:16}}).concat(TABLES.map(function(q){return{x:q[0],y:q[1],r:13}}),[{x:FOUNT.x,y:FOUNT.y,r:FOUNT.r}]);
+  function collide(){var R=13;
+    RECTS.forEach(function(q){var cx=Math.max(q.x,Math.min(rider.x,q.x+q.w)),cy=Math.max(q.y,Math.min(rider.y,q.y+q.h)),dx=rider.x-cx,dy=rider.y-cy,d2=dx*dx+dy*dy;
+      if(d2<R*R){if(d2===0){var l=rider.x-q.x,r2=q.x+q.w-rider.x,u=rider.y-q.y,dn=q.y+q.h-rider.y,m=Math.min(l,r2,u,dn);if(m===l)rider.x=q.x-R;else if(m===r2)rider.x=q.x+q.w+R;else if(m===u)rider.y=q.y-R;else rider.y=q.y+q.h+R}
+        else{var d=Math.sqrt(d2);rider.x=cx+dx/d*R;rider.y=cy+dy/d*R}}});
+    CIRC.forEach(function(c){var dx=rider.x-c.x,dy=rider.y-c.y,d=Math.hypot(dx,dy),m=R+c.r;if(d<m&&d>0){rider.x=c.x+dx/d*m;rider.y=c.y+dy/d*m}});
+    rider.x=Math.max(R,Math.min(WW-R,rider.x));rider.y=Math.max(R,Math.min(WH-R,rider.y))}
+  function inZone(b){var z=b.zone;return rider.x>z.x&&rider.x<z.x+z.w&&rider.y>z.y&&rider.y<z.y+z.h}
+  function update(dt){
+    var ix=0,iy=0;
+    if(keys.ArrowLeft||keys.KeyA)ix-=1;if(keys.ArrowRight||keys.KeyD)ix+=1;if(keys.ArrowUp||keys.KeyW)iy-=1;if(keys.ArrowDown||keys.KeyS)iy+=1;
+    var dx=0,dy=0;
+    if(ix||iy){target=null;var l=Math.hypot(ix,iy);dx=ix/l*270;dy=iy/l*270}
+    else if(target){var tx=target.x-rider.x,ty=target.y-rider.y,dd=Math.hypot(tx,ty);
+      if(dd<8){var tp=target.place;target=null;rider.vx=rider.vy=0;if(tp)openPlace(tp)}else{var sp=Math.min(250,dd*3+40);dx=tx/dd*sp;dy=ty/dd*sp}}
+    var k=Math.min(1,dt*(ix||iy||target?5:3));rider.vx+=(dx-rider.vx)*k;rider.vy+=(dy-rider.vy)*k;
+    var ox=rider.x,oy=rider.y;rider.x+=rider.vx*dt;rider.y+=rider.vy*dt;collide();
+    rider.moved+=Math.hypot(rider.x-ox,rider.y-oy);
+    var v=Math.hypot(rider.vx,rider.vy);if(v>25){var na=Math.atan2(rider.vy,rider.vx),da=Math.atan2(Math.sin(na-rider.a),Math.cos(na-rider.a));rider.a+=da*Math.min(1,dt*10)}
+    near=null;B.forEach(function(b){if(inZone(b))near=b});
+    // the descent launches the game
+    if(rider.y>935&&rider.x>650&&rider.x<750){if(!gameLock){gameLock=true;rider.vx=rider.vy=0;rider.y=900;openPlace('game')}}else if(rider.y<880)gameLock=false;
+    // camera
+    camX=Math.max(0,Math.min(WW-vw,rider.x-vw/2));camY=Math.max(0,Math.min(WH-vh,rider.y-vh/2));if(vw>WW)camX=(WW-vw)/2;if(vh>WH)camY=(WH-vh)/2;
+  }
+
+  // ---------- render
+  function draw(){
+    ctx.setTransform(dpr,0,0,dpr,0,0);ctx.fillStyle='#120c26';ctx.fillRect(0,0,cv.width,cv.height);
+    ctx.setTransform(dpr*s,0,0,dpr*s,-camX*s*dpr,-camY*s*dpr);
+    ground();
+    var items=[];
+    B.forEach(function(b){items.push({y:b.base,f:function(){building(b)}})});
+    TREES.forEach(function(q){items.push({y:q[1],f:function(){tree(q[0],q[1])}})});
+    TABLES.forEach(function(q){items.push({y:q[1],f:function(){table(q[0],q[1])}})});
+    items.push({y:FOUNT.y,f:fountain});items.push({y:rider.y,f:cat});
+    items.sort(function(a,b){return a.y-b.y}).forEach(function(i){i.f()});
+    // floating labels
+    B.forEach(function(b){var P=PLACES[b.id];label(P.label,b.door,Math.max(b.y-8,camY+96/s),near===b?'#ffe14d':'#3ddcf0')});
+    label('↓ LA DESCENTE · GAME',700,790,'#ff4fa8');
+    // prompt when standing at a door
+    promptBox=null;
+    if(near){var txt=TOUCH?'Touche ici pour entrer':'Entrée ↵ pour entrer';ctx.font='700 15px Space Grotesk, sans-serif';var w=ctx.measureText(txt).width+26,px=rider.x-w/2,py=rider.y-64;
+      ctx.fillStyle='#ffe14d';rr(px,py,w,30,15);ctx.fill();ctx.fillStyle='#150d2e';ctx.textAlign='center';ctx.fillText(txt,rider.x,py+20);ctx.textAlign='left';promptBox={x:px,y:py,w:w,h:30}}
+    // welcome
+    if(rider.moved<160){ctx.setTransform(dpr,0,0,dpr,0,0);var a=1-rider.moved/160,W2=cv.width/dpr;ctx.globalAlpha=a;ctx.fillStyle='rgba(21,13,46,.85)';rr(W2/2-200,14,400,58,16);ctx.fill();
+      ctx.fillStyle='#ffe14d';ctx.font='16px Bungee, Impact, sans-serif';ctx.textAlign='center';ctx.fillText('BIENVENUE À ROULETTES !',W2/2,38);
+      ctx.fillStyle='#fbf4e6';ctx.font='700 13px Space Grotesk, sans-serif';ctx.fillText(TOUCH?'Touche un lieu : le chat y roule tout seul':'Roule avec les flèches · Entrée pour entrer',W2/2,60);ctx.textAlign='left';ctx.globalAlpha=1}
+  }
+  function loop(now){var dt=Math.min((now-(last||now))/1000,1/30);last=now;t+=dt;if(running){update(dt);draw()}requestAnimationFrame(loop)}
+  requestAnimationFrame(loop);
+  var dlg=document.getElementById('place');
+  new IntersectionObserver(function(e){running=e[0].isIntersecting;if(running)resize()},{threshold:.15}).observe(cv);
+
+  // ---------- input
+  function typing(){var a=document.activeElement;return a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName)}
+  window.addEventListener('keydown',function(e){
+    if(!running||dlg.open||typing())return;
+    if(/^Arrow|^Key[WASD]$/.test(e.code)){keys[e.code]=true;if(/^Arrow/.test(e.code))e.preventDefault()}
+    if((e.code==='Enter'||e.code==='Space')&&near){e.preventDefault();openPlace(near.id)}
+  });
+  window.addEventListener('keyup',function(e){keys[e.code]=false});
+  window.addEventListener('blur',function(){keys={}});
+  function toWorld(e){var r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)/s+camX,y:(e.clientY-r.top)/s+camY}}
+  cv.addEventListener('pointerdown',function(e){var p=toWorld(e);cv.focus({preventScroll:true});
+    if(promptBox&&near&&p.x>promptBox.x&&p.x<promptBox.x+promptBox.w&&p.y>promptBox.y&&p.y<promptBox.y+promptBox.h){openPlace(near.id);return}
+    for(var i=0;i<B.length;i++){var b=B[i];if(p.x>b.x-10&&p.x<b.x+b.w+10&&p.y>b.y-40&&p.y<b.base+40){target={x:b.door,y:b.base+20,place:b.id};return}}
+    if(p.x>650&&p.x<750&&p.y>760){target={x:700,y:960};return}
+    target={x:p.x,y:p.y}});
+
+  // ---------- places in a dialog (the existing sections move in and back)
+  var dbody=document.getElementById('place-body'),dtitle=document.getElementById('place-title'),moved=[];
+  function restore(){moved.forEach(function(m){m[1].parentNode.insertBefore(m[0],m[1]);m[1].remove()});moved=[]}
+  function openPlace(id){var P=PLACES[id];if(!P)return;
+    if(!body.classList.contains('vm')){var el0=document.getElementById(P.sections[0]);if(el0)el0.scrollIntoView({behavior:'smooth'});return}
+    restore();
+    P.sections.forEach(function(sid){var el=document.getElementById(sid);if(!el)return;var mark=document.createComment('slot');el.parentNode.insertBefore(mark,el);moved.push([el,mark]);dbody.appendChild(el)});
+    dtitle.textContent=P.title;if(!dlg.open){dlg.showModal();body.classList.add('noscroll')}dbody.scrollTop=0;keys={};target=null;
+    setTimeout(function(){window.dispatchEvent(new Event('resize'))},80)}
+  function closePlace(){if(dlg.open){dlg.close();restore();body.classList.remove('noscroll')}}
+  dlg.addEventListener('close',function(){if(dlg.open)return;restore();body.classList.remove('noscroll');cv.focus({preventScroll:true})});
+  document.getElementById('place-close').addEventListener('click',closePlace);
+  dlg.addEventListener('click',function(e){if(e.target===dlg)closePlace()});
+  [].forEach.call(document.querySelectorAll('.vbar [data-place]'),function(b){b.addEventListener('click',function(){var id=b.dataset.place;
+    if(!body.classList.contains('vm')){openPlace(id);return}var bb=B.filter(function(q){return q.id===id})[0];
+    if(bb){rider.x=bb.door;rider.y=bb.base+22;rider.vx=rider.vy=0}else if(id==='game'){rider.x=700;rider.y=900}openPlace(id)})});
+  // menu links & anchors open the matching place
+  document.addEventListener('click',function(e){if(!body.classList.contains('vm'))return;var a=e.target.closest('a[href^="#"]');if(!a)return;
+    var id=a.getAttribute('href').slice(1);
+    if(id===''||id==='accueil'||id==='village'){e.preventDefault();closePlace();document.getElementById('village').scrollIntoView({behavior:'smooth'});return}
+    var pl=HASH[id];if(pl&&!(dlg.open&&dbody.contains(document.getElementById(id)))){e.preventDefault();openPlace(pl);if(id!==PLACES[pl].sections[0]){var el=document.getElementById(id);if(el)setTimeout(function(){el.scrollIntoView({behavior:'smooth'})},120)}}});
+  // classic / village switch
+  var tog=document.getElementById('to-classic');
+  function setTog(){tog.textContent=body.classList.contains('vm')?'Voir le site en version classique':'Revenir au mode village'}
+  tog.addEventListener('click',function(){var vm=!body.classList.contains('vm');closePlace();body.classList.toggle('vm',vm);try{localStorage.setItem('rl-classic',vm?'0':'1')}catch(e){}setTog();
+    if(!vm)document.getElementById('accueil').scrollIntoView({behavior:'smooth'})});
+  setTog();
+  if(TOUCH)document.getElementById('vhelp-txt').textContent='Touche un lieu : le chat y roule et entre tout seul.';
+  // deep links (#shop, #spots…)
+  var h=location.hash.slice(1);if(HASH[h]&&body.classList.contains('vm'))setTimeout(function(){openPlace(HASH[h])},300);
+})();
+
+/* ===== the bar: drinks + shi-fu-mi ===== */
+(function(){
+  var dm=document.getElementById('drink-msg'),n=0;if(!dm)return;
+  [].forEach.call(document.querySelectorAll('#drinks button'),function(b){b.addEventListener('click',function(){n++;
+    var lines=['Et un '+b.dataset.d+' pour toi ! Santé !','Un '+b.dataset.d+', bien frais.','Tchin ! '+b.dataset.d+' n°'+n+'.','Encore un '+b.dataset.d+' ? Attention à pas rouler de travers !'];
+    dm.innerHTML='<span class="sip">'+b.dataset.e+'</span> '+lines[Math.min(n-1,3)%4]})});
+  var NAMES=['Pierre','Feuille','Ciseaux'],EM=['✊','✋','✌️'],me=0,him=0,msg=document.getElementById('sfm-msg'),sc=document.getElementById('sfm-score');
+  [].forEach.call(document.querySelectorAll('#sfm button'),function(b){b.addEventListener('click',function(){
+    var a=+b.dataset.c,c=Math.floor(Math.random()*3),r=(a-c+3)%3,txt;
+    if(r===0)txt='Égalité ! Minou a aussi joué '+NAMES[c]+'.';else if(r===1){me++;txt='Gagné ! '+NAMES[a]+' bat '+NAMES[c]+'. Minou boude.'}else{him++;txt='Perdu… '+NAMES[c]+' bat '+NAMES[a]+'. Minou ronronne.'}
+    msg.innerHTML='<span class="sip">'+EM[a]+'</span> vs <span class="sip">'+EM[c]+'</span> · '+txt;sc.textContent='Toi '+me+' – '+him+' Minou'})});
+})();
+
+/* ===== shop cart → WhatsApp order ===== */
+(function(){
+  var list=document.getElementById('cart-list'),order=document.getElementById('cart-order');if(!list)return;
+  var cart=[];
+  function render(){list.innerHTML='';
+    if(!cart.length){list.innerHTML='<li><span>Ton panier est vide : choisis une taille et ajoute un t-shirt.</span></li>';order.setAttribute('aria-disabled','true');order.href='#';return}
+    cart.forEach(function(it,i){var li=document.createElement('li'),sp=document.createElement('span');sp.textContent=it.q+' × '+it.n+' (taille '+it.s+')';
+      var bx=document.createElement('span'),m=document.createElement('button'),p=document.createElement('button'),x=document.createElement('button');
+      m.textContent='−';p.textContent='+';x.textContent='✕';m.setAttribute('aria-label','Un de moins');p.setAttribute('aria-label','Un de plus');x.setAttribute('aria-label','Retirer');
+      m.onclick=function(){it.q--;if(it.q<1)cart.splice(i,1);render()};p.onclick=function(){it.q++;render()};x.onclick=function(){cart.splice(i,1);render()};
+      bx.appendChild(m);bx.appendChild(document.createTextNode(' '));bx.appendChild(p);bx.appendChild(document.createTextNode(' '));bx.appendChild(x);li.appendChild(sp);li.appendChild(bx);list.appendChild(li)});
+    var txt='Bonjour Roulettes ! Je voudrais commander :\n'+cart.map(function(it){return '- '+it.q+' × T-shirt '+it.n+' (taille '+it.s+')'}).join('\n')+'\nMerci !';
+    order.href='https://wa.me/33768774819?text='+encodeURIComponent(txt);order.setAttribute('aria-disabled','false')}
+  [].forEach.call(document.querySelectorAll('.product'),function(pr){var btn=pr.querySelector('.add'),err=pr.querySelector('.add-err');
+    btn.addEventListener('click',function(){var sz=pr.querySelector('.sizes [aria-pressed="true"]');if(!sz){err.textContent='Choisis d’abord une taille';return}err.textContent='';
+      var n=pr.querySelector('h3').textContent,s=sz.textContent,f=cart.filter(function(c){return c.n===n&&c.s===s})[0];if(f)f.q++;else cart.push({n:n,s:s,q:1});render();
+      btn.textContent='Ajouté ✓';setTimeout(function(){btn.textContent='Ajouter au panier'},1200)})});
+  render();
 })();
 </script>
 

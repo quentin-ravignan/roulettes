@@ -268,6 +268,8 @@ input[type=date]{color-scheme:dark}
 #vcv{display:block;width:100%;height:clamp(440px,76vh,760px);touch-action:none;cursor:pointer;outline:none}
 .vbar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:14px 16px 6px;background:var(--night-2);border-top:1px solid var(--line)}
 .vbar button{font:inherit;font-weight:700;font-size:.92rem;cursor:pointer;border-radius:999px;padding:8px 14px;border:1.5px solid var(--line);background:var(--night);color:var(--cream)}
+.vbar a.vlink{font-weight:700;font-size:.92rem;text-decoration:none;border-radius:999px;padding:8px 14px;border:1.5px solid #d63507;background:var(--night);color:#fcb301}
+.vbar a.vlink:hover{background:#d63507;color:#fff}
 .vbar button:hover{border-color:var(--cyan);color:var(--cyan)}
 .vhelp{margin:0;text-align:center;color:var(--muted);font-size:.9rem;padding:6px 16px 16px;background:var(--night-2)}
 .vhelp button{font:inherit;color:var(--cyan);background:none;border:0;text-decoration:underline;cursor:pointer;padding:0}
@@ -330,6 +332,10 @@ body.noscroll{overflow:hidden}
 .chat-form button{font:inherit;font-weight:700;cursor:pointer;border-radius:12px;border:0;background:var(--yellow);color:var(--night);padding:0 18px}
 #vcv{height:clamp(420px,50vw,78vh)}
 @media (max-width:700px){#vcv{height:clamp(420px,64vh,620px)}}
+.ssz-promo{display:flex;align-items:center;gap:16px;margin:0 0 20px;padding:12px 16px;border-radius:16px;background:#003d3f;color:#f3e6c4;text-decoration:none;border:3px solid #d63507}
+.ssz-promo img{width:90px;height:auto;flex:none}
+.ssz-promo b{display:block;color:#fcb301;font-size:1.1rem}
+.ssz-promo:hover{border-color:#fcb301}
 </style>
 </head>
 <body>
@@ -347,6 +353,7 @@ body.noscroll{overflow:hidden}
       <li><a class="link" href="#riders">Riders</a></li>
       <li><a class="link" href="#shop">Shop</a></li>
       <li><a class="link" href="#game">Game</a></li>
+      <li><a class="link" href="streetboard.html">Streetboard</a></li>
       <li><a class="link" href="#contact">Contact</a></li>
     </ul>
   </nav>
@@ -361,6 +368,7 @@ body.noscroll{overflow:hidden}
     <button type="button" data-place="spots">🗺️ Spots</button>
     <button type="button" data-place="shop">👕 Shop</button>
     <button type="button" data-place="game">🛹 Aller rider</button>
+    <a class="vlink" href="streetboard.html">🕹️ Streetboard Shit Show</a>
   </div>
   <p class="vhelp"><span id="vhelp-txt">Clique sur un lieu ou roule avec les flèches (Z Q S D), Entrée pour entrer.</span> · <button type="button" id="to-classic">Voir le site en version classique</button></p>
 </section>
@@ -688,6 +696,7 @@ body.noscroll{overflow:hidden}
       <h2>Skate Cat Run · 19e</h2>
       <p class="lead">Choisis ton rider, traverse le 19e de la Mouzaïa à la Villette et enchaîne les tricks. Premier objectif : <b>100 points</b> !</p>
     </div>
+    <a class="ssz-promo" href="streetboard.html"><img src="ssz-logo.webp" alt="" width="640" height="575" loading="lazy"><span><b>Nouveau : Streetboard Shit Show</b>Le jeu de combat arcade du crew, façon années 80. Solo, duo ou en ligne →</span></a>
     <div class="modes" id="game-modes" role="group" aria-label="Mode de jeu">
       <button type="button" data-m="1" aria-pressed="true">Solo</button>
       <button type="button" data-m="2" aria-pressed="false" class="m-screen">Duo écran</button>
@@ -1372,14 +1381,16 @@ document.querySelectorAll('.sizes').forEach(function(g){g.addEventListener('clic
     club:{title:'Le Club · le bar du crew',sections:['club','projet','valeurs','riders'],label:'LE CLUB',act:'Entrer dans Le Club'},
     spots:{title:'Le plan des spots',sections:['spots'],label:'SPOTS',act:'Regarder le plan des spots'},
     shop:{title:'Le shop Roulettes',sections:['shop'],label:'SHOP',act:'Entrer dans le shop'},
-    game:{title:'Aller rider · Skate Cat Run',sections:['game'],label:'ALLER RIDER',act:'Aller rider'}
+    game:{title:'Aller rider · Skate Cat Run',sections:['game'],label:'ALLER RIDER',act:'Aller rider'},
+    ssz:{title:'Streetboard Shit Show',sections:[],label:'ARCADE',act:'Jouer à Streetboard Shit Show'}
   };
   var HASH={accueil:'club',club:'club',projet:'club',valeurs:'club',riders:'club',inscription:'inscription',contact:'inscription','form-inscription':'inscription',spots:'spots',shop:'shop',game:'game'};
   // hotspots: clickable box, x where the cat stops, label position
   var SP=[
     {id:'inscription',x:60,y:330,w:125,h:300,door:122,lx:122,ly:360},
     {id:'club',x:220,y:120,w:500,h:510,door:470,lx:470,ly:96},
-    {id:'spots',x:760,y:420,w:180,h:210,door:850,lx:850,ly:404},
+    {id:'ssz',x:716,y:470,w:54,h:160,door:744,lx:744,ly:462},
+    {id:'spots',x:770,y:420,w:170,h:210,door:850,lx:850,ly:404},
     {id:'shop',x:975,y:200,w:430,h:430,door:1190,lx:1190,ly:214},
     {id:'game',x:1420,y:380,w:180,h:420,door:1560,lx:1500,ly:372}
   ];
@@ -1484,6 +1495,17 @@ document.querySelectorAll('.sizes').forEach(function(g){g.addEventListener('clic
     ctx.fillStyle='#24543a';for(var j=0;j<6;j++)circ(760+j*40,490,30);
     ctx.fillStyle='#1d1630';ctx.fillRect(720,520,255,40);ctx.strokeStyle='#1d1630';ctx.lineWidth=3;for(var g=724;g<975;g+=10){ctx.beginPath();ctx.moveTo(g,522);ctx.lineTo(g,486);ctx.stroke()}
   }
+  function arcade(){ // the Streetboard Shit Show cabinet
+    var x=724,w=40,b=604,fl=Math.sin(t*20)>.85?.6:1;
+    ctx.fillStyle='rgba(0,0,0,.3)';ctx.beginPath();ctx.ellipse(x+w/2,b,30,6,0,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#003d3f';poly([x,b,x+w,b,x+w,b-118,x+w-5,b-128,x+5,b-128,x,b-118]);
+    ctx.fillStyle='#d63507';ctx.fillRect(x-2,b-130,w+4,16);txt('SSS',x+w/2,b-117,'11px Bungee, Impact, sans-serif','#fcb301');
+    ctx.fillStyle='#111';ctx.fillRect(x+5,b-108,w-10,34);ctx.globalAlpha=fl;
+    [['#d63507',0],['#e55c00',8],['#fcb301',16],['#0f7b78',24]].forEach(function(q){ctx.fillStyle=q[0];ctx.fillRect(x+7,b-106+q[1],w-14,7)});ctx.globalAlpha=1;
+    ctx.fillStyle='#0f7b78';poly([x-2,b-72,x+w+2,b-72,x+w+6,b-58,x-6,b-58]);
+    ctx.fillStyle='#111';ctx.fillRect(x+8,b-76,3,8);ctx.fillStyle='#d63507';circ(x+9.5,b-77,3.5);ctx.fillStyle='#fcb301';circ(x+24,b-66,3);ctx.fillStyle='#e55c00';circ(x+32,b-66,3);
+    ctx.fillStyle='#fcb301';ctx.fillRect(x,b-40,w,4);
+  }
   function mapBoard(){
     var x=772,w=156,b=606;
     ctx.fillStyle='rgba(0,0,0,.3)';ctx.beginPath();ctx.ellipse(x+w/2,b,90,9,0,0,Math.PI*2);ctx.fill();
@@ -1560,7 +1582,7 @@ document.querySelectorAll('.sizes').forEach(function(g){g.addEventListener('clic
     ctx.setTransform(dpr,0,0,dpr,0,0);ctx.fillStyle='#120c26';ctx.fillRect(0,0,cv.width,cv.height);
     ctx.setTransform(dpr*s,0,0,dpr*s,-camX*s*dpr,0);
     sky();ground();villa();club();park();shop();slope();
-    var it=[{y:612,f:booth},{y:606,f:mapBoard},{y:650,f:function(){terrace(300,650)}},{y:650,f:function(){terrace(640,650)}}];
+    var it=[{y:612,f:booth},{y:606,f:mapBoard},{y:604,f:arcade},{y:650,f:function(){terrace(300,650)}},{y:650,f:function(){terrace(640,650)}}];
     var ry=riderY(),me=window.RL?RL.pick():null;
     if(me)it.push({y:R.y,f:function(){drawCat(me,R.x,ry,sc(R.y),R.dir<0,t)}});
     it.sort(function(a,b){return a.y-b.y}).forEach(function(i){i.f()});
@@ -1599,7 +1621,7 @@ document.querySelectorAll('.sizes').forEach(function(g){g.addEventListener('clic
   // ---------- places in a dialog (the existing sections move in and back)
   var dbody=document.getElementById('place-body'),dtitle=document.getElementById('place-title'),moved=[];
   function restore(){moved.forEach(function(m){m[1].parentNode.insertBefore(m[0],m[1]);m[1].remove()});moved=[]}
-  function openPlace(id){var P=PLACES[id];if(!P)return;
+  function openPlace(id){var P=PLACES[id];if(!P)return;if(id==='ssz'){location.href='streetboard.html';return}
     if(!body.classList.contains('vm')){var el0=document.getElementById(P.sections[0]);if(el0)el0.scrollIntoView({behavior:'smooth'});return}
     restore();
     P.sections.forEach(function(sid){var el=document.getElementById(sid);if(!el)return;var mark=document.createComment('slot');el.parentNode.insertBefore(mark,el);moved.push([el,mark]);dbody.appendChild(el)});

@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mon espace · Roulettes</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--night:#150d2e;--night2:#1f1442;--night3:#2a1b57;--line:#3a2a6e;--cream:#fbf4e6;--muted:#b9acd8;--cyan:#3ddcf0;--pink:#ff4fa8;--yellow:#ffe14d;--green:#3fd17a;--red:#ff6b6b;--display:"Bungee",Impact,sans-serif}
+*{box-sizing:border-box}
+html{color-scheme:dark}
+body{margin:0;background:var(--night);color:var(--cream);font-family:"Space Grotesk",system-ui,sans-serif;line-height:1.5}
+a{color:var(--cyan)}
+button,input,select,textarea{font:inherit}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--night2);position:sticky;top:0;z-index:5}
+.brand{display:flex;align-items:center;gap:10px;color:var(--cream);text-decoration:none;font-family:var(--display);font-size:1.05rem}
+.brand img{width:40px;height:40px;border-radius:50%}
+.who{display:flex;align-items:center;gap:10px;font-size:.92rem}
+.who img{width:30px;height:30px;border-radius:50%}
+.wrap{max-width:1180px;margin:0 auto;padding:22px 16px 60px}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(1.4rem,4vw,2.2rem);margin:0 0 6px}
+h2{font-family:var(--display);font-weight:400;font-size:1.25rem;margin:0 0 12px;color:var(--yellow)}
+h3{margin:0 0 8px;font-size:1.05rem}
+.muted{color:var(--muted)}
+.btn{cursor:pointer;border-radius:12px;padding:10px 16px;border:1.5px solid var(--line);background:var(--night3);color:var(--cream);font-weight:700}
+.btn:hover{border-color:var(--cyan)}
+.btn.primary{background:var(--yellow);color:var(--night);border-color:var(--yellow)}
+.btn.pink{background:var(--pink);border-color:var(--pink);color:#fff}
+.btn.small{padding:6px 10px;font-size:.85rem;border-radius:9px}
+.btn.ghost{background:none}
+.btn[disabled]{opacity:.5;cursor:default}
+.gate{max-width:480px;margin:8vh auto;text-align:center;background:var(--night2);border:1px solid var(--line);border-radius:22px;padding:30px 24px}
+.gate img{width:120px;height:120px;border-radius:50%}
+.google{display:inline-flex;align-items:center;gap:10px;background:#fff;color:#1f1f1f;border:0;border-radius:999px;padding:12px 22px;font-weight:700;cursor:pointer;margin-top:12px}
+.demo{background:#3a2a10;border:1px dashed var(--yellow);color:var(--yellow);border-radius:12px;padding:8px 12px;margin-bottom:16px;font-size:.9rem}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:18px 0}
+.tabs button{cursor:pointer;border-radius:999px;padding:9px 16px;border:1.5px solid var(--line);background:var(--night2);color:var(--cream);font-weight:700}
+.tabs button[aria-selected="true"]{background:var(--cyan);color:var(--night);border-color:var(--cyan)}
+.tabs .sep{width:1px;background:var(--line);margin:0 6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.card{background:var(--night2);border:1px solid var(--line);border-radius:18px;padding:18px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:16px}
+.stat{background:var(--night2);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.stat b{display:block;font-family:var(--display);font-weight:400;font-size:1.4rem}
+.stat span{color:var(--muted);font-size:.85rem}
+.ok{color:var(--green)}.due{color:var(--red)}.warn{color:var(--yellow)}
+.rider{display:grid;grid-template-columns:120px 1fr;gap:14px;align-items:center}
+.rider canvas{width:120px;height:140px;background:linear-gradient(#2a1b57,#1f1442);border-radius:14px}
+.tag{display:inline-block;border-radius:999px;padding:2px 10px;font-size:.8rem;font-weight:700;background:var(--night3);border:1px solid var(--line)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.row.end{justify-content:flex-end}
+.tbl{width:100%;border-collapse:collapse;font-size:.93rem}
+.tbl th{text-align:left;color:var(--muted);font-weight:500;font-size:.82rem;padding:8px;border-bottom:1px solid var(--line);white-space:nowrap}
+.tbl td{padding:8px;border-bottom:1px solid var(--line);vertical-align:middle}
+.tbl td.num,.tbl th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tbl tr:hover td{background:rgba(61,220,240,.04)}
+.scroll{overflow-x:auto}
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.tools input[type=search]{flex:1;min-width:180px}
+input,select,textarea{background:var(--night);color:var(--cream);border:1.5px solid var(--line);border-radius:10px;padding:9px 11px;width:100%}
+input[type=checkbox]{width:auto}
+textarea{min-height:80px}
+label.f{display:block;font-size:.85rem;color:var(--muted);margin-bottom:10px}
+label.f>input,label.f>select,label.f>textarea{margin-top:4px;color:var(--cream)}
+.form2{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+.swatches{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px}
+.swatches button{width:28px;height:28px;border-radius:50%;border:2px solid var(--line);cursor:pointer}
+.swatches button[aria-pressed="true"]{border-color:#fff;box-shadow:0 0 0 2px var(--cyan)}
+dialog{background:var(--night2);color:var(--cream);border:1px solid var(--line);border-radius:20px;padding:0;width:min(760px,96vw);max-height:92vh}
+dialog::backdrop{background:rgba(8,4,20,.75)}
+.dh{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--night2);z-index:2}
+.db{padding:18px;overflow:auto}
+.sub{margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--yellow);color:var(--night);font-weight:700;border-radius:12px;padding:10px 16px;z-index:50;box-shadow:0 8px 30px rgba(0,0,0,.4)}
+.toast[hidden]{display:none}
+.chart{width:100%;height:220px;display:block;background:var(--night);border-radius:14px}
+.big{font-family:var(--display);font-weight:400;font-size:2rem}
+@media (max-width:640px){.form2{grid-template-columns:1fr}.rider{grid-template-columns:90px 1fr}.rider canvas{width:90px;height:110px}}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="./"><img src="logo-roulettes.png" alt="">Roulettes</a>
+  <div class="who" id="who"></div>
+</header>
+<main class="wrap" id="main"><p class="muted">Chargement…</p></main>
+<dialog id="dlg"><div class="dh"><h2 id="dlg-t" style="margin:0"></h2><button type="button" class="btn small ghost" id="dlg-x">✕ Fermer</button></div><div class="db" id="dlg-b"></div></dialog>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script src="firebase-config.js"></script>
+<script src="rl-data.js"></script>
+<script src="rl-rider.js"></script>
+<script>
+(function(){
+  var main=document.getElementById('main'),who=document.getElementById('who'),dlg=document.getElementById('dlg'),dlgT=document.getElementById('dlg-t'),dlgB=document.getElementById('dlg-b');
+  var CREWS=[{name:'AlleyOop',day:1,time:'16h30'},{name:'Benihana',day:1,time:'18h00'},{name:'Caballerial',day:2,time:'16h30'},{name:'Disaster',day:2,time:'18h00'}];
+  var DAYS=['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+  var CATS=[['cotisation','Cotisation'],['adhesion','Adhésion'],['shop','Shop'],['subvention','Subvention / don'],['prof','Prof de skate'],['materiel','Matériel et achats'],['assurance','Assurance'],['site','Site et outils'],['frais','Frais bancaires'],['autre','Autre']];
+  var user=null,S={},tab=null,avatars=[];
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+  function fd(iso){if(!iso)return'';var p=iso.split('-');return p.length===3?p[2]+'/'+p[1]+'/'+p[0]:iso}
+  function today(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
+  var eur=RLD.eur;
+  function toast(m){var t=document.getElementById('toast');t.textContent=m;t.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(function(){t.hidden=true},2600)}
+  function fail(e){console.error(e);toast('Oups : '+(e&&e.message||e))}
+  function open(title,html,onReady){dlgT.textContent=title;dlgB.innerHTML=html;if(!dlg.open)dlg.showModal();if(onReady)onReady(dlgB)}
+  document.getElementById('dlg-x').onclick=function(){dlg.close()};
+  function val(root,sel){var el=root.querySelector(sel);return el?(el.type==='checkbox'?el.checked:el.value.trim()):''}
+  function sum(a,f){return a.reduce(function(s,x){return s+(+(f?f(x):x)||0)},0)}
+  function settings(){return RLD.get('settings','app').then(function(s){S=Object.assign({season:'',prices:[390,450,490],adhesion:20,shop:{tshirt:0,board:0},payInfo:'',mailUrl:'',mailKey:'',crews:CREWS,bankStart:{date:'',amount:0}},s||{});if(!user||!user.admin)return S;
+    // the mail script key lives in an admin-only document
+    return RLD.get('settings','private').then(function(x){S.mailUrl=x&&x.mailUrl||'';S.mailKey=x&&x.mailKey||'';return S},function(){return S})},function(){return S})}
+
+  // ---------- avatars (same drawing as the village)
+  function avatar(cv,rider){avatars.push({cv:cv,ch:RLD.charOf(rider)})}
+  (function anim(t){avatars=avatars.filter(function(a){return a.cv.isConnected});avatars.forEach(function(a){var c=a.cv,d=Math.min(devicePixelRatio||1,2),w=c.clientWidth,h=c.clientHeight;if(!w)return;if(c.width!==Math.round(w*d)){c.width=Math.round(w*d);c.height=Math.round(h*d)}
+    var x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);x.clearRect(0,0,w,h);var k=h/150;x.fillStyle='rgba(0,0,0,.25)';x.beginPath();x.ellipse(w/2,h-12,30*k,6*k,0,0,7);x.fill();RLRider.draw(x,a.ch,w/2,h-14,1.15*k,t/1000,false)});requestAnimationFrame(anim)})(0);
+
+  // ---------- header + gate
+  function header(){who.innerHTML=user?((user.photo?'<img src="'+esc(user.photo)+'" alt="">':'')+'<span>'+esc(user.name)+(user.admin?' · <b class="warn">admin</b>':'')+'</span><button class="btn small" id="out">Se déconnecter</button>'):'';
+    var o=document.getElementById('out');if(o)o.onclick=function(){RLD.signOut()}}
+  function gate(){main.innerHTML='<div class="gate"><img src="logo-roulettes.png" alt=""><h1>Mon espace</h1><p class="muted">Connecte-toi avec ton adresse Gmail pour voir tes riders, leurs fiches et l’état de tes paiements.</p>'+
+    (RLD.mode==='demo'?'<p class="demo">Mode démo : données fictives, gardées seulement dans ce navigateur.</p>':'')+
+    '<button class="google" id="login"><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.6 13.3l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.2 5.3-4.6 6.9l7.1 5.5c4.2-3.9 7.2-9.6 7.2-16.9z"/><path fill="#FBBC05" d="M10.5 28.6A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.6l-7.9-6.1A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.7l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.1-5.5c-2 1.4-4.6 2.2-8.8 2.2-6.3 0-11.6-4.1-13.5-9.9l-7.9 6.1C6.6 42.6 14.6 48 24 48z"/></svg>Se connecter avec Google</button>'+
+    '<p class="muted" style="font-size:.85rem;margin-top:18px">Ton compte est relié à ta famille par l’adresse e-mail donnée à l’inscription.</p></div>';
+    document.getElementById('login').onclick=function(){RLD.signIn().catch(fail)}}
+
+  // ---------- data for the signed-in parent
+  function mine(){var em=user.email;return Promise.all([RLD.q('families',[['emails','array-contains',em]]),RLD.q('riders',[['emails','array-contains',em]]),RLD.q('payments',[['emails','array-contains',em]]),RLD.q('orders',[['emails','array-contains',em]])])
+    .then(function(r){return{fams:r[0],riders:r[1],pays:r[2],orders:r[3]}})}
+
+  // ---------- app shell
+  var TABS_M=[['riders','Mes riders'],['pay','Paiements'],['orders','Commandes']],TABS_A=[['crm','Adhérent·es'],['coach','Prof'],['bank','Banque'],['set','Réglages']];
+  function shell(){main.innerHTML=(RLD.mode==='demo'?'<p class="demo">Mode démo : données fictives, gardées seulement dans ce navigateur.</p>':'')+'<h1>Salut '+esc((user.name||'').split(' ')[0])+' !</h1><div class="tabs" role="tablist" id="tabs"></div><div id="panel"></div>';
+    var tb=document.getElementById('tabs'),list=TABS_M.slice();if(user.admin)list=list.concat([['|']],TABS_A);
+    tb.innerHTML=list.map(function(x){return x[0]==='|'?'<span class="sep"></span>':'<button role="tab" data-t="'+x[0]+'" aria-selected="false">'+x[1]+'</button>'}).join('');
+    [].forEach.call(tb.querySelectorAll('[data-t]'),function(b){b.onclick=function(){go(b.dataset.t)}});
+    go(tab||(user.admin?'crm':'riders'))}
+  function go(t){tab=t;[].forEach.call(document.querySelectorAll('#tabs [data-t]'),function(b){b.setAttribute('aria-selected',String(b.dataset.t===t))});
+    var p=document.getElementById('panel');p.innerHTML='<p class="muted">Chargement…</p>';
+    ({riders:pRiders,pay:pPay,orders:pOrders,crm:pCrm,coach:pCoach,bank:pBank,set:pSet}[t])(p).catch(fail)}
+
+  // ---------- parent: riders
+  function pRiders(p){return mine().then(function(d){
+    if(!d.riders.length){p.innerHTML=noFamily();return}
+    var cur='';try{cur=localStorage.getItem('rl-rider')||''}catch(e){}
+    p.innerHTML='<div class="grid">'+d.riders.map(function(r){var a=RLD.age(r.birthDate);return'<div class="card"><div class="rider"><canvas data-r="'+r.id+'"></canvas><div><h3>'+esc(r.firstName)+' '+esc(r.lastName)+'</h3>'+
+      '<p class="muted" style="margin:0 0 8px">'+(a!=null?a+' ans · ':'')+esc(r.stance&&r.stance!=='?'?r.stance:'stance à découvrir')+'</p>'+(r.crew?'<span class="tag">Crew '+esc(r.crew)+'</span>':'')+
+      '<div class="row" style="margin-top:12px"><button class="btn small" data-edit="'+r.id+'">Modifier la fiche</button><button class="btn small" data-look="'+r.id+'">Personnaliser</button></div>'+
+      '<p style="margin:10px 0 0"><label><input type="radio" name="me" value="'+r.id+'"'+(cur===r.id||!cur&&r===d.riders[0]?' checked':'')+'> Mon perso dans le village</label></p></div></div></div>'}).join('')+'</div>'+
+      '<p class="muted" style="margin-top:16px">Les t-shirts et planches achetés au shop s’ajoutent automatiquement à la garde-robe de ton rider.</p>';
+    d.riders.forEach(function(r){avatar(p.querySelector('[data-r="'+r.id+'"]'),r)});
+    [].forEach.call(p.querySelectorAll('[name=me]'),function(i){i.onchange=function(){try{localStorage.setItem('rl-rider',i.value)}catch(e){}toast('C’est ton perso dans le village !')}});
+    [].forEach.call(p.querySelectorAll('[data-edit]'),function(b){b.onclick=function(){riderForm(d.riders.filter(function(r){return r.id===b.dataset.edit})[0],false,function(){go('riders')})}});
+    [].forEach.call(p.querySelectorAll('[data-look]'),function(b){b.onclick=function(){lookForm(d.riders.filter(function(r){return r.id===b.dataset.look})[0])}})})}
+  function noFamily(){return'<div class="card"><h2>Aucun rider relié à ton compte</h2><p>L’adresse <b>'+esc(user.email)+'</b> n’est pas encore rattachée à une famille du club. Écris-nous et on la relie à ton inscription.</p><p><a class="btn primary" href="mailto:contact@roulettes.club?subject=Mon%20espace%20Roulettes&body=Bonjour%2C%20pouvez-vous%20relier%20mon%20adresse%20'+encodeURIComponent(user.email)+'%20%C3%A0%20mon%20inscription%20%3F">Écrire au club</a></p></div>'}
+  function riderForm(r,admin,done,famId,emails){r=r||{};var crews=(S.crews||CREWS);
+    open(r.id?'Fiche de '+r.firstName:'Nouveau rider','<form id="rf"><div class="form2">'+
+      '<label class="f">Prénom<input name="firstName" required value="'+esc(r.firstName)+'"></label><label class="f">Nom<input name="lastName" value="'+esc(r.lastName)+'"></label>'+
+      '<label class="f">Date de naissance<input type="date" name="birthDate" value="'+esc(r.birthDate)+'"></label>'+
+      '<label class="f">Stance<select name="stance">'+['?','Regular','Goofy'].map(function(s){return'<option'+(r.stance===s?' selected':'')+' value="'+s+'">'+(s==='?'?'À découvrir':s)+'</option>'}).join('')+'</select></label>'+
+      (admin?'<label class="f">Crew<select name="crew"><option value="">—</option>'+crews.map(function(c){return'<option'+(r.crew===c.name?' selected':'')+'>'+esc(c.name)+'</option>'}).join('')+'</select></label>':'<label class="f">Crew<input disabled value="'+esc(r.crew||'—')+'"></label>')+
+      '<label class="f">Contact d’urgence<input name="emergency" value="'+esc(r.emergency)+'" placeholder="Nom et téléphone"></label></div>'+
+      '<label class="f">Infos santé (allergies, traitement…)<textarea name="medical">'+esc(r.medical)+'</textarea></label>'+
+      '<label><input type="checkbox" name="imageRights"'+(r.imageRights?' checked':'')+'> J’autorise le club à publier des photos où mon enfant apparaît</label>'+
+      '<div class="row end" style="margin-top:16px">'+(admin&&r.id?'<button type="button" class="btn small ghost due" id="rdel">Supprimer</button>':'')+'<button class="btn primary">Enregistrer</button></div></form>',function(b){
+      var f=b.querySelector('#rf');f.onsubmit=function(e){e.preventDefault();
+        var data={firstName:val(f,'[name=firstName]'),lastName:val(f,'[name=lastName]'),birthDate:val(f,'[name=birthDate]'),stance:val(f,'[name=stance]'),emergency:val(f,'[name=emergency]'),medical:val(f,'[name=medical]'),imageRights:val(f,'[name=imageRights]')};
+        if(admin)data.crew=val(f,'[name=crew]');
+        var pr=r.id?RLD.update('riders',r.id,data):RLD.add('riders',Object.assign(data,{familyId:famId,emails:emails||[],look:RLD.defaultLook(),owned:[]}));
+        pr.then(function(){dlg.close();toast('Fiche enregistrée');done&&done()},fail)};
+      var del=b.querySelector('#rdel');if(del)del.onclick=function(){if(confirm('Supprimer la fiche de '+r.firstName+' ?'))RLD.del('riders',r.id).then(function(){dlg.close();done&&done()},fail)}})}
+  function lookForm(r){var L=Object.assign(RLD.defaultLook(),r.look||{}),owned=r.owned||[];
+    function sw(name,list,cur){return'<div class="swatches" data-k="'+name+'">'+list.map(function(c){var v=Array.isArray(c)?c[0]:c;return'<button type="button" style="background:'+v+'" aria-label="'+(Array.isArray(c)?c[1]:v)+'" aria-pressed="'+(v===cur)+'" data-v="'+v+'"></button>'}).join('')+'</div>'}
+    var shirts=RLD.SHIRTS.filter(function(s){return owned.indexOf('shirt:'+s[0])>=0}),boards=RLD.BOARDS.filter(function(b){return owned.indexOf('board:'+b[0])>=0});
+    open('Personnaliser '+r.firstName,'<div class="rider" style="grid-template-columns:160px 1fr"><canvas id="lk" style="width:160px;height:190px"></canvas><div>'+
+      '<label class="f">Coiffure<select id="lk-style">'+RLD.STYLES.map(function(s){return'<option value="'+s[0]+'"'+(L.style===s[0]?' selected':'')+'>'+s[1]+'</option>'}).join('')+'</select></label>'+
+      '<span class="muted" style="font-size:.85rem">Cheveux</span>'+sw('hair',RLD.HAIR,L.hair)+
+      '<label class="f">T-shirt<select id="lk-shirt"><option value="">T-shirt uni</option>'+shirts.map(function(s){return'<option value="'+s[0]+'"'+(L.shirt===s[0]?' selected':'')+'>'+s[1]+'</option>'}).join('')+'</select></label>'+
+      '<div id="lk-top"'+(L.shirt?' hidden':'')+'><span class="muted" style="font-size:.85rem">Couleur du t-shirt</span>'+sw('top',RLD.TOPS,L.top)+'</div>'+
+      '<span class="muted" style="font-size:.85rem">Pantalon</span>'+sw('pants',RLD.PANTS,L.pants)+
+      '<label class="f">Planche<select id="lk-board"><option value="">Planche du club</option>'+boards.map(function(b){return'<option value="'+b[0]+'"'+(L.board===b[0]?' selected':'')+'>Planche '+b[1]+'</option>'}).join('')+'</select></label>'+
+      '<p><label><input type="checkbox" id="lk-gl"'+(L.glasses?' checked':'')+'> Lunettes</label> &nbsp; <label><input type="checkbox" id="lk-la"'+(L.lashes?' checked':'')+'> Cils</label></p>'+
+      (shirts.length+boards.length?'':'<p class="muted" style="font-size:.85rem">Achète un t-shirt ou une planche au shop pour les débloquer ici.</p>')+
+      '</div></div><div class="row end"><button class="btn primary" id="lk-save">Enregistrer</button></div>',function(b){
+      var tmp=Object.assign({},r,{look:L}),av={cv:b.querySelector('#lk'),ch:RLD.charOf(tmp)};avatars.push(av);
+      function upd(){tmp.look=L;av.ch=RLD.charOf(tmp)}
+      [].forEach.call(b.querySelectorAll('.swatches'),function(g){g.onclick=function(e){var t=e.target.closest('button');if(!t)return;L[g.dataset.k]=t.dataset.v;[].forEach.call(g.children,function(x){x.setAttribute('aria-pressed',String(x===t))});upd()}});
+      b.querySelector('#lk-style').onchange=function(e){L.style=e.target.value;upd()};
+      b.querySelector('#lk-shirt').onchange=function(e){L.shirt=e.target.value;b.querySelector('#lk-top').hidden=!!L.shirt;upd()};
+      b.querySelector('#lk-board').onchange=function(e){L.board=e.target.value;upd()};
+      b.querySelector('#lk-gl').onchange=function(e){L.glasses=e.target.checked;upd()};b.querySelector('#lk-la').onchange=function(e){L.lashes=e.target.checked;upd()};
+      b.querySelector('#lk-save').onclick=function(){RLD.update('riders',r.id,{look:L}).then(function(){dlg.close();toast('Rider personnalisé !');go('riders')},fail)}})}
+
+  // ---------- parent: payments + orders
+  function pPay(p){return Promise.all([mine(),settings()]).then(function(r){var d=r[0];
+    if(!d.fams.length){p.innerHTML=noFamily();return}
+    p.innerHTML=d.fams.map(function(f){var pays=d.pays.filter(function(x){return x.familyId===f.id}),ords=d.orders.filter(function(x){return x.familyId===f.id}),B=RLD.balance(f,pays,ords,S);
+      return'<div class="card" style="margin-bottom:14px"><h2>'+esc(f.name)+(f.season||S.season?' · saison '+esc(f.season||S.season):'')+'</h2><div class="stats">'+
+        '<div class="stat"><span>Total de la saison</span><b>'+eur(B.due)+'</b></div><div class="stat"><span>Déjà payé</span><b class="ok">'+eur(B.paid)+'</b></div><div class="stat"><span>Reste à payer</span><b class="'+(B.left>0?'due':'ok')+'">'+eur(Math.max(0,B.left))+'</b></div></div>'+
+        '<table class="tbl"><tr><td>Abonnement annuel aux cours</td><td class="num">'+eur(B.plan)+'</td></tr><tr><td>Adhésion à l’association</td><td class="num">'+eur(B.adh)+'</td></tr>'+(B.shop?'<tr><td>Shop</td><td class="num">'+eur(B.shop)+'</td></tr>':'')+'</table>'+
+        '<div class="sub"><h3>Paiements reçus</h3>'+(pays.length?'<table class="tbl">'+pays.sort(function(a,b){return a.date<b.date?1:-1}).map(function(x){return'<tr><td>'+fd(x.date)+'</td><td>'+esc(x.label||x.kind)+'</td><td class="muted">'+esc(x.method||'')+'</td><td class="num">'+eur(x.amount)+'</td></tr>'}).join('')+'</table>':'<p class="muted">Aucun paiement enregistré pour l’instant.</p>')+'</div>'+
+        (S.payInfo&&B.left>0?'<div class="sub"><h3>Comment payer ?</h3><p style="white-space:pre-line">'+esc(S.payInfo)+'</p></div>':'')+'</div>'}).join('')})}
+  function pOrders(p){return mine().then(function(d){
+    p.innerHTML='<div class="card"><h2>Mes commandes</h2>'+(d.orders.length?'<table class="tbl"><tr><th>Date</th><th>Articles</th><th>Statut</th><th class="num">Total</th></tr>'+d.orders.sort(function(a,b){return a.date<b.date?1:-1}).map(function(o){return'<tr><td>'+fd(o.date)+'</td><td>'+esc((o.items||[]).map(function(i){return i.qty+' × '+i.name+(i.variant?' ('+i.variant+')':'')}).join(', '))+'</td><td><span class="tag">'+esc(o.status)+'</span></td><td class="num">'+(o.total?eur(o.total):'prix à confirmer')+'</td></tr>'}).join('')+'</table>':'<p class="muted">Pas encore de commande.</p>')+
+      '<p style="margin-top:14px"><a class="btn" href="./#shop">Aller au shop</a></p></div>'})}
+
+  // ---------- admin: members CRM
+  function loadAll(){return Promise.all([settings(),RLD.q('families'),RLD.q('riders'),RLD.q('payments'),RLD.q('orders'),RLD.q('reminders')]).then(function(r){return{fams:r[1],riders:r[2],pays:r[3],orders:r[4],rem:r[5]}})}
+  function famRows(d){return d.fams.map(function(f){var pays=d.pays.filter(function(x){return x.familyId===f.id}),ords=d.orders.filter(function(x){return x.familyId===f.id}),rem=d.rem.filter(function(x){return x.familyId===f.id}).sort(function(a,b){return a.date<b.date?1:-1});
+    return{f:f,riders:d.riders.filter(function(x){return x.familyId===f.id}),pays:pays,ords:ords,rem:rem,B:RLD.balance(f,pays,ords,S)}}).sort(function(a,b){return a.f.name.localeCompare(b.f.name)})}
+  function pCrm(p){return loadAll().then(function(d){var rows=famRows(d),filter='all',q='';
+    var T={due:sum(rows,function(r){return r.B.due}),paid:sum(rows,function(r){return r.B.paid}),left:sum(rows,function(r){return Math.max(0,r.B.left)}),late:rows.filter(function(r){return r.B.left>0}).length};
+    p.innerHTML='<div class="stats"><div class="stat"><span>Adhérent·es</span><b>'+rows.length+' familles · '+d.riders.length+' riders</b></div><div class="stat"><span>Attendu sur la saison</span><b>'+eur(T.due)+'</b></div><div class="stat"><span>Encaissé</span><b class="ok">'+eur(T.paid)+'</b></div><div class="stat"><span>Reste à encaisser</span><b class="due">'+eur(T.left)+'</b><span>'+T.late+' famille(s)</span></div></div>'+
+      '<div class="tools"><input type="search" id="cq" placeholder="Chercher une famille, un rider, un e-mail…"><select id="cf" style="width:auto"><option value="all">Toutes</option><option value="late">Reste à payer</option><option value="ok">À jour</option></select>'+
+      '<button class="btn primary" id="cadd">+ Famille</button><button class="btn" id="cimp">Importer un CSV</button><button class="btn pink" id="crel">Relancer tous les impayés</button></div><div class="card scroll" id="ct"></div>';
+    function draw(){var list=rows.filter(function(r){if(filter==='late'&&r.B.left<=0)return false;if(filter==='ok'&&r.B.left>0)return false;if(!q)return true;var h=(r.f.name+' '+(r.f.emails||[]).join(' ')+' '+r.riders.map(function(x){return x.firstName+' '+x.lastName}).join(' ')).toLowerCase();return h.indexOf(q)>=0});
+      document.getElementById('ct').innerHTML='<table class="tbl"><tr><th>Famille</th><th>Riders</th><th class="num">Formule</th><th class="num">Dû</th><th class="num">Payé</th><th class="num">Reste</th><th>Dernière relance</th><th></th></tr>'+
+        (list.length?list.map(function(r){return'<tr><td><b>'+esc(r.f.name)+'</b><br><span class="muted" style="font-size:.8rem">'+esc((r.f.emails||[]).join(', '))+'</span></td><td>'+esc(r.riders.map(function(x){return x.firstName}).join(', '))+'</td><td class="num">'+eur(r.B.plan)+'</td><td class="num">'+eur(r.B.due)+'</td><td class="num ok">'+eur(r.B.paid)+'</td>'+
+          '<td class="num '+(r.B.left>0?'due':'ok')+'"><b>'+(r.B.left>0?eur(r.B.left):'À jour')+'</b></td><td class="muted">'+(r.rem[0]?fd(r.rem[0].date):'—')+'</td><td class="num"><button class="btn small" data-open="'+r.f.id+'">Fiche</button> '+(r.B.left>0?'<button class="btn small pink" data-rel="'+r.f.id+'">Relancer</button>':'')+'</td></tr>'}).join(''):'<tr><td colspan="8" class="muted">Aucune famille.</td></tr>')+'</table>';
+      [].forEach.call(p.querySelectorAll('[data-open]'),function(b){b.onclick=function(){famForm(rows.filter(function(r){return r.f.id===b.dataset.open})[0])}});
+      [].forEach.call(p.querySelectorAll('[data-rel]'),function(b){b.onclick=function(){b.disabled=true;remind([rows.filter(function(r){return r.f.id===b.dataset.rel})[0]]).then(function(){go('crm')})}})}
+    document.getElementById('cq').oninput=function(e){q=e.target.value.toLowerCase().trim();draw()};document.getElementById('cf').onchange=function(e){filter=e.target.value;draw()};
+    document.getElementById('cadd').onclick=function(){famForm(null)};document.getElementById('cimp').onclick=importMembers;
+    document.getElementById('crel').onclick=function(){var late=rows.filter(function(r){return r.B.left>0&&(r.f.emails||[]).length});if(!late.length){toast('Personne à relancer');return}if(confirm('Envoyer une relance à '+late.length+' famille(s) ?'))remind(late).then(function(){go('crm')})};
+    draw()})}
+  function famForm(r){var f=r?r.f:{name:'',emails:[],phone:'',plan:S.prices[0],adhesion:S.adhesion,season:S.season,notes:''};
+    var html='<form id="ff"><div class="form2"><label class="f">Nom de la famille<input name="name" required value="'+esc(f.name)+'"></label><label class="f">Téléphone<input name="phone" value="'+esc(f.phone)+'"></label></div>'+
+      '<label class="f">E-mails Gmail des parents (séparés par des virgules) : ce sont eux qui ouvrent l’accès à l’espace<input name="emails" value="'+esc((f.emails||[]).join(', '))+'"></label>'+
+      '<div class="form2"><label class="f">Formule annuelle<select name="plan">'+S.prices.map(function(x){return'<option value="'+x+'"'+(+f.plan===+x?' selected':'')+'>'+eur(x)+'</option>'}).join('')+'</select></label><label class="f">Adhésion (€)<input type="number" step="1" name="adhesion" value="'+esc(f.adhesion==null?S.adhesion:f.adhesion)+'"></label></div>'+
+      '<label class="f">Notes internes<textarea name="notes">'+esc(f.notes)+'</textarea></label><div class="row end">'+(r?'<button type="button" class="btn small ghost due" id="fdel">Supprimer la famille</button>':'')+'<button class="btn primary">Enregistrer</button></div></form>';
+    if(r){html+='<div class="sub"><div class="row" style="justify-content:space-between"><h3>Riders</h3><button class="btn small" id="radd">+ Rider</button></div>'+(r.riders.length?'<table class="tbl">'+r.riders.map(function(x){return'<tr><td>'+esc(x.firstName+' '+x.lastName)+'</td><td>'+(RLD.age(x.birthDate)!=null?RLD.age(x.birthDate)+' ans':'')+'</td><td>'+esc(x.crew||'')+'</td><td class="num"><button class="btn small" data-r="'+x.id+'">Fiche</button></td></tr>'}).join('')+'</table>':'<p class="muted">Aucun rider.</p>')+'</div>'+
+      '<div class="sub"><h3>Paiements · reste '+eur(Math.max(0,r.B.left))+' sur '+eur(r.B.due)+'</h3>'+(r.pays.length?'<table class="tbl">'+r.pays.sort(function(a,b){return a.date<b.date?1:-1}).map(function(x){return'<tr><td>'+fd(x.date)+'</td><td>'+esc(x.label||'')+'</td><td class="muted">'+esc(x.kind)+' · '+esc(x.method)+'</td><td class="num">'+eur(x.amount)+'</td><td class="num"><button class="btn small ghost" data-pdel="'+x.id+'" aria-label="Supprimer">✕</button></td></tr>'}).join('')+'</table>':'')+
+      '<form id="pf" class="row" style="margin-top:10px"><input type="date" name="date" value="'+today()+'" style="width:auto"><input type="number" step="0.01" name="amount" placeholder="Montant" required style="width:110px"><select name="kind" style="width:auto"><option value="cotisation">Cotisation</option><option value="adhesion">Adhésion</option><option value="shop">Shop</option><option value="autre">Autre</option></select><select name="method" style="width:auto"><option>virement</option><option>chèque</option><option>espèces</option><option>CB</option><option>pass sport</option></select><input name="label" placeholder="Libellé" style="flex:1;min-width:120px"><button class="btn small primary">+ Paiement</button></form></div>'+
+      '<div class="sub"><h3>Commandes du shop</h3>'+(r.ords.length?'<table class="tbl">'+r.ords.map(function(o){return'<tr><td>'+fd(o.date)+'</td><td>'+esc((o.items||[]).map(function(i){return i.qty+' × '+i.name+(i.variant?' ('+i.variant+')':'')}).join(', '))+'</td><td><select data-ost="'+o.id+'" style="width:auto">'+['commandé','payé','livré','annulé'].map(function(s){return'<option'+(o.status===s?' selected':'')+'>'+s+'</option>'}).join('')+'</select></td><td class="num"><input type="number" step="0.01" data-otot="'+o.id+'" value="'+esc(o.total||0)+'" style="width:90px"></td></tr>'}).join('')+'</table>':'<p class="muted">Aucune commande.</p>')+'</div>'+
+      '<div class="sub"><h3>Relances</h3>'+(r.rem.length?r.rem.map(function(x){return'<p class="muted" style="margin:2px 0">'+fd(x.date)+' · '+eur(x.due)+' · '+esc((x.to||[]).join(', '))+'</p>'}).join(''):'<p class="muted">Jamais relancée.</p>')+'</div>'}
+    open(r?f.name:'Nouvelle famille',html,function(b){
+      var ff=b.querySelector('#ff');ff.onsubmit=function(e){e.preventDefault();
+        var emails=val(ff,'[name=emails]').toLowerCase().split(/[\s,;]+/).filter(Boolean),data={name:val(ff,'[name=name]'),phone:val(ff,'[name=phone]'),emails:emails,plan:+val(ff,'[name=plan]'),adhesion:+val(ff,'[name=adhesion]'),notes:val(ff,'[name=notes]'),season:f.season||S.season};
+        if(!r){RLD.add('families',data).then(function(){dlg.close();toast('Famille créée');go('crm')},fail);return}
+        // the e-mails are copied on every record of the family: that is what lets the parents read them
+        var ops=[{col:'families',id:f.id,op:'update',data:data}];r.riders.forEach(function(x){ops.push({col:'riders',id:x.id,op:'update',data:{emails:emails}})});r.pays.forEach(function(x){ops.push({col:'payments',id:x.id,op:'update',data:{emails:emails}})});r.ords.forEach(function(x){ops.push({col:'orders',id:x.id,op:'update',data:{emails:emails}})});
+        RLD.batch(ops).then(function(){dlg.close();toast('Famille enregistrée');go('crm')},fail)};
+      if(!r)return;
+      b.querySelector('#fdel').onclick=function(){if(!confirm('Supprimer '+f.name+', ses riders, paiements et commandes ?'))return;var ops=[{col:'families',id:f.id,op:'del'}];r.riders.forEach(function(x){ops.push({col:'riders',id:x.id,op:'del'})});r.pays.forEach(function(x){ops.push({col:'payments',id:x.id,op:'del'})});r.ords.forEach(function(x){ops.push({col:'orders',id:x.id,op:'del'})});RLD.batch(ops).then(function(){dlg.close();go('crm')},fail)};
+      b.querySelector('#radd').onclick=function(){riderForm(null,true,function(){go('crm')},f.id,f.emails)};
+      [].forEach.call(b.querySelectorAll('[data-r]'),function(x){x.onclick=function(){riderForm(r.riders.filter(function(y){return y.id===x.dataset.r})[0],true,function(){go('crm')})}});
+      var pf=b.querySelector('#pf');pf.onsubmit=function(e){e.preventDefault();RLD.add('payments',{familyId:f.id,emails:f.emails||[],date:val(pf,'[name=date]'),amount:+val(pf,'[name=amount]'),kind:val(pf,'[name=kind]'),method:val(pf,'[name=method]'),label:val(pf,'[name=label]'),season:S.season}).then(function(){toast('Paiement ajouté');dlg.close();go('crm')},fail)};
+      [].forEach.call(b.querySelectorAll('[data-pdel]'),function(x){x.onclick=function(){if(confirm('Supprimer ce paiement ?'))RLD.del('payments',x.dataset.pdel).then(function(){dlg.close();go('crm')},fail)}});
+      [].forEach.call(b.querySelectorAll('[data-ost]'),function(x){x.onchange=function(){RLD.update('orders',x.dataset.ost,{status:x.value}).then(function(){toast('Commande mise à jour')},fail)}});
+      [].forEach.call(b.querySelectorAll('[data-otot]'),function(x){x.onchange=function(){RLD.update('orders',x.dataset.otot,{total:+x.value}).then(function(){toast('Montant mis à jour')},fail)}})})}
+  // reminder e-mails go through the Apps Script web app (sends from contact@roulettes.club)
+  function remind(list){if(!S.mailUrl){toast('Ajoute l’adresse du script d’envoi dans Réglages');go('set');return Promise.resolve()}
+    var sent=0;return list.reduce(function(pr,r){return pr.then(function(){var to=r.f.emails||[];if(!to.length)return;
+      var kids=r.riders.map(function(x){return x.firstName}).join(', ');
+      var text='Bonjour,\n\nPetit rappel du club Roulettes pour la saison '+(S.season||'')+(kids?' ('+kids+')':'')+' :\n\n- Abonnement aux cours : '+eur(r.B.plan)+'\n- Adhésion : '+eur(r.B.adh)+(r.B.shop?'\n- Shop : '+eur(r.B.shop):'')+'\n- Déjà réglé : '+eur(r.B.paid)+'\n\nIl reste '+eur(r.B.left)+' à régler.\n\n'+(S.payInfo?S.payInfo+'\n\n':'')+'Tu peux suivre tes paiements dans ton espace : https://roulettes.club/espace.html\n\nMerci et à très vite sur les spots !\nL’équipe Roulettes';
+      return fetch(S.mailUrl,{method:'POST',body:JSON.stringify({key:S.mailKey,to:to.join(','),subject:'Roulettes · rappel de paiement',text:text})}).then(function(x){return x.json()}).then(function(res){
+        if(!res||!res.ok)throw new Error(res&&res.error||'envoi refusé');sent++;return RLD.add('reminders',{familyId:r.f.id,date:today(),to:to,due:r.B.left})})})},Promise.resolve())
+      .then(function(){toast(sent+' relance(s) envoyée(s) depuis contact@roulettes.club')},function(e){fail(e);toast((sent?sent+' envoyée(s), puis ':'')+'erreur : '+e.message)})}
+  // CSV of members: famille;emails;telephone;formule;prenom;nom;naissance;stance;crew (one line per rider)
+  function importMembers(){open('Importer des adhérent·es','<p>Un fichier CSV, une ligne par rider, avec ces colonnes (dans cet ordre) :</p><p><code>famille ; emails ; telephone ; formule ; prenom ; nom ; naissance (JJ/MM/AAAA) ; stance ; crew</code></p><p class="muted">Les riders d’une même famille sont regroupés par le nom de famille. Une famille déjà présente est complétée, pas dupliquée.</p><input type="file" id="mi" accept=".csv,text/csv"><div id="mp" style="margin-top:12px"></div>',function(b){
+    b.querySelector('#mi').onchange=function(e){var file=e.target.files[0];if(!file)return;readText(file).then(function(txt){var rows=parseCSV(txt);if(rows.length&&/famille/i.test(rows[0][0]))rows.shift();rows=rows.filter(function(r){return r[0]&&r[4]});
+      b.querySelector('#mp').innerHTML='<p>'+rows.length+' rider(s) trouvé(s).</p><button class="btn primary" id="mgo">Importer</button>';
+      b.querySelector('#mgo').onclick=function(){RLD.q('families').then(function(fams){var byName={};fams.forEach(function(f){byName[f.name.toLowerCase()]=f});var ops=[],made={};
+        rows.forEach(function(r){var key=r[0].toLowerCase(),f=byName[key]||made[key];var emails=(r[1]||'').toLowerCase().split(/[\s,]+/).filter(Boolean);
+          if(!f){f=made[key]={id:'f'+Math.random().toString(36).slice(2,10),emails:emails};ops.push({col:'families',id:f.id,data:{name:r[0],emails:emails,phone:r[2]||'',plan:+r[3]||S.prices[0],adhesion:S.adhesion,season:S.season,notes:''}})}
+          var bd=(r[6]||'').split('/');ops.push({col:'riders',data:{familyId:f.id,emails:f.emails||emails,firstName:r[4],lastName:r[5]||'',birthDate:bd.length===3?bd[2]+'-'+('0'+bd[1]).slice(-2)+'-'+('0'+bd[0]).slice(-2):'',stance:r[7]||'?',crew:r[8]||'',medical:'',emergency:'',imageRights:false,look:RLD.defaultLook(),owned:[]}})});
+        return RLD.batch(ops)}).then(function(){dlg.close();toast('Import terminé');go('crm')},fail)}})}})}
+
+  // ---------- admin: coach
+  function pCoach(p){return Promise.all([settings(),RLD.q('coaches'),RLD.q('lessons'),RLD.q('coachPays')]).then(function(r){var coaches=r[1],les=r[2],pays=r[3];
+    p.innerHTML='<div class="tools"><button class="btn primary" id="kadd">+ Prof</button></div>'+(coaches.length?'':'<div class="card"><p>Ajoute la prof de skate pour suivre ses cours et ce que le club lui doit.</p></div>')+coaches.map(function(c){
+      var L=les.filter(function(x){return x.coachId===c.id}).sort(function(a,b){return a.date<b.date?1:-1}),P=pays.filter(function(x){return x.coachId===c.id}).sort(function(a,b){return a.date<b.date?1:-1});
+      var n=sum(L,function(x){return x.n||1}),due=n*(+c.rate||0),paid=sum(P,function(x){return x.amount}),left=due-paid;
+      return'<div class="card" style="margin-bottom:14px"><div class="row" style="justify-content:space-between"><h2>'+esc(c.name)+'</h2><button class="btn small" data-kedit="'+c.id+'">Modifier</button></div>'+
+        '<div class="stats"><div class="stat"><span>Cours effectués</span><b>'+n+'</b><span>'+eur(c.rate)+' par cours</span></div><div class="stat"><span>Dû</span><b>'+eur(due)+'</b></div><div class="stat"><span>Déjà payé</span><b class="ok">'+eur(paid)+'</b></div><div class="stat"><span>Reste à payer</span><b class="'+(left>0?'due':'ok')+'">'+eur(Math.max(0,left))+'</b>'+(left<0?'<span>Avance de '+eur(-left)+'</span>':'')+'</div></div>'+
+        '<div class="grid"><div><div class="row" style="justify-content:space-between"><h3>Cours</h3><span><button class="btn small" data-ladd="'+c.id+'">+ Cours</button> <button class="btn small" data-lgen="'+c.id+'">Générer une période</button></span></div><div class="scroll" style="max-height:320px;overflow:auto"><table class="tbl">'+
+        (L.length?L.map(function(x){return'<tr><td>'+fd(x.date)+'</td><td>'+esc(x.crew||'')+'</td><td class="num">'+(x.n||1)+'</td><td class="num"><button class="btn small ghost" data-ldel="'+x.id+'" aria-label="Supprimer">✕</button></td></tr>'}).join(''):'<tr><td class="muted">Aucun cours.</td></tr>')+'</table></div></div>'+
+        '<div><div class="row" style="justify-content:space-between"><h3>Paiements à la prof</h3><button class="btn small" data-padd="'+c.id+'">+ Paiement</button></div><table class="tbl">'+(P.length?P.map(function(x){return'<tr><td>'+fd(x.date)+'</td><td>'+esc(x.label||'')+'</td><td class="num">'+eur(x.amount)+'</td><td class="num"><button class="btn small ghost" data-pdel="'+x.id+'" aria-label="Supprimer">✕</button></td></tr>'}).join(''):'<tr><td class="muted">Aucun paiement.</td></tr>')+'</table></div></div></div>'}).join('');
+    function byId(id){return coaches.filter(function(c){return c.id===id})[0]}
+    document.getElementById('kadd').onclick=function(){coachForm(null)};
+    [].forEach.call(p.querySelectorAll('[data-kedit]'),function(b){b.onclick=function(){coachForm(byId(b.dataset.kedit))}});
+    [].forEach.call(p.querySelectorAll('[data-ladd]'),function(b){b.onclick=function(){open('Ajouter un cours','<form id="lf"><div class="form2"><label class="f">Date<input type="date" name="date" value="'+today()+'"></label><label class="f">Créneau<select name="crew">'+(S.crews||CREWS).map(function(c){return'<option>'+esc(c.name)+'</option>'}).join('')+'<option>Autre</option></select></label></div><div class="row end"><button class="btn primary">Ajouter</button></div></form>',function(bb){var f=bb.querySelector('#lf');f.onsubmit=function(e){e.preventDefault();RLD.add('lessons',{coachId:b.dataset.ladd,date:val(f,'[name=date]'),crew:val(f,'[name=crew]'),n:1}).then(function(){dlg.close();go('coach')},fail)}})}});
+    [].forEach.call(p.querySelectorAll('[data-lgen]'),function(b){b.onclick=function(){open('Générer les cours d’une période','<form id="gf"><div class="form2"><label class="f">Du<input type="date" name="from" required></label><label class="f">Au<input type="date" name="to" value="'+today()+'" required></label></div><p class="muted">Un cours par créneau coché et par semaine. Retire ensuite les vacances et les cours annulés.</p>'+(S.crews||CREWS).map(function(c,i){return'<p style="margin:4px 0"><label><input type="checkbox" name="c'+i+'" checked> '+esc(c.name)+' · '+DAYS[c.day]+' '+esc(c.time)+'</label></p>'}).join('')+'<div class="row end"><button class="btn primary">Générer</button></div></form>',function(bb){var f=bb.querySelector('#gf');f.onsubmit=function(e){e.preventDefault();
+      var from=new Date(val(f,'[name=from]')),to=new Date(val(f,'[name=to]')),ops=[],have={};les.forEach(function(x){if(x.coachId===b.dataset.lgen)have[x.date+'|'+x.crew]=1});
+      (S.crews||CREWS).forEach(function(c,i){if(!f.querySelector('[name=c'+i+']').checked)return;for(var d=new Date(from);d<=to;d.setDate(d.getDate()+1)){if(d.getDay()!==c.day)continue;var iso=d.toISOString().slice(0,10);if(have[iso+'|'+c.name])continue;ops.push({col:'lessons',data:{coachId:b.dataset.lgen,date:iso,crew:c.name,n:1}})}});
+      if(!ops.length){toast('Aucun nouveau cours sur cette période');return}RLD.batch(ops).then(function(){dlg.close();toast(ops.length+' cours ajoutés');go('coach')},fail)}})}});
+    [].forEach.call(p.querySelectorAll('[data-ldel]'),function(b){b.onclick=function(){RLD.del('lessons',b.dataset.ldel).then(function(){go('coach')},fail)}});
+    [].forEach.call(p.querySelectorAll('[data-padd]'),function(b){b.onclick=function(){open('Paiement à '+byId(b.dataset.padd).name,'<form id="kp"><div class="form2"><label class="f">Date<input type="date" name="date" value="'+today()+'"></label><label class="f">Montant (€)<input type="number" step="0.01" name="amount" required></label></div><label class="f">Libellé<input name="label" placeholder="Ex. : cours d’octobre"></label><div class="row end"><button class="btn primary">Ajouter</button></div></form>',function(bb){var f=bb.querySelector('#kp');f.onsubmit=function(e){e.preventDefault();RLD.add('coachPays',{coachId:b.dataset.padd,date:val(f,'[name=date]'),amount:+val(f,'[name=amount]'),label:val(f,'[name=label]')}).then(function(){dlg.close();go('coach')},fail)}})}});
+    [].forEach.call(p.querySelectorAll('[data-pdel]'),function(b){b.onclick=function(){if(confirm('Supprimer ce paiement ?'))RLD.del('coachPays',b.dataset.pdel).then(function(){go('coach')},fail)}})})}
+  function coachForm(c){c=c||{name:'',email:'',rate:0};open(c.id?c.name:'Nouvelle prof','<form id="cf2"><div class="form2"><label class="f">Nom<input name="name" required value="'+esc(c.name)+'"></label><label class="f">E-mail<input name="email" value="'+esc(c.email)+'"></label><label class="f">Tarif par cours (€)<input type="number" step="0.01" name="rate" value="'+esc(c.rate)+'"></label></div><div class="row end"><button class="btn primary">Enregistrer</button></div></form>',function(b){var f=b.querySelector('#cf2');f.onsubmit=function(e){e.preventDefault();var d={name:val(f,'[name=name]'),email:val(f,'[name=email]').toLowerCase(),rate:+val(f,'[name=rate]')};(c.id?RLD.update('coaches',c.id,d):RLD.add('coaches',d)).then(function(){dlg.close();go('coach')},fail)}})}
+
+  // ---------- admin: bank account
+  function readText(file){return new Promise(function(ok){var r=new FileReader();r.onload=function(){var t=r.result;if(t.indexOf('�')>=0){var r2=new FileReader();r2.onload=function(){ok(r2.result)};r2.readAsText(file,'windows-1252')}else ok(t)};r.readAsText(file,'utf-8')})}
+  function parseCSV(t){t=t.replace(/^﻿/,'');var first=t.split(/\r?\n/).slice(0,8).join('\n'),dl=[';',',','\t'].sort(function(a,b){return first.split(b).length-first.split(a).length})[0];
+    var rows=[],row=[],f='',q=false;for(var i=0;i<t.length;i++){var ch=t[i];if(q){if(ch==='"'){if(t[i+1]==='"'){f+='"';i++}else q=false}else f+=ch}else if(ch==='"')q=true;else if(ch===dl){row.push(f.trim());f=''}else if(ch==='\n'||ch==='\r'){if(ch==='\r'&&t[i+1]==='\n')i++;row.push(f.trim());if(row.join('')!=='')rows.push(row);row=[];f=''}else f+=ch}
+    row.push(f.trim());if(row.join('')!=='')rows.push(row);return rows}
+  function num(s){if(s==null)return NaN;s=String(s).replace(/[\s €]/g,'');if(!s)return NaN;if(/,\d{1,2}$/.test(s))s=s.replace(/\./g,'').replace(',','.');else s=s.replace(/,/g,'');return parseFloat(s)}
+  function isoDate(s){s=(s||'').trim();var m=s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})/);if(m){var y=m[3].length===2?'20'+m[3]:m[3];return y+'-'+('0'+m[2]).slice(-2)+'-'+('0'+m[1]).slice(-2)}m=s.match(/^(\d{4})-(\d{2})-(\d{2})/);return m?m[0]:''}
+  function guessCat(tx,fams,coaches){var L=tx.label.toLowerCase(),n=function(s){return s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase()};L=n(L);
+    if(tx.amount<0){if(coaches.some(function(c){return c.name&&L.indexOf(n(c.name.split(' ')[0]))>=0})||/coach|prof\b|cours de skate|facture/.test(L))return'prof';
+      if(/multi ?asso|maif|macif|assurance|mutuelle/.test(L))return'assurance';if(/ovh|google|domaine|hebergement|canva|helloasso/.test(L))return'site';
+      if(/frais|commission|cotisation carte|tenue de compte|part sociale/.test(L))return'frais';return'materiel'}
+    if(/subvention|mairie|ville de paris|caf\b|\bdon\b|pass ?sport/.test(L))return'subvention';if(/adhesion/.test(L))return'adhesion';if(/shop|t-?shirt/.test(L))return'shop';
+    return'cotisation'}
+  function pBank(p){return Promise.all([settings(),RLD.q('bank'),RLD.q('families'),RLD.q('coaches')]).then(function(r){var tx=r[1].sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:0}),fams=r[2],coaches=r[3];
+    var start=+(S.bankStart&&S.bankStart.amount)||0,bal=start+sum(tx,function(x){return x.amount});
+    var season=(S.season||'').split('-')[0],sStart=season?season+'-08-01':'0000',inS=tx.filter(function(x){return x.date>=sStart});
+    var byCat={};inS.forEach(function(x){byCat[x.cat||'autre']=(byCat[x.cat||'autre']||0)+x.amount});
+    p.innerHTML='<div class="stats"><div class="stat"><span>Solde du compte</span><b class="'+(bal<0?'due':'ok')+'">'+eur(bal)+'</b><span>'+(tx[0]?'au '+fd(tx[0].date):'aucune opération')+'</span></div><div class="stat"><span>Entrées de la saison</span><b class="ok">'+eur(sum(inS.filter(function(x){return x.amount>0}),function(x){return x.amount}))+'</b></div><div class="stat"><span>Sorties de la saison</span><b class="due">'+eur(-sum(inS.filter(function(x){return x.amount<0}),function(x){return x.amount}))+'</b></div></div>'+
+      '<div class="tools"><label class="btn primary" style="display:inline-block">Importer un relevé CSV<input type="file" id="bf" accept=".csv,text/csv,.txt" hidden></label><button class="btn" id="badd">+ Opération</button><span class="muted" style="font-size:.85rem">Solde de départ : '+eur(start)+(S.bankStart&&S.bankStart.date?' au '+fd(S.bankStart.date):'')+' (dans Réglages)</span></div>'+
+      '<div class="grid" style="grid-template-columns:2fr 1fr;margin-bottom:14px"><div class="card"><h3>Évolution du solde</h3><canvas class="chart" id="bc"></canvas></div><div class="card"><h3>Saison par catégorie</h3><table class="tbl">'+CATS.filter(function(c){return byCat[c[0]]}).map(function(c){return'<tr><td>'+c[1]+'</td><td class="num '+(byCat[c[0]]<0?'due':'ok')+'">'+eur(byCat[c[0]])+'</td></tr>'}).join('')+'</table></div></div>'+
+      '<div class="card scroll"><table class="tbl"><tr><th>Date</th><th>Libellé</th><th class="num">Montant</th><th>Catégorie</th><th>Rapprochement</th><th></th></tr>'+tx.slice(0,400).map(function(x){
+        var link=x.link?'<span class="tag ok">'+(x.link.type==='payment'?'Paiement '+esc((fams.filter(function(f){return f.id===x.link.fid})[0]||{}).name||''):'Prof '+esc((coaches.filter(function(c){return c.id===x.link.cid})[0]||{}).name||''))+'</span>':
+          (x.amount>0&&/cotisation|adhesion|shop/.test(x.cat)?'<select data-lf="'+x.id+'" style="width:auto"><option value="">→ Famille…</option>'+fams.map(function(f){return'<option value="'+f.id+'">'+esc(f.name)+'</option>'}).join('')+'</select>':x.amount<0&&x.cat==='prof'&&coaches.length?'<select data-lc="'+x.id+'" style="width:auto"><option value="">→ Prof…</option>'+coaches.map(function(c){return'<option value="'+c.id+'">'+esc(c.name)+'</option>'}).join('')+'</select>':'');
+        return'<tr><td>'+fd(x.date)+'</td><td>'+esc(x.label)+'</td><td class="num '+(x.amount<0?'due':'ok')+'">'+eur(x.amount)+'</td><td><select data-cat="'+x.id+'" style="width:auto">'+CATS.map(function(c){return'<option value="'+c[0]+'"'+(x.cat===c[0]?' selected':'')+'>'+c[1]+'</option>'}).join('')+'</select></td><td>'+link+'</td><td class="num"><button class="btn small ghost" data-bdel="'+x.id+'" aria-label="Supprimer">✕</button></td></tr>'}).join('')+'</table></div>';
+    chart(document.getElementById('bc'),tx.slice().reverse(),start);
+    document.getElementById('bf').onchange=function(e){var file=e.target.files[0];if(file)readText(file).then(function(t){importBank(t,tx,fams,coaches)})};
+    document.getElementById('badd').onclick=function(){open('Nouvelle opération','<form id="bo"><div class="form2"><label class="f">Date<input type="date" name="date" value="'+today()+'"></label><label class="f">Montant (négatif pour une dépense)<input type="number" step="0.01" name="amount" required></label></div><label class="f">Libellé<input name="label" required></label><label class="f">Catégorie<select name="cat">'+CATS.map(function(c){return'<option value="'+c[0]+'">'+c[1]+'</option>'}).join('')+'</select></label><div class="row end"><button class="btn primary">Ajouter</button></div></form>',function(b){var f=b.querySelector('#bo');f.onsubmit=function(e){e.preventDefault();var d={date:val(f,'[name=date]'),amount:+val(f,'[name=amount]'),label:val(f,'[name=label]'),cat:val(f,'[name=cat]')};d.hash=d.date+'|'+d.label+'|'+d.amount;RLD.add('bank',d).then(function(){dlg.close();go('bank')},fail)}})};
+    [].forEach.call(p.querySelectorAll('[data-cat]'),function(s){s.onchange=function(){RLD.update('bank',s.dataset.cat,{cat:s.value}).then(function(){go('bank')},fail)}});
+    [].forEach.call(p.querySelectorAll('[data-bdel]'),function(b){b.onclick=function(){if(confirm('Supprimer cette opération ?'))RLD.del('bank',b.dataset.bdel).then(function(){go('bank')},fail)}});
+    // link a bank line to a member payment or a coach payment, creating it if needed
+    [].forEach.call(p.querySelectorAll('[data-lf]'),function(s){s.onchange=function(){if(!s.value)return;var x=tx.filter(function(t){return t.id===s.dataset.lf})[0],f=fams.filter(function(q){return q.id===s.value})[0];
+      RLD.add('payments',{familyId:f.id,emails:f.emails||[],date:x.date,amount:x.amount,kind:x.cat==='adhesion'?'adhesion':x.cat==='shop'?'shop':'cotisation',method:/ch(e|è)que|chq|remise/i.test(x.label)?'chèque':'virement',label:x.label,season:S.season,bankId:x.id}).then(function(pid){return RLD.update('bank',x.id,{link:{type:'payment',fid:f.id,pid:pid}})}).then(function(){toast('Paiement enregistré pour '+f.name);go('bank')},fail)}});
+    [].forEach.call(p.querySelectorAll('[data-lc]'),function(s){s.onchange=function(){if(!s.value)return;var x=tx.filter(function(t){return t.id===s.dataset.lc})[0];
+      RLD.add('coachPays',{coachId:s.value,date:x.date,amount:-x.amount,label:x.label,bankId:x.id}).then(function(pid){return RLD.update('bank',x.id,{link:{type:'coach',cid:s.value,pid:pid}})}).then(function(){toast('Paiement à la prof enregistré');go('bank')},fail)}})})}
+  function importBank(text,existing,fams,coaches){var rows=parseCSV(text),hi=rows.findIndex(function(r){return r.some(function(c){return/date/i.test(c)})});if(hi<0)hi=0;var head=rows[hi]||[],body=rows.slice(hi+1);
+    function col(re){return head.findIndex(function(h){return re.test(h)})}
+    var m={date:col(/date/i),label:col(/libell|label|description|op[ée]ration|intitul|d[ée]tail/i),amount:col(/montant|amount|valeur/i),debit:col(/d[ée]bit/i),credit:col(/cr[ée]dit/i)};
+    if(m.date<0)m.date=0;if(m.label<0)m.label=1;
+    function opts(cur){return'<option value="-1">—</option>'+head.map(function(h,i){return'<option value="'+i+'"'+(i===cur?' selected':'')+'>'+esc(h||'colonne '+(i+1))+'</option>'}).join('')}
+    open('Importer le relevé','<p class="muted">Vérifie quelles colonnes correspondent : soit une colonne « Montant », soit « Débit » et « Crédit ».</p><div class="form2">'+
+      ['date','label','amount','debit','credit'].map(function(k){return'<label class="f">'+{date:'Date',label:'Libellé',amount:'Montant',debit:'Débit',credit:'Crédit'}[k]+'<select data-m="'+k+'">'+opts(m[k])+'</select></label>'}).join('')+'</div><div id="bp"></div>',function(b){
+      var have={};existing.forEach(function(x){have[x.hash]=1});var parsed=[];
+      function build(){[].forEach.call(b.querySelectorAll('[data-m]'),function(s){m[s.dataset.m]=+s.value});
+        parsed=body.map(function(r){var a=m.amount>=0?num(r[m.amount]):NaN;if(isNaN(a)){var d=m.debit>=0?num(r[m.debit]):NaN,c=m.credit>=0?num(r[m.credit]):NaN;a=(isNaN(c)?0:Math.abs(c))-(isNaN(d)?0:Math.abs(d));if(isNaN(d)&&isNaN(c))a=NaN}
+          var t={date:isoDate(r[m.date]),label:(r[m.label]||'').replace(/\s+/g,' ').trim(),amount:Math.round(a*100)/100};t.hash=t.date+'|'+t.label+'|'+t.amount;return t}).filter(function(t){return t.date&&!isNaN(t.amount)&&t.amount!==0});
+        var fresh=parsed.filter(function(t){return!have[t.hash]});fresh.forEach(function(t){t.cat=guessCat(t,fams,coaches)});
+        b.querySelector('#bp').innerHTML='<p><b>'+parsed.length+'</b> opérations lues, <b>'+fresh.length+'</b> nouvelles.</p><div class="scroll" style="max-height:260px;overflow:auto"><table class="tbl">'+fresh.slice(0,60).map(function(t){return'<tr><td>'+fd(t.date)+'</td><td>'+esc(t.label)+'</td><td class="num">'+eur(t.amount)+'</td><td class="muted">'+t.cat+'</td></tr>'}).join('')+'</table></div><div class="row end" style="margin-top:12px"><button class="btn primary" id="bgo"'+(fresh.length?'':' disabled')+'>Importer '+fresh.length+' opération(s)</button></div>';
+        var g=b.querySelector('#bgo');g.onclick=function(){g.disabled=true;var ops=fresh.map(function(t){return{col:'bank',data:t}}),chunks=[];while(ops.length)chunks.push(ops.splice(0,400));
+          chunks.reduce(function(pr,c){return pr.then(function(){return RLD.batch(c)})},Promise.resolve()).then(function(){dlg.close();toast(fresh.length+' opérations importées');go('bank')},fail)}}
+      [].forEach.call(b.querySelectorAll('[data-m]'),function(s){s.onchange=build});build()})}
+  function chart(cv,tx,start){var d=Math.min(devicePixelRatio||1,2),w=cv.clientWidth,h=cv.clientHeight;cv.width=w*d;cv.height=h*d;var x=cv.getContext('2d');x.scale(d,d);
+    var pts=[],b=start;tx.forEach(function(t){b+=t.amount;pts.push([t.date,b])});if(pts.length<2){x.fillStyle='#b9acd8';x.font='14px Space Grotesk';x.fillText('Importe un relevé pour voir la courbe.',16,30);return}
+    var t0=Date.parse(pts[0][0]),t1=Date.parse(pts[pts.length-1][0])||t0+1,lo=Math.min(0,Math.min.apply(null,pts.map(function(p){return p[1]}))),hi=Math.max.apply(null,pts.map(function(p){return p[1]}))||1,pad=36;
+    function X(t){return pad+(Date.parse(t)-t0)/Math.max(1,t1-t0)*(w-pad-10)}function Y(v){return h-24-(v-lo)/Math.max(1,hi-lo)*(h-40)}
+    x.strokeStyle='#3a2a6e';x.lineWidth=1;x.fillStyle='#b9acd8';x.font='11px Space Grotesk';[lo,(lo+hi)/2,hi].forEach(function(v){x.beginPath();x.moveTo(pad,Y(v));x.lineTo(w-10,Y(v));x.stroke();x.fillText(Math.round(v)+'€',2,Y(v)+4)});
+    x.fillText(fd(pts[0][0]),pad,h-6);x.textAlign='right';x.fillText(fd(pts[pts.length-1][0]),w-10,h-6);x.textAlign='left';
+    x.strokeStyle='#3ddcf0';x.lineWidth=2.5;x.beginPath();pts.forEach(function(p,i){var px=X(p[0]),py=Y(p[1]);if(i)x.lineTo(px,py);else x.moveTo(px,py)});x.stroke()}
+
+  // ---------- admin: settings
+  function pSet(p){return Promise.all([settings(),RLD.q('admins')]).then(function(r){var adm=r[1];
+    p.innerHTML='<form id="sf" class="card"><h2>Saison et tarifs</h2><div class="form2"><label class="f">Saison<input name="season" value="'+esc(S.season)+'" placeholder="2026-2027"></label><label class="f">Adhésion (€)<input type="number" name="adhesion" value="'+esc(S.adhesion)+'"></label>'+
+      [0,1,2].map(function(i){return'<label class="f">Formule '+(i+1)+' (€)<input type="number" name="p'+i+'" value="'+esc(S.prices[i])+'"></label>'}).join('')+'<span></span>'+
+      '<label class="f">Prix d’un t-shirt (€)<input type="number" step="0.01" name="tshirt" value="'+esc(S.shop.tshirt)+'"></label><label class="f">Prix d’une planche (€)<input type="number" step="0.01" name="board" value="'+esc(S.shop.board)+'"></label></div>'+
+      '<label class="f">Comment payer (affiché aux parents qui ont un reste à payer)<textarea name="payInfo">'+esc(S.payInfo)+'</textarea></label>'+
+      '<div class="sub"><h2>Compte bancaire</h2><div class="form2"><label class="f">Solde de départ (€)<input type="number" step="0.01" name="bstart" value="'+esc(S.bankStart.amount)+'"></label><label class="f">À la date du<input type="date" name="bdate" value="'+esc(S.bankStart.date)+'"></label></div></div>'+
+      '<div class="sub"><h2>Relances par e-mail</h2><p class="muted">Adresse du script Google Apps Script qui envoie depuis contact@roulettes.club, et sa clé secrète (voir le guide d’installation).</p><label class="f">URL du script<input name="mailUrl" value="'+esc(S.mailUrl)+'" placeholder="https://script.google.com/macros/s/…/exec"></label><label class="f">Clé secrète<input name="mailKey" value="'+esc(S.mailKey)+'"></label></div>'+
+      '<div class="row end"><button class="btn primary">Enregistrer</button></div></form>'+
+      '<div class="card" style="margin-top:14px"><h2>Comptes admin</h2><table class="tbl">'+adm.map(function(a){return'<tr><td>'+esc(a.id)+'</td><td class="num">'+(a.id===user.email?'<span class="muted">toi</span>':'<button class="btn small ghost" data-adel="'+esc(a.id)+'">Retirer</button>')+'</td></tr>'}).join('')+'</table>'+
+      '<form id="af" class="row" style="margin-top:10px"><input type="email" name="email" placeholder="adresse@gmail.com" required style="flex:1"><button class="btn small primary">+ Admin</button></form></div>'+
+      (RLD.mode==='demo'?'<p style="margin-top:14px"><button class="btn small" id="reset">Remettre les données de démo à zéro</button></p>':'');
+    var f=document.getElementById('sf');f.onsubmit=function(e){e.preventDefault();
+      RLD.set('settings','app',{season:val(f,'[name=season]'),adhesion:+val(f,'[name=adhesion]'),prices:[0,1,2].map(function(i){return+val(f,'[name=p'+i+']')}).filter(Boolean),shop:{tshirt:+val(f,'[name=tshirt]'),board:+val(f,'[name=board]')},payInfo:val(f,'[name=payInfo]'),
+        bankStart:{amount:+val(f,'[name=bstart]'),date:val(f,'[name=bdate]')},crews:S.crews||CREWS},true).then(function(){return RLD.set('settings','private',{mailUrl:val(f,'[name=mailUrl]'),mailKey:val(f,'[name=mailKey]')},true)}).then(function(){toast('Réglages enregistrés')},fail)};
+    var af=document.getElementById('af');af.onsubmit=function(e){e.preventDefault();RLD.set('admins',val(af,'[name=email]').toLowerCase(),{}).then(function(){go('set')},fail)};
+    [].forEach.call(p.querySelectorAll('[data-adel]'),function(b){b.onclick=function(){if(confirm('Retirer l’accès admin de '+b.dataset.adel+' ?'))RLD.del('admins',b.dataset.adel).then(function(){go('set')},fail)}});
+    var rs=document.getElementById('reset');if(rs)rs.onclick=function(){RLD.resetDemo();location.reload()}})}
+
+  // ---------- start
+  if(RLD.mode==='off'){main.innerHTML='<div class="gate"><img src="logo-roulettes.png" alt=""><h1>Mon espace</h1><p class="muted">L’espace adhérent·es arrive très bientôt.</p><p><a class="btn" href="./">Retour au village</a></p></div>';return}
+  RLD.onAuth(function(u){user=u;header();if(!u){tab=null;gate();return}settings().then(shell)});
+})();
+</script>
+</body>
+</html>

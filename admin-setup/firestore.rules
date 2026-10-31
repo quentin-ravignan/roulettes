@@ -1,0 +1,53 @@
+rules_version = '2';
+// Roulettes · Firestore security rules.
+// Parents only see the records that carry their Gmail address; admins (documents in /admins) see everything.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null && request.auth.token.email_verified == true; }
+    function me() { return request.auth.token.email.lower(); }
+    function isAdmin() { return signedIn() && exists(/databases/$(database)/documents/admins/$(me())); }
+    function mine(d) { return signedIn() && me() in d.emails; }
+    function family(id) { return get(/databases/$(database)/documents/families/$(id)).data; }
+
+    match /admins/{email} {
+      allow read: if signedIn() && (email == me() || isAdmin());
+      allow write: if isAdmin();
+    }
+    // prices, season, how to pay: readable once signed in. The mail script key is in settings/private.
+    match /settings/{id} {
+      allow read: if (id == 'app' && signedIn()) || isAdmin();
+      allow write: if isAdmin();
+    }
+    match /families/{id} {
+      allow read: if isAdmin() || mine(resource.data);
+      allow write: if isAdmin();
+    }
+    match /riders/{id} {
+      allow read: if isAdmin() || mine(resource.data);
+      allow create, delete: if isAdmin();
+      // parents edit the rider sheet and look, never the family link, the crew or the e-mails
+      allow update: if isAdmin() || (mine(resource.data)
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['firstName', 'lastName', 'birthDate', 'stance', 'emergency', 'medical', 'imageRights', 'look', 'owned']));
+    }
+    match /payments/{id} {
+      allow read: if isAdmin() || mine(resource.data);
+      allow write: if isAdmin();
+    }
+    match /orders/{id} {
+      allow read: if isAdmin() || mine(resource.data);
+      // a parent can place an order for their own family only, always as "commandé"
+      allow create: if isAdmin() || (signedIn()
+        && request.resource.data.status == 'commandé'
+        && me() in family(request.resource.data.familyId).emails
+        && request.resource.data.emails == family(request.resource.data.familyId).emails);
+      allow update, delete: if isAdmin();
+    }
+    // admin-only bookkeeping
+    match /coaches/{id} { allow read, write: if isAdmin(); }
+    match /lessons/{id} { allow read, write: if isAdmin(); }
+    match /coachPays/{id} { allow read, write: if isAdmin(); }
+    match /bank/{id} { allow read, write: if isAdmin(); }
+    match /reminders/{id} { allow read, write: if isAdmin(); }
+  }
+}

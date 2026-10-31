@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 900">
+  <rect width="900" height="900" fill="#ebe6dd"/>
+  <ellipse cx="450" cy="760" rx="300" ry="34" fill="#000" opacity=".12"/>
+  <g transform="rotate(-28 450 450)">
+    <rect x="150" y="340" width="600" height="200" rx="100" fill="#ff4fa8" stroke="#150d2e" stroke-width="10"/>
+    <rect x="190" y="370" width="520" height="140" rx="70" fill="#150d2e" opacity=".9"/>
+    <text x="450" y="468" text-anchor="middle" font-family="Bungee, Impact, sans-serif" font-size="74" fill="#ffe14d">ROULETTES</text>
+    <circle cx="250" cy="330" r="34" fill="#ffe14d" stroke="#150d2e" stroke-width="8"/>
+    <circle cx="650" cy="330" r="34" fill="#ffe14d" stroke="#150d2e" stroke-width="8"/>
+    <circle cx="250" cy="550" r="34" fill="#ffe14d" stroke="#150d2e" stroke-width="8"/>
+    <circle cx="650" cy="550" r="34" fill="#ffe14d" stroke="#150d2e" stroke-width="8"/>
+  </g>
+</svg>

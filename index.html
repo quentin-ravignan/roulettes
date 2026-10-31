@@ -330,7 +330,12 @@ body.noscroll{overflow:hidden}
 .chat-form button{font:inherit;font-weight:700;cursor:pointer;border-radius:12px;border:0;background:var(--yellow);color:var(--night);padding:0 18px}
 #vcv{height:clamp(420px,50vw,78vh)}
 @media (max-width:700px){#vcv{height:clamp(420px,64vh,620px)}}
+.cart-member{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:12px;border:1px dashed var(--line);border-radius:12px}
+.cart-member[hidden]{display:none}
+.cart-member select{font:inherit;border-radius:10px;padding:8px 10px;background:var(--night-2);color:var(--cream);border:1.5px solid var(--line)}
+.cart-member p{margin:0;width:100%;color:var(--yellow);font-weight:700}
 </style>
+<script src="firebase-config.js"></script>
 </head>
 <body>
 <script>try{if(localStorage.getItem("rl-classic")!=="1")document.body.classList.add("vm")}catch(e){document.body.classList.add("vm")}</script>
@@ -348,6 +353,7 @@ body.noscroll{overflow:hidden}
       <li><a class="link" href="#shop">Shop</a></li>
       <li><a class="link" href="#game">Game</a></li>
       <li><a class="link" href="#contact">Contact</a></li>
+      <li><a class="link" id="nav-espace" href="espace.html">Mon espace</a></li>
     </ul>
   </nav>
 </header>
@@ -671,11 +677,21 @@ body.noscroll{overflow:hidden}
         <div class="pbody"><h3>Wheel</h3><p>Une roue de skate jaune géante et son bandeau ROULETTES, esprit hip-hop 90's.</p>
           <div class="sizes" role="group" aria-label="Taille"><button type="button" aria-pressed="false">6 ans</button><button type="button" aria-pressed="false">8 ans</button><button type="button" aria-pressed="false">10 ans</button><button type="button" aria-pressed="false">12 ans</button><button type="button" aria-pressed="false">S</button><button type="button" aria-pressed="false">M</button><button type="button" aria-pressed="false">L</button><button type="button" aria-pressed="false">XL</button></div><p class="add-err" aria-live="polite"></p><button type="button" class="add">Ajouter au panier</button></div>
       </article>
+      <article class="product">
+        <img src="shop-board.svg" alt="Planche de skate Roulettes, plateau rose avec ROULETTES écrit en jaune" loading="lazy" width="900" height="900">
+        <div class="pbody"><h3>Planche Roulettes</h3><p>Une planche complète aux couleurs du club. Choisis ta couleur : ton rider roule avec dans le village.</p>
+          <div class="sizes" role="group" aria-label="Couleur"><button type="button" aria-pressed="false">Rose</button><button type="button" aria-pressed="false">Cyan</button><button type="button" aria-pressed="false">Jaune</button><button type="button" aria-pressed="false">Violet</button><button type="button" aria-pressed="false">Vert</button></div><p class="add-err" aria-live="polite"></p><button type="button" class="add">Ajouter au panier</button></div>
+      </article>
     </div>
     <div class="cart" id="cart">
       <h3>Ton panier</h3>
       <ul id="cart-list"><li><span>Ton panier est vide : choisis une taille et ajoute un t-shirt.</span></li></ul>
       <a class="order" id="cart-order" href="#" target="_blank" rel="noopener" aria-disabled="true">Commander sur WhatsApp</a>
+      <div class="cart-member" id="cart-member" hidden>
+        <label>Pour quel rider ? <select id="cart-rider"></select></label>
+        <button type="button" class="order" id="cart-save">Commander pour mon rider</button>
+        <p id="cart-msg" aria-live="polite"></p>
+      </div>
       <small>La commande part en message WhatsApp au club : on te confirme le prix et quand récupérer ton t-shirt.</small>
     </div>
   </div>
@@ -1147,10 +1163,10 @@ document.querySelectorAll('.sizes').forEach(function(g){g.addEventListener('clic
   function tri(a,b,c,d,e,f){ctx.beginPath();ctx.moveTo(a,b);ctx.lineTo(c,d);ctx.lineTo(e,f);ctx.closePath();ctx.fill()}
   function circ(x,y,r){ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill()}
 
-  function drawBoard(cx,cy,yaw,roll){
+  function drawBoard(cx,cy,yaw,roll,deck){deck=deck||C.pink;
     var sx=Math.cos(yaw),kz=Math.sin(roll),ky=Math.cos(roll);
     var len=Math.max(Math.abs(sx)*66,7),hh=5+13*Math.abs(kz),face=Math.abs(kz)>.3;
-    ctx.fillStyle=face?(kz>0?C.pink:'#2b2242'):C.pink;rr(cx-len/2,cy-hh/2,len,hh,4);ctx.fill();
+    ctx.fillStyle=face?(kz>0?deck:'#2b2242'):deck;rr(cx-len/2,cy-hh/2,len,hh,4);ctx.fill();
     if(face&&kz>0){ctx.fillStyle=C.yellow;ctx.fillRect(cx-len/2+6,cy-1.5,Math.max(len-12,0),3)}
     if(Math.abs(kz)<.9){ctx.fillStyle=C.yellow;var wy=cy+7*ky;circ(cx-21*sx,wy,5);circ(cx+21*sx,wy,5)}
   }
@@ -1160,7 +1176,7 @@ document.querySelectorAll('.sizes').forEach(function(g){g.addEventListener('clic
     var yaw=0,roll=0,lift=0;
     if(tk&&tk!=='ollie'){var q=Math.min(p,1);lift=Math.sin(q*Math.PI)*12;
       if(tk==='shove')yaw=q*Math.PI;else if(tk==='flip')roll=q*Math.PI*2;else{yaw=q*Math.PI*2;roll=q*Math.PI*2}}
-    if(!c.noBoard)drawBoard(33,-12,yaw,roll);
+    if(!c.noBoard)drawBoard(33,-12,yaw,roll,c.board);
     ctx.translate(0,-lift);
     var wave=Math.sin(t*12)*3;
     // cat tail
@@ -1179,7 +1195,12 @@ document.querySelectorAll('.sizes').forEach(function(g){g.addEventListener('clic
       ctx.fillStyle='#ffffff';rr(28,-57,10,29,3);ctx.fill();ctx.fillStyle='#d9d9d9';ctx.fillRect(15,-50,2,18)}
     if(c.necklace){ctx.strokeStyle='#1a1230';ctx.lineWidth=.8;ctx.beginPath();ctx.moveTo(29,-57);ctx.quadraticCurveTo(33,-48,37,-57);ctx.stroke();ctx.fillStyle='#1a1230';tri(31.5,-50,34.5,-50,33,-46.5)}
     if(c.belt){ctx.fillStyle='#7a4a24';ctx.fillRect(15,-32,34,4);ctx.fillStyle='#e0b64a';ctx.fillRect(30,-32.5,5,5)}
-    if(!c.print&&!c.jacket){ctx.fillStyle=c.top==='#ffffff'?'rgba(26,18,48,.55)':'rgba(255,255,255,.85)';ctx.font='700 6px Space Grotesk, sans-serif';ctx.textAlign='center';ctx.fillText('Roulettes',32,-40);ctx.textAlign='left'}
+    if(c.shirt){ctx.save();ctx.translate(32,-44);
+      if(c.shirt==='logo'){ctx.fillStyle='#120a2c';circ(0,0,8);ctx.strokeStyle='#3ddcf0';ctx.lineWidth=1.6;ctx.beginPath();ctx.arc(0,0,7,0,Math.PI*2);ctx.stroke();ctx.fillStyle='#ff4fa8';circ(0,1,3);tri(-3,-1,-2,-5,0,-2);tri(3,-1,2,-5,0,-2)}
+      else if(c.shirt==='flames'){ctx.fillStyle='#e2561f';[-10,-5,0,5,10].forEach(function(fx,j){tri(fx-3,-1,fx,-8-(j%2)*2,fx+3,-1)});ctx.fillStyle='#ffe14d';ctx.font='900 6px Space Grotesk, sans-serif';ctx.textAlign='center';ctx.fillText('ROULETTES',0,4);ctx.textAlign='left'}
+      else if(c.shirt==='wheel'){ctx.fillStyle='#ffe14d';circ(0,0,8);ctx.fillStyle='#151515';circ(0,0,3);ctx.fillStyle='#ff4fa8';ctx.fillRect(-11,-1.5,22,3)}
+      ctx.restore()}
+    else if(!c.print&&!c.jacket){ctx.fillStyle=c.top==='#ffffff'?'rgba(26,18,48,.55)':'rgba(255,255,255,.85)';ctx.font='700 6px Space Grotesk, sans-serif';ctx.textAlign='center';ctx.fillText('Roulettes',32,-40);ctx.textAlign='left'}
     // back hair
     ctx.fillStyle=c.hair;
     if(c.style==='pigtails'){[[19,-80,3,-66],[53,-82,66,-68]].forEach(function(q,j){var w2=j?-wave:wave;ctx.strokeStyle=c.hair;ctx.lineWidth=10;ctx.beginPath();ctx.moveTo(q[0],q[1]);ctx.quadraticCurveTo((q[0]+q[2])/2,q[1]-6,q[2],q[3]+w2);ctx.stroke();ctx.strokeStyle=c.hair2;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo((q[0]+q[2])/2,q[1]-3);ctx.quadraticCurveTo(q[2]-2,q[3]-6,q[2]-1,q[3]+w2+2);ctx.stroke();ctx.fillStyle=C.yellow;circ(q[0]+(j?3:-3),q[1]+1,3.5)})}
@@ -1217,7 +1238,7 @@ document.querySelectorAll('.sizes').forEach(function(g){g.addEventListener('clic
     if(c.glasses){ctx.strokeStyle='#1a1230';ctx.lineWidth=1.6;ctx.beginPath();ctx.arc(32,-71,5,0,Math.PI*2);ctx.moveTo(48,-71);ctx.arc(43,-71,5,0,Math.PI*2);ctx.moveTo(37,-71.5);ctx.lineTo(38,-71.5);ctx.moveTo(27,-72);ctx.lineTo(20,-74);ctx.stroke()}
     ctx.restore();
   }
-  window.RL={chars:CHARS,pick:function(){return CHARS[sel[0]]||CHARS[0]},
+  window.RL={chars:CHARS,me:null,pick:function(){return window.RL.me||CHARS[sel[0]]||CHARS[0]},
     draw:function(c2,ch,x,y,sc,tt,flip){var o=ctx,ot=t,k=sc*(ch.size||1);ctx=c2;t=tt;c2.save();if(flip){c2.translate(x,0);c2.scale(-1,1);c2.translate(-x,0)}
       drawRider(ch,x-33*k,ch.noBoard?y+16*k:y,0,null,0,sc);c2.restore();ctx=o;t=ot}};
   // ---- 19e landmarks (x = centre, base = ground)
@@ -1647,19 +1668,20 @@ document.querySelectorAll('.sizes').forEach(function(g){g.addEventListener('clic
   var list=document.getElementById('cart-list'),order=document.getElementById('cart-order');if(!list)return;
   var cart=[];
   function render(){list.innerHTML='';
-    if(!cart.length){list.innerHTML='<li><span>Ton panier est vide : choisis une taille et ajoute un t-shirt.</span></li>';order.setAttribute('aria-disabled','true');order.href='#';return}
-    cart.forEach(function(it,i){var li=document.createElement('li'),sp=document.createElement('span');sp.textContent=it.q+' × '+it.n+' (taille '+it.s+')';
+    if(!cart.length){list.innerHTML='<li><span>Ton panier est vide : choisis une taille ou une couleur et ajoute un article.</span></li>';order.setAttribute('aria-disabled','true');order.href='#';return}
+    cart.forEach(function(it,i){var li=document.createElement('li'),sp=document.createElement('span');sp.textContent=it.q+' × '+it.n+' ('+(/planche/i.test(it.n)?'couleur ':'taille ')+it.s+')';
       var bx=document.createElement('span'),m=document.createElement('button'),p=document.createElement('button'),x=document.createElement('button');
       m.textContent='−';p.textContent='+';x.textContent='✕';m.setAttribute('aria-label','Un de moins');p.setAttribute('aria-label','Un de plus');x.setAttribute('aria-label','Retirer');
       m.onclick=function(){it.q--;if(it.q<1)cart.splice(i,1);render()};p.onclick=function(){it.q++;render()};x.onclick=function(){cart.splice(i,1);render()};
       bx.appendChild(m);bx.appendChild(document.createTextNode(' '));bx.appendChild(p);bx.appendChild(document.createTextNode(' '));bx.appendChild(x);li.appendChild(sp);li.appendChild(bx);list.appendChild(li)});
-    var txt='Bonjour Roulettes ! Je voudrais commander :\n'+cart.map(function(it){return '- '+it.q+' × T-shirt '+it.n+' (taille '+it.s+')'}).join('\n')+'\nMerci !';
+    var txt='Bonjour Roulettes ! Je voudrais commander :\n'+cart.map(function(it){return /planche/i.test(it.n)?'- '+it.q+' × '+it.n+' ('+it.s+')':'- '+it.q+' × T-shirt '+it.n+' (taille '+it.s+')'}).join('\n')+'\nMerci !';
     order.href='https://wa.me/33768774819?text='+encodeURIComponent(txt);order.setAttribute('aria-disabled','false')}
   [].forEach.call(document.querySelectorAll('.product'),function(pr){var btn=pr.querySelector('.add'),err=pr.querySelector('.add-err');
     btn.addEventListener('click',function(){var sz=pr.querySelector('.sizes [aria-pressed="true"]');if(!sz){err.textContent='Choisis d’abord une taille';return}err.textContent='';
       var n=pr.querySelector('h3').textContent,s=sz.textContent,f=cart.filter(function(c){return c.n===n&&c.s===s})[0];if(f)f.q++;else cart.push({n:n,s:s,q:1});render();
       btn.textContent='Ajouté ✓';setTimeout(function(){btn.textContent='Ajouter au panier'},1200)})});
   render();
+  window.RLCart={items:function(){return cart.slice()},clear:function(){cart.length=0;render()}};
 })();
 
 /* ===== shared helpers for the two interior scenes ===== */
@@ -1869,6 +1891,32 @@ function rlScene(cv,W,H,draw,hit,click){
   form.addEventListener('submit',function(e){e.preventDefault();ask(inp.value);inp.value=''});
   START.forEach(function(s){var b=document.createElement('button');b.type='button';b.textContent=s;b.onclick=function(){ask(s)};chips.appendChild(b)});
   add('bot','Salut, moi c’est <b>Ollie</b> ! Je connais tout sur le matériel, les tricks et l’histoire du skate. Pose-moi une question 🛹');
+})();
+
+/* ===== signed-in member: their rider is the village character, shop orders dress them ===== */
+(function(){
+  var flag=false;try{flag=localStorage.getItem('rl-auth')==='1'}catch(e){}
+  if(!flag)return;
+  var s=document.createElement('script');s.src='rl-data.js';s.onload=start;document.body.appendChild(s);
+  var riders=[],S={};
+  function today(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
+  function current(){var id='';try{id=localStorage.getItem('rl-rider')||''}catch(e){}return riders.filter(function(r){return r.id===id})[0]||riders[0]}
+  function wear(r){window.RL.me=RLD.charOf(r);document.getElementById('nav-espace').textContent='Mon espace · '+r.firstName}
+  function start(){if(RLD.mode==='off')return;RLD.onAuth(function(u){if(!u){window.RL.me=null;return}
+    Promise.all([RLD.q('riders',[['emails','array-contains',u.email]]),RLD.get('settings','app').catch(function(){return null})]).then(function(r){riders=r[0];S=r[1]||{};if(!riders.length)return;wear(current());shop()})})}
+  function shop(){var box=document.getElementById('cart-member'),sel=document.getElementById('cart-rider'),btn=document.getElementById('cart-save'),msg=document.getElementById('cart-msg');
+    box.hidden=false;sel.innerHTML=riders.map(function(r){return'<option value="'+r.id+'">'+r.firstName.replace(/</g,'&lt;')+'</option>'}).join('');sel.value=current().id;
+    btn.onclick=function(){var items=window.RLCart.items();if(!items.length){msg.textContent='Ton panier est vide.';return}
+      var r=riders.filter(function(x){return x.id===sel.value})[0],prices=S.shop||{},owned=(r.owned||[]).slice(),look=Object.assign(RLD.defaultLook(),r.look||{});
+      var lines=items.map(function(it){var key=RLD.itemOf(it.n,it.s),price=+(/planche/i.test(it.n)?prices.board:prices.tshirt)||0;
+        if(key&&owned.indexOf(key)<0)owned.push(key);if(key.indexOf('shirt:')===0)look.shirt=key.slice(6);if(key.indexOf('board:')===0)look.board=key.slice(6);
+        return{key:key,name:/planche/i.test(it.n)?it.n:'T-shirt '+it.n,variant:it.s,qty:it.q,price:price}});
+      var total=lines.reduce(function(a,l){return a+l.price*l.qty},0);btn.disabled=true;
+      RLD.add('orders',{familyId:r.familyId,emails:r.emails||[],riderId:r.id,items:lines,total:total,status:'commandé',date:today()})
+        .then(function(){return RLD.update('riders',r.id,{owned:owned,look:look})})
+        .then(function(){r.owned=owned;r.look=look;try{localStorage.setItem('rl-rider',r.id)}catch(e){}wear(r);window.RLCart.clear();
+          msg.textContent='Commande enregistrée ! '+r.firstName+' la porte déjà dans le village. Le club te confirme le retrait'+(total?' (total '+RLD.eur(total)+', à régler au club).':'.');btn.disabled=false},
+          function(e){msg.textContent='Impossible d’enregistrer la commande : '+(e&&e.message||e);btn.disabled=false})}}
 })();
 </script>
 

@@ -28,7 +28,10 @@
     if(n.indexOf('logo')>=0)return'shirt:logo';if(n.indexOf('flames')>=0)return'shirt:flames';if(n.indexOf('wheel')>=0)return'shirt:wheel';
     if(n.indexOf('planche')>=0){var b=RLD.BOARDS.filter(function(q){return q[1].toLowerCase()===(variant||'').toLowerCase()})[0];return'board:'+(b?b[0]:RLD.BOARDS[0][0])}return''};
   // money owed by one family for the season
-  RLD.balance=function(fam,payments,orders,S){S=S||{};var plan=+fam.plan||0,adh=fam.adhesion==null?(+S.adhesion||20):+fam.adhesion,shop=0;
+  // the yearly plan and the membership fee are per rider when set on the riders, otherwise per family
+  RLD.balance=function(fam,payments,orders,S,riders){S=S||{};var shop=0,plan=+fam.plan||0,adh=fam.adhesion==null?(+S.adhesion||20):+fam.adhesion;
+    var per=(riders||[]).filter(function(r){return r.plan!=null&&r.plan!==''});
+    if(per.length){plan=0;adh=0;per.forEach(function(r){plan+=+r.plan||0;adh+=+r.adhesion||0})}
     (orders||[]).forEach(function(o){if(o.status!=='annulé')shop+=+o.total||0});
     var due=plan+adh+shop,paid=0;(payments||[]).forEach(function(p){paid+=+p.amount||0});return{plan:plan,adh:adh,shop:shop,due:due,paid:paid,left:Math.round((due-paid)*100)/100}};
 

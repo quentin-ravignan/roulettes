@@ -166,13 +166,14 @@ dialog::backdrop{background:rgba(8,4,20,.75)}
       '<label class="f">Date de naissance<input type="date" name="birthDate" value="'+esc(r.birthDate)+'"></label>'+
       '<label class="f">Stance<select name="stance">'+['?','Regular','Goofy'].map(function(s){return'<option'+(r.stance===s?' selected':'')+' value="'+s+'">'+(s==='?'?'À découvrir':s)+'</option>'}).join('')+'</select></label>'+
       (admin?'<label class="f">Crew<select name="crew"><option value="">—</option>'+crews.map(function(c){return'<option'+(r.crew===c.name?' selected':'')+'>'+esc(c.name)+'</option>'}).join('')+'</select></label>':'<label class="f">Crew<input disabled value="'+esc(r.crew||'—')+'"></label>')+
-      '<label class="f">Contact d’urgence<input name="emergency" value="'+esc(r.emergency)+'" placeholder="Nom et téléphone"></label></div>'+
+      '<label class="f">Contact d’urgence<input name="emergency" value="'+esc(r.emergency)+'" placeholder="Nom et téléphone"></label>'+
+      (admin?'<label class="f">Formule de ce rider<select name="plan"><option value="">— (formule de la famille)</option>'+PLANS.map(function(x){return'<option value="'+x[0]+'"'+(r.plan!=null&&r.plan!==''&&+r.plan===+x[0]?' selected':'')+'>'+planName(x[0])+'</option>'}).join('')+'</select></label><label class="f">Adhésion de ce rider (€)<input type="number" name="adhesion" value="'+esc(r.adhesion==null?'':r.adhesion)+'"></label>':'')+'</div>'+
       '<label class="f">Infos santé (allergies, traitement…)<textarea name="medical">'+esc(r.medical)+'</textarea></label>'+
       '<label><input type="checkbox" name="imageRights"'+(r.imageRights?' checked':'')+'> J’autorise le club à publier des photos où mon enfant apparaît</label>'+
       '<div class="row end" style="margin-top:16px">'+(admin&&r.id?'<button type="button" class="btn small ghost due" id="rdel">Supprimer</button>':'')+'<button class="btn primary">Enregistrer</button></div></form>',function(b){
       var f=b.querySelector('#rf');f.onsubmit=function(e){e.preventDefault();
         var data={firstName:val(f,'[name=firstName]'),lastName:val(f,'[name=lastName]'),birthDate:val(f,'[name=birthDate]'),stance:val(f,'[name=stance]'),emergency:val(f,'[name=emergency]'),medical:val(f,'[name=medical]'),imageRights:val(f,'[name=imageRights]')};
-        if(admin)data.crew=val(f,'[name=crew]');
+        if(admin){data.crew=val(f,'[name=crew]');var pl=val(f,'[name=plan]');data.plan=pl===''?null:+pl;var ad=val(f,'[name=adhesion]');data.adhesion=ad===''?null:+ad}
         var pr=r.id?RLD.update('riders',r.id,data):RLD.add('riders',Object.assign(data,{familyId:famId,emails:emails||[],look:RLD.defaultLook(),owned:[]}));
         pr.then(function(){dlg.close();toast('Fiche enregistrée');done&&done()},fail)};
       var del=b.querySelector('#rdel');if(del)del.onclick=function(){if(confirm('Supprimer la fiche de '+r.firstName+' ?'))RLD.del('riders',r.id).then(function(){dlg.close();done&&done()},fail)}})}
@@ -201,7 +202,7 @@ dialog::backdrop{background:rgba(8,4,20,.75)}
   // ---------- parent: payments + orders
   function pPay(p){return Promise.all([mine(),settings()]).then(function(r){var d=r[0];
     if(!d.fams.length){p.innerHTML=noFamily();return}
-    p.innerHTML=d.fams.map(function(f){var pays=d.pays.filter(function(x){return x.familyId===f.id}),ords=d.orders.filter(function(x){return x.familyId===f.id}),B=RLD.balance(f,pays,ords,S);
+    p.innerHTML=d.fams.map(function(f){var pays=d.pays.filter(function(x){return x.familyId===f.id}),ords=d.orders.filter(function(x){return x.familyId===f.id}),B=RLD.balance(f,pays,ords,S,d.riders.filter(function(x){return x.familyId===f.id}));
       return'<div class="card" style="margin-bottom:14px"><h2>'+esc(f.name)+(f.season||S.season?' · saison '+esc(f.season||S.season):'')+'</h2><div class="stats">'+
         '<div class="stat"><span>Total de la saison</span><b>'+eur(B.due)+'</b></div><div class="stat"><span>Déjà payé</span><b class="ok">'+eur(B.paid)+'</b></div><div class="stat"><span>Reste à payer</span><b class="'+(B.left>0?'due':'ok')+'">'+eur(Math.max(0,B.left))+'</b></div></div>'+
         '<table class="tbl"><tr><td>Abonnement annuel aux cours</td><td class="num">'+eur(B.plan)+'</td></tr><tr><td>Adhésion à l’association</td><td class="num">'+eur(B.adh)+'</td></tr>'+(B.shop?'<tr><td>Shop</td><td class="num">'+eur(B.shop)+'</td></tr>':'')+'</table>'+
@@ -214,7 +215,7 @@ dialog::backdrop{background:rgba(8,4,20,.75)}
   // ---------- admin: members CRM
   function loadAll(){return Promise.all([settings(),RLD.q('families'),RLD.q('riders'),RLD.q('payments'),RLD.q('orders'),RLD.q('reminders')]).then(function(r){return{fams:r[1],riders:r[2],pays:r[3],orders:r[4],rem:r[5]}})}
   function famRows(d){return d.fams.map(function(f){var pays=d.pays.filter(function(x){return x.familyId===f.id}),ords=d.orders.filter(function(x){return x.familyId===f.id}),rem=d.rem.filter(function(x){return x.familyId===f.id}).sort(function(a,b){return a.date<b.date?1:-1});
-    return{f:f,riders:d.riders.filter(function(x){return x.familyId===f.id}),pays:pays,ords:ords,rem:rem,B:RLD.balance(f,pays,ords,S)}}).sort(function(a,b){return a.f.name.localeCompare(b.f.name)})}
+    var kids=d.riders.filter(function(x){return x.familyId===f.id});return{f:f,riders:kids,pays:pays,ords:ords,rem:rem,B:RLD.balance(f,pays,ords,S,kids)}}).sort(function(a,b){return a.f.name.localeCompare(b.f.name)})}
   function pCrm(p){return loadAll().then(function(d){var rows=famRows(d),filter='all',q='';
     var T={due:sum(rows,function(r){return r.B.due}),paid:sum(rows,function(r){return r.B.paid}),left:sum(rows,function(r){return Math.max(0,r.B.left)}),late:rows.filter(function(r){return r.B.left>0}).length};
     p.innerHTML='<div class="stats"><div class="stat"><span>Adhérent·es</span><b>'+rows.length+' familles · '+d.riders.length+' riders</b></div><div class="stat"><span>Attendu sur la saison</span><b>'+eur(T.due)+'</b></div><div class="stat"><span>Encaissé</span><b class="ok">'+eur(T.paid)+'</b></div><div class="stat"><span>Reste à encaisser</span><b class="due">'+eur(T.left)+'</b><span>'+T.late+' famille(s)</span></div></div>'+

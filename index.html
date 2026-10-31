@@ -1920,7 +1920,7 @@ window.RLLoad=function(){if(window.RLD)return RLD.ready;if(!RLLoad.p)RLLoad.p=ne
         var fam=r[3][0],S=r[4]||{};
         var famP=fam?Promise.resolve(fam):RLD.add('families',{name:'Famille '+(resp.split(/\s+/).slice(1).join(' ')||last||resp),emails:[me],contactEmail:v('email'),phone:v('telephone'),address:v('adresse'),responsable:resp,plan:plan,adhesion:20,season:S.season||'',status:'en attente',notes:'',createdAt:today()}).then(function(id){return{id:id,emails:[me]}});
         return famP.then(function(F){var rider={familyId:F.id,emails:F.emails,firstName:first,lastName:last,birthDate:v('naissance'),stance:pick('stance')||'?',crew:'',wish:v('creneau').split(' (')[0],
-            medical:v('infos'),emergency:resp+' · '+v('telephone'),imageRights:pick('droitImage')==='Oui',look:RLD.defaultLook(),owned:[],status:'en attente',plan:plan,createdAt:today()};
+            medical:v('infos'),emergency:resp+' · '+v('telephone'),imageRights:pick('droitImage')==='Oui',look:RLD.defaultLook(),owned:[],status:'en attente',plan:plan,adhesion:20,createdAt:today()};
           return RLD.add('riders',rider).then(function(rid){rider.id=rid;
             return RLD.add('inscriptionFiles',{familyId:F.id,riderId:rid,emails:[me],photo:r[0],qf:r[1],sign:r[2],date:today()}).then(function(){return rider})})})})
         .then(function(rider){try{localStorage.setItem('rl-rider',rider.id)}catch(e){}if(window.RL)window.RL.me=RLD.charOf(rider);

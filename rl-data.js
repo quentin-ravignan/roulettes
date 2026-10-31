@@ -4,6 +4,7 @@
 (function(){
   var FBV='10.12.2',CFG=(window.RL_FB||{}).config,listeners=[],user=null,db=null,auth=null;
   var DEMO=!CFG&&(/^(localhost|127\.0\.0\.1)$/.test(location.hostname)||/[?&]demo=1/.test(location.search));
+  if(/[?&]demo=1/.test(location.search))CFG=null,DEMO=true;
   var RLD=window.RLD={mode:CFG?'firebase':DEMO?'demo':'off',user:function(){return user}};
   function load(src){return new Promise(function(ok,ko){var s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=ko;document.head.appendChild(s)})}
   function emit(){listeners.forEach(function(cb){try{cb(user)}catch(e){console.error(e)}})}
@@ -39,6 +40,7 @@
           if(!u){user=null;remember(false);if(first){first=false;ok()}emit();return}
           var em=(u.email||'').toLowerCase();
           db.collection('admins').doc(em).get().then(function(d){return d.exists},function(){return false}).then(function(adm){
+            adm=adm||((window.RL_FB||{}).owners||[]).indexOf(em)>=0;
             user={email:em,name:u.displayName||em,photo:u.photoURL||'',admin:adm};remember(true);if(first){first=false;ok()}emit()})})})});
     RLD.signIn=function(){var p=new firebase.auth.GoogleAuthProvider();p.setCustomParameters({prompt:'select_account'});return auth.signInWithPopup(p)};
     RLD.signOut=function(){return auth.signOut()};

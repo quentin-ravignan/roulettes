@@ -825,6 +825,7 @@ document.querySelectorAll('.sizes').forEach(function(g){g.addEventListener('clic
     if(!signed){cv.parentNode.classList.add('invalid');missing.push('Signature')}
     if(missing.length){err.textContent='Il manque : '+missing.join(', ')+'.';err.hidden=false;err.scrollIntoView({block:'center',behavior:'smooth'});return}
     err.hidden=true;
+    if(window.RLRegister&&RLRegister(cv,err,done,form.querySelector('[type=submit]')))return;
     var who=document.getElementById('f-enfant').value.trim();
     done.innerHTML='';
     var h=document.createElement('h3');h.textContent='Merci ! Le dossier de '+who+' est prêt.';
@@ -1893,11 +1894,49 @@ function rlScene(cv,W,H,draw,hit,click){
   add('bot','Salut, moi c’est <b>Ollie</b> ! Je connais tout sur le matériel, les tricks et l’histoire du skate. Pose-moi une question 🛹');
 })();
 
+/* ===== online registration: Google sign-in, then the family, the rider and their village character ===== */
+window.RLLoad=function(){if(window.RLD)return RLD.ready;if(!RLLoad.p)RLLoad.p=new Promise(function(ok,ko){var s=document.createElement('script');s.src='rl-data.js';s.onload=function(){RLD.ready.then(ok,ko)};s.onerror=ko;document.body.appendChild(s)});return RLLoad.p};
+(function(){
+  var form=document.getElementById('form-inscription');if(!form||!(window.RL_FB||{}).config&&!/^(localhost|127\.0\.0\.1)$/.test(location.hostname))return;
+  form.addEventListener('focusin',function(){RLLoad()},{once:true});
+  function today(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
+  function v(n){var el=form.querySelector('[name="'+n+'"]');return el?el.value.trim():''}
+  function pick(n){var el=form.querySelector('[name="'+n+'"]:checked');return el?el.value:''}
+  function shrink(src,max,q,bg){return new Promise(function(ok,ko){var i=new Image();i.onload=function(){var k=Math.min(1,max/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=Math.round(i.width*k);c.height=Math.round(i.height*k);var x=c.getContext('2d');if(bg){x.fillStyle=bg;x.fillRect(0,0,c.width,c.height)}x.drawImage(i,0,0,c.width,c.height);ok(c.toDataURL('image/jpeg',q))};i.onerror=function(){ko(new Error('image illisible'))};i.src=src})}
+  function read(file){return new Promise(function(ok,ko){var r=new FileReader();r.onload=function(){ok(r.result)};r.onerror=ko;r.readAsDataURL(file)})}
+  function signedUser(){return new Promise(function(ok){var u=RLD.user();if(u)return ok(u);RLD.onAuth(function(x){if(x)ok(x)})})}
+  // returns true when the online registration takes over the submit
+  window.RLRegister=function(sign,err,done,btn){
+    if(!window.RLD||RLD.mode==='off')return false;
+    function fail(e){btn.disabled=false;err.textContent='Inscription non envoyée : '+(e&&e.message||e);err.hidden=false;err.scrollIntoView({block:'center',behavior:'smooth'})}
+    btn.disabled=true;
+    // the Google popup must open straight from the click
+    (RLD.user()?Promise.resolve():RLD.signIn()).then(signedUser).then(go).catch(fail);return true;
+    function go(u){var me=u.email,parts=v('enfant').split(/\s+/),first=parts.shift()||'',last=parts.join(' '),f=v('formule'),resp=v('responsable');
+      var plan=/390/.test(f)?390:/450/.test(f)?450:/490/.test(f)?490:0,qf=form.querySelector('[name="attestation"]').files[0],ph=form.querySelector('[name="photo"]').files[0];
+      if(qf&&!/^image\//.test(qf.type)&&qf.size>650000)throw new Error('l’attestation PDF est trop lourde (650 Ko max). Envoie plutôt une photo de l’attestation.');
+      return Promise.all([read(ph).then(function(d){return shrink(d,360,.8)}),qf?read(qf).then(function(d){return/^image\//.test(qf.type)?shrink(d,1300,.72):d}):'',shrink(sign.toDataURL('image/png'),500,.7,'#150d2e'),
+        RLD.q('families',[['emails','array-contains',me]]),RLD.get('settings','app').catch(function(){return null})]).then(function(r){
+        var fam=r[3][0],S=r[4]||{};
+        var famP=fam?Promise.resolve(fam):RLD.add('families',{name:'Famille '+(resp.split(/\s+/).slice(1).join(' ')||last||resp),emails:[me],contactEmail:v('email'),phone:v('telephone'),address:v('adresse'),responsable:resp,plan:plan,adhesion:20,season:S.season||'',status:'en attente',notes:'',createdAt:today()}).then(function(id){return{id:id,emails:[me]}});
+        return famP.then(function(F){var rider={familyId:F.id,emails:F.emails,firstName:first,lastName:last,birthDate:v('naissance'),stance:pick('stance')||'?',crew:'',wish:v('creneau').split(' (')[0],
+            medical:v('infos'),emergency:resp+' · '+v('telephone'),imageRights:pick('droitImage')==='Oui',look:RLD.defaultLook(),owned:[],status:'en attente',plan:plan,createdAt:today()};
+          return RLD.add('riders',rider).then(function(rid){rider.id=rid;
+            return RLD.add('inscriptionFiles',{familyId:F.id,riderId:rid,emails:[me],photo:r[0],qf:r[1],sign:r[2],date:today()}).then(function(){return rider})})})})
+        .then(function(rider){try{localStorage.setItem('rl-rider',rider.id)}catch(e){}if(window.RL)window.RL.me=RLD.charOf(rider);
+          var nav=document.getElementById('nav-espace');if(nav)nav.textContent='Mon espace · '+rider.firstName;
+          btn.disabled=false;form.hidden=true;err.hidden=true;done.innerHTML='';
+          var h=document.createElement('h3');h.textContent='Bienvenue '+rider.firstName+' !';
+          var p=document.createElement('p');p.textContent='L’inscription est enregistrée. Le club la valide à réception du paiement. En attendant, '+rider.firstName+' roule déjà dans le village, et tu peux personnaliser son perso.';
+          var a=document.createElement('a');a.href='espace.html';a.textContent='Ouvrir mon espace';
+          done.appendChild(h);done.appendChild(p);done.appendChild(a);done.hidden=false;done.scrollIntoView({block:'center',behavior:'smooth'})})}};
+})();
+
 /* ===== signed-in member: their rider is the village character, shop orders dress them ===== */
 (function(){
   var flag=false;try{flag=localStorage.getItem('rl-auth')==='1'}catch(e){}
   if(!flag)return;
-  var s=document.createElement('script');s.src='rl-data.js';s.onload=start;document.body.appendChild(s);
+  RLLoad().then(start);
   var riders=[],S={};
   function today(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
   function current(){var id='';try{id=localStorage.getItem('rl-rider')||''}catch(e){}return riders.filter(function(r){return r.id===id})[0]||riders[0]}

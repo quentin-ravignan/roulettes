@@ -5,7 +5,8 @@ service cloud.firestore {
   match /databases/{database}/documents {
     function signedIn() { return request.auth != null && request.auth.token.email_verified == true; }
     function me() { return request.auth.token.email.lower(); }
-    function isAdmin() { return signedIn() && exists(/databases/$(database)/documents/admins/$(me())); }
+    // the club owner is admin from the start; other admins are documents in /admins (added from the member space)
+    function isAdmin() { return signedIn() && (me() == 'quentin.ravignan@gmail.com' || exists(/databases/$(database)/documents/admins/$(me()))); }
     function mine(d) { return signedIn() && me() in d.emails; }
     function family(id) { return get(/databases/$(database)/documents/families/$(id)).data; }
 
@@ -20,11 +21,21 @@ service cloud.firestore {
     }
     match /families/{id} {
       allow read: if isAdmin() || mine(resource.data);
-      allow write: if isAdmin();
+      // online registration: a parent opens their own family, waiting for the club to validate it
+      allow create: if isAdmin() || (signedIn()
+        && request.resource.data.emails == [me()]
+        && request.resource.data.status == 'en attente'
+        && request.resource.data.plan in [0, 390, 450, 490]);
+      allow update, delete: if isAdmin();
     }
     match /riders/{id} {
       allow read: if isAdmin() || mine(resource.data);
-      allow create, delete: if isAdmin();
+      allow create: if isAdmin() || (signedIn()
+        && me() in family(request.resource.data.familyId).emails
+        && request.resource.data.emails == family(request.resource.data.familyId).emails
+        && request.resource.data.crew == ''
+        && request.resource.data.status == 'en attente');
+      allow delete: if isAdmin();
       // parents edit the rider sheet and look, never the family link, the crew or the e-mails
       allow update: if isAdmin() || (mine(resource.data)
         && request.resource.data.diff(resource.data).affectedKeys()
@@ -43,10 +54,19 @@ service cloud.firestore {
         && request.resource.data.emails == family(request.resource.data.familyId).emails);
       allow update, delete: if isAdmin();
     }
+    // registration files (photo, QF certificate, signature), small images stored as data URLs
+    match /inscriptionFiles/{id} {
+      allow read: if isAdmin() || mine(resource.data);
+      allow create: if isAdmin() || (signedIn()
+        && request.resource.data.emails == [me()]
+        && me() in family(request.resource.data.familyId).emails);
+      allow update, delete: if isAdmin();
+    }
     // admin-only bookkeeping
     match /coaches/{id} { allow read, write: if isAdmin(); }
     match /lessons/{id} { allow read, write: if isAdmin(); }
     match /coachPays/{id} { allow read, write: if isAdmin(); }
+    match /coachBills/{id} { allow read, write: if isAdmin(); }
     match /bank/{id} { allow read, write: if isAdmin(); }
     match /reminders/{id} { allow read, write: if isAdmin(); }
   }

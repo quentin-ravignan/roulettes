@@ -189,7 +189,7 @@ dialog::backdrop{background:rgba(8,4,20,.75)}
     var shirts=RLD.SHIRTS.filter(function(s){return owned.indexOf('shirt:'+s[0])>=0}),boards=RLD.BOARDS.filter(function(b){return owned.indexOf('board:'+b[0])>=0});
     open('Personnaliser '+r.firstName,'<div class="rider" style="grid-template-columns:160px 1fr"><canvas id="lk" style="width:160px;height:190px"></canvas><div>'+
       '<label class="f">Coiffure<select id="lk-style">'+RLD.STYLES.map(function(s){return'<option value="'+s[0]+'"'+(L.style===s[0]?' selected':'')+'>'+s[1]+'</option>'}).join('')+'</select></label>'+
-      '<span class="muted" style="font-size:.85rem">Cheveux</span>'+sw('hair',RLD.HAIR,L.hair)+
+      '<span class="muted" style="font-size:.85rem">Peau</span>'+sw('skin',RLD.SKINS,L.skin)+'<span class="muted" style="font-size:.85rem">Cheveux</span>'+sw('hair',RLD.HAIR,L.hair)+
       '<label class="f">T-shirt<select id="lk-shirt"><option value="">T-shirt uni</option>'+shirts.map(function(s){return'<option value="'+s[0]+'"'+(L.shirt===s[0]?' selected':'')+'>'+s[1]+'</option>'}).join('')+'</select></label>'+
       '<div id="lk-top"'+(L.shirt?' hidden':'')+'><span class="muted" style="font-size:.85rem">Couleur du t-shirt</span>'+sw('top',RLD.TOPS,L.top)+'</div>'+
       '<span class="muted" style="font-size:.85rem">Pantalon</span>'+sw('pants',RLD.PANTS,L.pants)+

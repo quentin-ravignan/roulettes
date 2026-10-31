@@ -28,7 +28,7 @@
     ctx.strokeStyle=c.pants;ctx.lineWidth=8;ctx.beginPath();ctx.moveTo(24,-32);ctx.lineTo(20,-20);ctx.moveTo(42,-32);ctx.lineTo(46,-20);ctx.stroke();
     ctx.fillStyle='#fff';rr(13,-22,15,6,3);ctx.fill();rr(40,-22,15,6,3);ctx.fill();
     // arms
-    ctx.strokeStyle=SK;ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(22,-50);ctx.lineTo(8,-62);ctx.moveTo(44,-50);ctx.lineTo(58,-44);ctx.stroke();
+    ctx.strokeStyle=(c.skin||SK);ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(22,-50);ctx.lineTo(8,-62);ctx.moveTo(44,-50);ctx.lineTo(58,-44);ctx.stroke();
     // tee
     if(c.bracelet){ctx.fillStyle='#e0b64a';circ(57,-44.5,2.6)}
     ctx.fillStyle=c.top;rr(15,-58,34,30,12);ctx.fill();
@@ -56,7 +56,7 @@
       ctx.strokeStyle=c.hair2;ctx.lineWidth=1.3;[[12,-66],[14,-57],[20,-51]].forEach(function(q){ctx.beginPath();ctx.arc(q[0],q[1],3,0,Math.PI*1.4);ctx.stroke()})}
     else{ctx.beginPath();ctx.ellipse(34,-75,19,18,0,0,Math.PI*2);ctx.fill();tri(18,-82,11,-84,18,-74)}
     // head
-    ctx.fillStyle=SK;circ(36,-72,17);
+    ctx.fillStyle=(c.skin||SK);circ(36,-72,17);
     // hair top
     ctx.fillStyle=c.hair;
     if(c.style==='pigtails'){ctx.beginPath();ctx.moveTo(17,-74);ctx.arc(36,-74,19,Math.PI,Math.PI*2);ctx.lineTo(55,-79);for(var fx=55;fx>17;fx-=5)ctx.lineTo(fx-2.5,(fx/5)%2<1?-75:-79.5);ctx.closePath();ctx.fill()}

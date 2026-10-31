@@ -17,13 +17,14 @@
   function shade(hex,k){var n=parseInt(hex.slice(1),16),f=function(v){return Math.max(0,Math.min(255,Math.round(v*k)))};return'#'+[n>>16,n>>8&255,n&255].map(function(v){return('0'+f(v).toString(16)).slice(-2)}).join('')}
   RLD.HAIR=['#f7d460','#e2561f','#b98b52','#5a3a26','#2b1d16','#8a5a2b','#1d1a24','#d8d8d8'];
   RLD.STYLES=[['long','Longs'],['pigtails','Couettes'],['curly','Bouclés'],['messy','Courts en bataille'],['wavy','Ondulés'],['quiff','Banane'],['cap','Casquette']];
+  RLD.SKINS=['#fde4d4','#f6d2b8','#e8b48f','#c98e62','#a26a43','#7a4a2e','#5a3420'];
   RLD.TOPS=['#ff4fa8','#3ddcf0','#ffe14d','#9b6dff','#3fd17a','#e2561f','#fbf4e6'];
   RLD.PANTS=['#3b5ba8','#2f3f6e','#23233a','#5a6b8a','#c8b48a'];
   RLD.SHIRTS=[['logo','T-shirt Le Logo'],['flames','T-shirt Flames'],['wheel','T-shirt Wheel']];
   RLD.BOARDS=[['#ff4fa8','Rose'],['#3ddcf0','Cyan'],['#ffe14d','Jaune'],['#9b6dff','Violet'],['#3fd17a','Vert']];
-  RLD.defaultLook=function(){return{hair:'#5a3a26',style:'long',top:'#ff4fa8',pants:'#3b5ba8',glasses:false,lashes:false,shirt:'',board:''}};
+  RLD.defaultLook=function(){return{hair:'#5a3a26',style:'long',skin:'#fde4d4',top:'#ff4fa8',pants:'#3b5ba8',glasses:false,lashes:false,shirt:'',board:''}};
   RLD.charOf=function(r){var L=Object.assign(RLD.defaultLook(),r&&r.look||{}),a=RLD.age(r&&r.birthDate)||8;
-    return{name:(r&&r.firstName)||'Rider',hair:L.hair,hair2:shade(L.hair,.78),style:L.style,cap:'#ffe14d',top:L.shirt?'#151515':L.top,shirt:L.shirt||'',pants:L.pants,board:L.board||'',glasses:L.glasses?1:0,girl:L.lashes?1:0,size:Math.max(.8,Math.min(1.25,.8+Math.min(a,14)*.03))}};
+    return{name:(r&&r.firstName)||'Rider',skin:L.skin,hair:L.hair,hair2:shade(L.hair,.78),style:L.style,cap:'#ffe14d',top:L.shirt?'#151515':L.top,shirt:L.shirt||'',pants:L.pants,board:L.board||'',glasses:L.glasses?1:0,girl:L.lashes?1:0,size:Math.max(.8,Math.min(1.25,.8+Math.min(a,14)*.03))}};
   RLD.itemOf=function(name,variant){var n=(name||'').toLowerCase();
     if(n.indexOf('logo')>=0)return'shirt:logo';if(n.indexOf('flames')>=0)return'shirt:flames';if(n.indexOf('wheel')>=0)return'shirt:wheel';
     if(n.indexOf('planche')>=0){var b=RLD.BOARDS.filter(function(q){return q[1].toLowerCase()===(variant||'').toLowerCase()})[0];return'board:'+(b?b[0]:RLD.BOARDS[0][0])}return''};

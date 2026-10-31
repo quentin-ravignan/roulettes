@@ -27,6 +27,8 @@
   RLD.itemOf=function(name,variant){var n=(name||'').toLowerCase();
     if(n.indexOf('logo')>=0)return'shirt:logo';if(n.indexOf('flames')>=0)return'shirt:flames';if(n.indexOf('wheel')>=0)return'shirt:wheel';
     if(n.indexOf('planche')>=0){var b=RLD.BOARDS.filter(function(q){return q[1].toLowerCase()===(variant||'').toLowerCase()})[0];return'board:'+(b?b[0]:RLD.BOARDS[0][0])}return''};
+  // what the club scene shows of a rider: first name, initial, crew, age and look (no family data)
+  RLD.publicOf=function(r){var a=RLD.age(r.birthDate);return{name:r.firstName+(r.lastName?' '+r.lastName.charAt(0).toUpperCase()+'.':''),crew:r.crew||'',age:a==null?(+r.ageHint||0):a,stance:r.stance||'?',ch:RLD.charOf(r)}};
   // money owed by one family for the season
   // the yearly plan and the membership fee are per rider when set on the riders, otherwise per family
   RLD.balance=function(fam,payments,orders,S,riders){S=S||{};var shop=0,plan=+fam.plan||0,adh=fam.adhesion==null?(+S.adhesion||20):+fam.adhesion;

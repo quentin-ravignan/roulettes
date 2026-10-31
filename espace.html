@@ -113,6 +113,13 @@ dialog::backdrop{background:rgba(8,4,20,.75)}
   document.getElementById('dlg-x').onclick=function(){dlg.close()};
   function val(root,sel){var el=root.querySelector(sel);return el?(el.type==='checkbox'?el.checked:el.value.trim()):''}
   function sum(a,f){return a.reduce(function(s,x){return s+(+(f?f(x):x)||0)},0)}
+  // keep the public club list in step with the riders (validated riders that have a crew)
+  function pub(r){if(!r||r.status==='en attente'||!r.crew)return Promise.resolve();return RLD.set('publicRiders',r.id,RLD.publicOf(r),true).catch(function(e){console.warn(e)})}
+  function syncPublic(riders){return RLD.q('publicRiders').then(function(cur){var by={},ops=[];cur.forEach(function(x){by[x.id]=x});
+    riders.forEach(function(r){var want=r.status==='en attente'||!r.crew?null:RLD.publicOf(r),have=by[r.id];delete by[r.id];
+      if(want&&(!have||JSON.stringify([have.name,have.crew,have.age,have.stance,have.ch])!==JSON.stringify([want.name,want.crew,want.age,want.stance,want.ch])))ops.push({col:'publicRiders',id:r.id,data:want});
+      else if(!want&&have)ops.push({col:'publicRiders',id:r.id,op:'del'})});
+    Object.keys(by).forEach(function(id){ops.push({col:'publicRiders',id:id,op:'del'})});return ops.length?RLD.batch(ops):null}).catch(function(e){console.warn(e)})}
   function settings(){return RLD.get('settings','app').then(function(s){S=Object.assign({season:'',prices:[390,450,490],adhesion:20,shop:{tshirt:0,board:0},payInfo:'',mailUrl:'',mailKey:'',crews:CREWS,bankStart:{date:'',amount:0}},s||{});if(!user||!user.admin)return S;
     // the mail script key lives in an admin-only document
     return RLD.get('settings','private').then(function(x){S.mailUrl=x&&x.mailUrl||'';S.mailKey=x&&x.mailKey||'';return S},function(){return S})},function(){return S})}
@@ -174,7 +181,7 @@ dialog::backdrop{background:rgba(8,4,20,.75)}
       var f=b.querySelector('#rf');f.onsubmit=function(e){e.preventDefault();
         var data={firstName:val(f,'[name=firstName]'),lastName:val(f,'[name=lastName]'),birthDate:val(f,'[name=birthDate]'),stance:val(f,'[name=stance]'),emergency:val(f,'[name=emergency]'),medical:val(f,'[name=medical]'),imageRights:val(f,'[name=imageRights]')};
         if(admin){data.crew=val(f,'[name=crew]');var pl=val(f,'[name=plan]');data.plan=pl===''?null:+pl;var ad=val(f,'[name=adhesion]');data.adhesion=ad===''?null:+ad}
-        var pr=r.id?RLD.update('riders',r.id,data):RLD.add('riders',Object.assign(data,{familyId:famId,emails:emails||[],look:RLD.defaultLook(),owned:[]}));
+        var pr=r.id?RLD.update('riders',r.id,data).then(function(){return pub(Object.assign({},r,data))}):RLD.add('riders',Object.assign(data,{familyId:famId,emails:emails||[],look:RLD.defaultLook(),owned:[],status:'validée'})).then(function(id){return pub(Object.assign({id:id},data))});
         pr.then(function(){dlg.close();toast('Fiche enregistrée');done&&done()},fail)};
       var del=b.querySelector('#rdel');if(del)del.onclick=function(){if(confirm('Supprimer la fiche de '+r.firstName+' ?'))RLD.del('riders',r.id).then(function(){dlg.close();done&&done()},fail)}})}
   function lookForm(r){var L=Object.assign(RLD.defaultLook(),r.look||{}),owned=r.owned||[];
@@ -197,7 +204,7 @@ dialog::backdrop{background:rgba(8,4,20,.75)}
       b.querySelector('#lk-shirt').onchange=function(e){L.shirt=e.target.value;b.querySelector('#lk-top').hidden=!!L.shirt;upd()};
       b.querySelector('#lk-board').onchange=function(e){L.board=e.target.value;upd()};
       b.querySelector('#lk-gl').onchange=function(e){L.glasses=e.target.checked;upd()};b.querySelector('#lk-la').onchange=function(e){L.lashes=e.target.checked;upd()};
-      b.querySelector('#lk-save').onclick=function(){RLD.update('riders',r.id,{look:L}).then(function(){dlg.close();toast('Rider personnalisé !');go('riders')},fail)}})}
+      b.querySelector('#lk-save').onclick=function(){RLD.update('riders',r.id,{look:L}).then(function(){return pub(Object.assign({},r,{look:L}))}).then(function(){dlg.close();toast('Rider personnalisé !');go('riders')},fail)}})}
 
   // ---------- parent: payments + orders
   function pPay(p){return Promise.all([mine(),settings()]).then(function(r){var d=r[0];
@@ -213,7 +220,7 @@ dialog::backdrop{background:rgba(8,4,20,.75)}
       '<p style="margin-top:14px"><a class="btn" href="./#shop">Aller au shop</a></p></div>'})}
 
   // ---------- admin: members CRM
-  function loadAll(){return Promise.all([settings(),RLD.q('families'),RLD.q('riders'),RLD.q('payments'),RLD.q('orders'),RLD.q('reminders')]).then(function(r){return{fams:r[1],riders:r[2],pays:r[3],orders:r[4],rem:r[5]}})}
+  function loadAll(){return Promise.all([settings(),RLD.q('families'),RLD.q('riders'),RLD.q('payments'),RLD.q('orders'),RLD.q('reminders')]).then(function(r){syncPublic(r[2]);return{fams:r[1],riders:r[2],pays:r[3],orders:r[4],rem:r[5]}})}
   function famRows(d){return d.fams.map(function(f){var pays=d.pays.filter(function(x){return x.familyId===f.id}),ords=d.orders.filter(function(x){return x.familyId===f.id}),rem=d.rem.filter(function(x){return x.familyId===f.id}).sort(function(a,b){return a.date<b.date?1:-1});
     var kids=d.riders.filter(function(x){return x.familyId===f.id});return{f:f,riders:kids,pays:pays,ords:ords,rem:rem,B:RLD.balance(f,pays,ords,S,kids)}}).sort(function(a,b){return a.f.name.localeCompare(b.f.name)})}
   function pCrm(p){return loadAll().then(function(d){var rows=famRows(d),filter='all',q='';
@@ -289,7 +296,7 @@ dialog::backdrop{background:rgba(8,4,20,.75)}
   function famEmailsOps(fid,emails){return Promise.all([RLD.q('riders',[['familyId','==',fid]]),RLD.q('payments',[['familyId','==',fid]]),RLD.q('orders',[['familyId','==',fid]])]).then(function(r){
     var ops=[{col:'families',id:fid,op:'update',data:{emails:emails}}];[['riders',0],['payments',1],['orders',2]].forEach(function(c){r[c[1]].forEach(function(x){ops.push({col:c[0],id:x.id,op:'update',data:{emails:emails}})})});return ops})}
   function pKids(p){return Promise.all([settings(),RLD.q('families'),RLD.q('riders')]).then(function(r){
-    var fams=r[1].sort(function(a,b){return a.name.localeCompare(b.name)}),kids=r[2].sort(function(a,b){return(a.lastName+a.firstName).localeCompare(b.lastName+b.firstName)}),crews=S.crews||CREWS,q='';
+    syncPublic(r[2]);var fams=r[1].sort(function(a,b){return a.name.localeCompare(b.name)}),kids=r[2].sort(function(a,b){return(a.lastName+a.firstName).localeCompare(b.lastName+b.firstName)}),crews=S.crews||CREWS,q='';
     p.innerHTML='<div class="tools"><input type="search" id="kq" placeholder="Chercher un rider ou une famille…"><button class="btn" id="kadd2">+ Rider</button><button class="btn" id="ksite">Reprendre les riders listés sur le site</button></div>'+
       '<p class="muted">Pour qu’un parent voie son enfant dans son espace, mets son adresse Gmail sur la famille. Frères et sœurs : choisis la même famille.</p><div class="card scroll"><table class="tbl" id="kt"></table></div>';
     function famOf(id){return fams.filter(function(f){return f.id===id})[0]}

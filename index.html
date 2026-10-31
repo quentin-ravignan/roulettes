@@ -390,34 +390,10 @@ body.noscroll{overflow:hidden}
     <div class="head">
       <p class="eyebrow">Le Club</p>
       <h2>Le bar du crew</h2>
-      <p class="lead">Installe-toi ! Minou sert les sirops, Laurène prépare le prochain cours et le crew traîne autour des tables. Clique sur les riders, les affiches ou le comptoir.</p>
+      <p class="lead">Installe-toi ! Commande à boire sur l’ardoise du comptoir, défie Minou au shi-fu-mi, et retrouve les riders des adhérent·es autour de la table de leur crew.</p>
     </div>
     <div class="scene-wrap"><canvas id="club-cv" class="scene" style="aspect-ratio:1500/660" aria-label="Le bar du club : Minou le barman au comptoir, les valeurs du club affichées au mur, Laurène la coach et les riders de chaque crew autour de leur table"></canvas></div>
-    <p class="scene-info" id="club-info" aria-live="polite">Clique ou touche un rider, une affiche, Laurène ou Minou.</p>
-    <div class="bar">
-      <div>
-        <h3>Le comptoir</h3>
-        <p class="muted">Sans alcool, on roule après !</p>
-        <div class="btns" id="drinks">
-          <button type="button" data-d="Diabolo menthe" data-e="🍹">🍹 Diabolo menthe</button>
-          <button type="button" data-d="Sirop grenadine" data-e="🥤">🥤 Grenadine</button>
-          <button type="button" data-d="Limonade" data-e="🍋">🍋 Limonade</button>
-          <button type="button" data-d="Chocolat chaud" data-e="☕">☕ Chocolat chaud</button>
-        </div>
-        <p class="bar-msg" id="drink-msg" aria-live="polite">Qu'est-ce que je te sers ?</p>
-      </div>
-      <div>
-        <h3>Shi-fu-mi contre Minou</h3>
-        <p class="muted">Minou, le chat barman, ne perd jamais… ou presque.</p>
-        <div class="btns sfm-btns" id="sfm">
-          <button type="button" data-c="0" aria-label="Pierre">✊</button>
-          <button type="button" data-c="1" aria-label="Feuille">✋</button>
-          <button type="button" data-c="2" aria-label="Ciseaux">✌️</button>
-        </div>
-        <p class="bar-msg" id="sfm-msg" aria-live="polite">Choisis : pierre, feuille ou ciseaux !</p>
-        <p class="sfm-score" id="sfm-score">Toi 0 – 0 Minou</p>
-      </div>
-    </div>
+    <p class="scene-info" id="club-info" aria-live="polite">Clique sur l’ardoise pour commander, sur une main pour jouer, ou sur un rider pour le découvrir.</p>
   </div>
 </section>
 
@@ -1710,26 +1686,48 @@ function rlScene(cv,W,H,draw,hit,click){
   return o;
 }
 
-/* ===== Le Club: a bar with the values on the walls, the coach and the crew as cats ===== */
+/* ===== Le Club: a bar with the values on the walls, the coach and the members' riders around their crew's table ===== */
 (function(){
   var cv=document.getElementById('club-cv'),info=document.getElementById('club-info');if(!cv||!window.RL)return;
-  var W=1500,H=660,KS=1.35,COL=['#3ddcf0','#ff4fa8','#ffe14d','#7aa8ff'];
-  var HAIR=[['#f7d460','#d9a92e'],['#e2561f','#b23c0f'],['#5a3a26','#3d2617'],['#2b1d16','#140c08'],['#b98b52','#86602f'],['#8a5a2b','#5e3a18'],['#1d1a24','#0b0a10'],['#f2cf5b','#c49a2c']];
-  var STY=['long','pigtails','curly','messy','wavy','long','cap'],PANTS=['#3b5ba8','#2f3f6e','#23233a','#5a6b8a'];
-  function hsh(s){var h=7;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h}
-  var crews=[].map.call(document.querySelectorAll('#riders .crew'),function(c,i){return{name:c.querySelector('h3').textContent,when:c.querySelector('.crew-head span').textContent,col:COL[i%4],
-    kids:[].map.call(c.querySelectorAll('tbody tr'),function(tr){var td=tr.children;return{name:td[0].textContent,age:parseInt(td[1].textContent,10)||6,stance:td[2].textContent.trim()}})}});
+  var W=1500,H=660,KS=1.35,COL={AlleyOop:'#3ddcf0',Benihana:'#ff4fa8',Caballerial:'#ffe14d',Disaster:'#7aa8ff'};
+  var crews=[].map.call(document.querySelectorAll('#riders .crew'),function(c){var n=c.querySelector('h3').textContent.trim();return{name:n,when:c.querySelector('.crew-head span').textContent,col:COL[n]||'#3ddcf0'}});
   var values=[].map.call(document.querySelectorAll('#valeurs .value'),function(v,i){return{h:v.querySelector('h3').textContent,p:v.querySelector('p').textContent,col:['#ffe14d','#3ddcf0','#ff4fa8','#7aa8ff'][i%4]}});
   var COACH=RL.chars.filter(function(c){return c.info==='Coach'})[0];
-  // place every kid around their crew's table
-  var who=[],tables=[];
-  crews.forEach(function(cr,ci){var tx=650+ci*240,back=cr.kids.slice(0,3),front=cr.kids.slice(3);tables.push({x:tx,cr:cr});
-    function put(list,y,sp,row){list.forEach(function(k,j){var h=hsh(k.name),hc=HAIR[h%8];
-      var x=tx+(j-(list.length-1)/2)*sp;
-      who.push({k:k,cr:cr,x:x,y:y,row:row,ph:(h%100)/16,flip:x>tx,c:{name:k.name,hair:hc[0],hair2:hc[1],top:cr.col,pants:PANTS[(h>>4)%4],style:STY[(h>>7)%7],cap:['#202028','#ff4fa8','#3ddcf0'][(h>>10)%3],glasses:(h>>12)%6===0?1:0,size:.8+Math.min(k.age,12)*.03,noBoard:1}})})}
-    put(back,548,80,0);put(front,646,Math.min(84,236/Math.max(front.length,1)),1)});
-  var drinks=[],say=null,sayT=0,hands=null;
-  document.addEventListener('rl-bar',function(e){var d=e.detail;if(d.drink){drinks.push({c:d.color,x:60+(drinks.length%7)*46});if(drinks.length>7)drinks.shift()}say=d.say;sayT=4;hands=d.hands||null});
+  function hsh(s){var h=7;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h}
+  // the members' riders, as they look in their family space (public list: first name, initial, crew, age, look)
+  var who=[],tables=crews.map(function(cr,ci){return{x:650+ci*240,cr:cr}});
+  function place(list){who=[];tables.forEach(function(tb){var kids=list.filter(function(k){return k.crew===tb.cr.name}).sort(function(a,b){return a.name.localeCompare(b.name)});
+    var back=kids.slice(0,3),front=kids.slice(3);
+    function put(l,y,sp,row){l.forEach(function(k,j){var x=tb.x+(j-(l.length-1)/2)*sp,ch=Object.assign({},k.ch,{noBoard:1});who.push({k:k,cr:tb.cr,x:x,y:y,row:row,ph:(hsh(k.name)%100)/16,flip:x>tb.x,c:ch})})}
+    put(back,548,80,0);put(front,646,Math.min(84,236/Math.max(front.length,1)),1)})}
+  function fromPage(){var l=[];[].forEach.call(document.querySelectorAll('#riders .crew'),function(c){var cn=c.querySelector('h3').textContent.trim();[].forEach.call(c.querySelectorAll('tbody tr'),function(tr){var td=tr.children,name=td[0].textContent.trim(),age=parseInt(td[1].textContent,10)||6,h=hsh(name);
+    l.push({name:name,age:age,stance:td[2].textContent.trim(),crew:cn,ch:{name:name,hair:['#f7d460','#e2561f','#5a3a26','#2b1d16','#b98b52'][h%5],hair2:'#3d2617',style:['long','pigtails','curly','messy','wavy'][(h>>5)%5],top:COL[cn],pants:'#3b5ba8',size:.8+Math.min(age,12)*.03}})})});return l}
+  function dec(v){if(!v)return null;if('stringValue' in v)return v.stringValue;if('integerValue' in v)return+v.integerValue;if('doubleValue' in v)return v.doubleValue;if('booleanValue' in v)return v.booleanValue;
+    if('mapValue' in v){var o={},f=v.mapValue.fields||{};for(var k in f)o[k]=dec(f[k]);return o}if('arrayValue' in v)return(v.arrayValue.values||[]).map(dec);return null}
+  var cfg=(window.RL_FB||{}).config,loaded=0;
+  function load(){if(!cfg){place(fromPage());return}
+    fetch('https://firestore.googleapis.com/v1/projects/'+cfg.projectId+'/databases/(default)/documents/publicRiders?pageSize=300&key='+cfg.apiKey).then(function(r){return r.json()}).then(function(d){
+      var l=(d.documents||[]).map(function(x){var o={},f=x.fields||{};for(var k in f)o[k]=dec(f[k]);return o}).filter(function(k){return k.crew&&k.ch});
+      place(l.length?l:fromPage());loaded=Date.now()}).catch(function(){if(!who.length)place(fromPage())})}
+  place(fromPage());load();
+  // fresh looks when someone comes back to the club
+  new IntersectionObserver(function(e){if(e[0].isIntersecting&&Date.now()-loaded>20000)load()},{threshold:.05}).observe(cv);
+
+  // ---------- the bar: drinks on the chalkboard, shi-fu-mi next to Minou
+  var DRINKS=[['Diabolo menthe','🍹','#3fd17a','1 €'],['Grenadine','🥤','#e0313a','1 €'],['Limonade','🍋','#f5f0c8','1 €'],['Chocolat chaud','☕','#7a4a2c','1,50 €'],['Bière','🍺','#f0b429','3 €']];
+  var HANDS=['✊','✋','✌️'],HN=['Pierre','Feuille','Ciseaux'];
+  var glasses=[],say='Qu’est-ce que je te sers ?',sayT=6,score=[0,0],last='',served=0;
+  function drink(i){var d=DRINKS[i];served++;glasses.push({c:d[2],beer:i===4,x:40+(glasses.length%8)*44});if(glasses.length>8)glasses.shift();
+    say=i===4?'Une bière pour les grands ! Les riders, eux, restent au sirop.':['Et un '+d[0].toLowerCase()+' ! Santé !','Un '+d[0].toLowerCase()+', bien frais.','Tchin ! Tournée n°'+served+'.'][served%3];sayT=4;
+    info.innerHTML='<b>'+d[1]+' '+d[0]+'</b> · servi par Minou ('+d[3]+')'}
+  function play(a){var c=Math.floor(Math.random()*3),r=(a-c+3)%3;if(r===1)score[0]++;else if(r===2)score[1]++;
+    last=HANDS[a]+' vs '+HANDS[c];say=r===0?'Égalité ! Moi aussi : '+HN[c]+'.':r===1?'Grrr… '+HN[a]+' bat '+HN[c]+'.':'Miaou ! '+HN[c]+' bat '+HN[a]+' !';sayT=4;
+    info.innerHTML='<b>Shi-fu-mi</b> · '+last+' · '+(r===0?'égalité':r===1?'gagné !':'perdu…')+' · Toi '+score[0]+' – '+score[1]+' Minou'}
+  var BOARD={x:24,y:444,w:382,h:114},SFM={x:292,y:150,w:118,h:150};
+  function drinkBox(i){return{x:BOARD.x+8+i*74,y:BOARD.y+28,w:68,h:78}}
+  function handBox(i){return{x:SFM.x+8+i*36,y:SFM.y+40,w:32,h:38}}
+  function inBox(p,b){return p.x>b.x&&p.x<b.x+b.w&&p.y>b.y&&p.y<b.y+b.h}
+
   function minou(o,x,y){var c=o.ctx,b=Math.sin(o.t*2)*2;
     c.fillStyle='#151021';o.rr(x-46,y-10+b,92,90,24);c.fill();c.fillStyle='#fbf4e6';o.poly([x-12,y-8+b,x+12,y-8+b,x,y+34+b]);c.fillStyle='#ff4fa8';o.poly([x-16,y-6+b,x,y+2+b,x-16,y+10+b]);o.poly([x+16,y-6+b,x,y+2+b,x+16,y+10+b]);
     c.fillStyle='#8a8fa0';o.circ(x,y-44+b,44);o.poly([x-40,y-62+b,x-34,y-108+b,x-6,y-84+b]);o.poly([x+40,y-62+b,x+34,y-108+b,x+6,y-84+b]);
@@ -1738,61 +1736,64 @@ function rlScene(cv,W,H,draw,hit,click){
     var blink=(o.t%4)<.12;c.fillStyle='#2a1d3a';if(blink){c.fillRect(x-22,y-52+b,12,3);c.fillRect(x+10,y-52+b,12,3)}else{c.beginPath();c.ellipse(x-16,y-50+b,6,8,0,0,Math.PI*2);c.ellipse(x+16,y-50+b,6,8,0,0,Math.PI*2);c.fill();c.fillStyle='#ffe14d';o.circ(x-14,y-53+b,2.2);o.circ(x+18,y-53+b,2.2)}
     c.fillStyle='#ff6f9f';o.poly([x-5,y-36+b,x+5,y-36+b,x,y-30+b]);c.strokeStyle='#2a1d3a';c.lineWidth=2;c.beginPath();c.arc(x-5,y-28+b,5,0,Math.PI*.9);c.moveTo(x+10,y-28+b);c.arc(x+5,y-28+b,5,0,Math.PI*.9);c.stroke();
     c.strokeStyle='rgba(255,255,255,.7)';c.lineWidth=1.4;[-1,1].forEach(function(sd){for(var k=0;k<3;k++){c.beginPath();c.moveTo(x+sd*20,y-30+b+k*5);c.lineTo(x+sd*48,y-36+b+k*8);c.stroke()}});
-    // arm wiping a glass
     var wx=x+50+Math.sin(o.t*5)*6;c.fillStyle='#8a8fa0';o.circ(wx,y+30,10);c.fillStyle='rgba(200,240,255,.7)';o.rr(wx-10,y+8,20,26,4);c.fill()}
-  function draw(o){var c=o.ctx,t=o.t;
-    // walls
+  function draw(o){var c=o.ctx,t=o.t,hv=o.hover||{};
     c.fillStyle='#2a1745';c.fillRect(0,0,W,470);c.fillStyle='rgba(255,255,255,.035)';for(var x=0;x<W;x+=40){c.fillRect(x,0,18,470)}
     c.fillStyle='#5b2c3e';c.fillRect(0,330,W,140);c.fillStyle='#7a3c52';c.fillRect(0,326,W,10);c.fillStyle='rgba(0,0,0,.18)';for(var p=0;p<W;p+=60)c.fillRect(p,336,3,134);
-    // floor in perspective
     c.fillStyle='#3a2a52';c.fillRect(0,470,W,H-470);
     for(var r=0;r<6;r++)for(var q=0;q<30;q++)if((r+q)%2){var y0=470+r*r*6+r*20,y1=470+(r+1)*(r+1)*6+(r+1)*20;c.fillStyle='rgba(255,255,255,.06)';c.fillRect(q*60-((r*13)%60),y0,60,y1-y0)}
-    // shelves, bottles, neon behind the bar
     c.fillStyle='#4a2234';c.fillRect(20,120,380,210);c.fillStyle='rgba(180,220,255,.12)';c.fillRect(34,134,352,182);
     c.fillStyle='#7a4a2c';c.fillRect(20,200,380,8);c.fillRect(20,270,380,8);
-    ['#3fd17a','#ff4fa8','#ffe14d','#e2561f','#3ddcf0','#9b6dff','#ff8fc8','#3fd17a','#ffe14d','#ff4fa8'].forEach(function(cl,i){var bx=40+i*35;[[200,0],[270,1]].forEach(function(sh){c.fillStyle=cl;o.rr(bx,sh[0]-44+(i+sh[1])%2*6,20,44-(i+sh[1])%2*6,5);c.fill();c.fillRect(bx+7,sh[0]-56+(i+sh[1])%2*6,6,14);c.fillStyle='rgba(255,255,255,.5)';c.fillRect(bx+4,sh[0]-34,4,16)})});
+    ['#3fd17a','#ff4fa8','#ffe14d','#e2561f','#3ddcf0','#9b6dff','#f0b429'].forEach(function(cl,i){var bx=40+i*34;[[200,0],[270,1]].forEach(function(sh){c.fillStyle=cl;o.rr(bx,sh[0]-44+(i+sh[1])%2*6,20,44-(i+sh[1])%2*6,5);c.fill();c.fillRect(bx+7,sh[0]-56+(i+sh[1])%2*6,6,14);c.fillStyle='rgba(255,255,255,.5)';c.fillRect(bx+4,sh[0]-34,4,16)})});
     o.neon('LE CLUB',210,90,46,'#ff4fa8');
-    // the values, framed on the wall
-    values.forEach(function(v,i){var x=470+i*255,y=60,w=228,h=196,on=o.hover&&o.hover.v===v;c.fillStyle='rgba(0,0,0,.3)';c.fillRect(x+6,y+8,w,h);c.fillStyle=v.col;c.fillRect(x-6,y-6,w+12,h+12);c.fillStyle='#fbf4e6';c.fillRect(x,y,w,h);
+    values.forEach(function(v,i){var x=470+i*255,y=60,w=228,h=196,on=hv.v===v;c.fillStyle='rgba(0,0,0,.3)';c.fillRect(x+6,y+8,w,h);c.fillStyle=v.col;c.fillRect(x-6,y-6,w+12,h+12);c.fillStyle='#fbf4e6';c.fillRect(x,y,w,h);
       o.txt(v.h.toUpperCase(),x+w/2,y+38,(v.h.length>14?18:22)+'px Bungee, Impact, sans-serif','#150d2e');c.fillStyle=v.col;c.fillRect(x+24,y+50,w-48,4);o.wrap(v.p,x+w/2,y+84,w-26,22,'500 16px Space Grotesk, sans-serif','#3a2a52');
       if(on){c.strokeStyle='#ffe14d';c.lineWidth=5;c.strokeRect(x-9,y-9,w+18,h+18)}});
-    // crew signs hanging above each table
     tables.forEach(function(tb){var w=200;c.strokeStyle='#1d1630';c.lineWidth=2;c.beginPath();c.moveTo(tb.x-60,270);c.lineTo(tb.x-60,300);c.moveTo(tb.x+60,270);c.lineTo(tb.x+60,300);c.stroke();
       c.fillStyle='#150d2e';o.rr(tb.x-w/2,300,w,52,10);c.fill();c.strokeStyle=tb.cr.col;c.lineWidth=3;c.stroke();o.txt(tb.cr.name.toUpperCase(),tb.x,324,'18px Bungee, Impact, sans-serif',tb.cr.col);o.txt(tb.cr.when,tb.x,344,'700 14px Space Grotesk, sans-serif','#fbf4e6')});
-    // Minou behind the counter, then the counter
-    minou(o,210,340);
-    if(hands&&sayT>0){o.txt(hands[1],310,330,'50px sans-serif','#fff')}
+    // Minou, his shi-fu-mi corner, the counter and the chalkboard menu
+    minou(o,180,340);
+    c.fillStyle='rgba(21,13,46,.88)';o.rr(SFM.x,SFM.y,SFM.w,SFM.h,14);c.fill();c.strokeStyle='#3ddcf0';c.lineWidth=2;c.stroke();
+    o.txt('SHI-FU-MI',SFM.x+SFM.w/2,SFM.y+26,'14px Bungee, Impact, sans-serif','#3ddcf0');
+    HANDS.forEach(function(hd,i){var b=handBox(i),on=hv.sfm===i;c.fillStyle=on?'#ffe14d':'rgba(255,255,255,.08)';o.rr(b.x,b.y,b.w,b.h,9);c.fill();o.txt(hd,b.x+b.w/2,b.y+27,'21px sans-serif','#fff')});
+    o.txt('Toi '+score[0]+' – '+score[1]+' Minou',SFM.x+SFM.w/2,SFM.y+102,'700 13px Space Grotesk, sans-serif','#fbf4e6');
+    if(last)o.txt(last,SFM.x+SFM.w/2,SFM.y+132,'20px sans-serif','#fff');
     c.fillStyle='#8a5a34';c.fillRect(10,392,410,24);c.fillStyle='#a8703f';c.fillRect(10,388,410,8);c.fillStyle='#4a2234';c.fillRect(20,416,390,150);
-    c.save();c.shadowColor='#3ddcf0';c.shadowBlur=14;c.fillStyle='#3ddcf0';c.fillRect(20,430,390,4);c.restore();
-    drinks.forEach(function(d){c.fillStyle='rgba(220,240,255,.55)';o.rr(d.x,350,26,40,5);c.fill();c.fillStyle=d.c;o.rr(d.x+3,362,20,26,4);c.fill();c.strokeStyle='#ff4fa8';c.lineWidth=2.5;c.beginPath();c.moveTo(d.x+16,352);c.lineTo(d.x+24,334);c.stroke()});
-    [80,190,300,390].forEach(function(sx){c.fillStyle='#1d1630';c.fillRect(sx-3,500,6,96);c.fillRect(sx-16,592,32,6);c.fillStyle='#ff4fa8';c.beginPath();c.ellipse(sx,496,24,8,0,0,Math.PI*2);c.fill()});
-    // coach
-    var coachOn=o.hover&&o.hover.coach;RL.draw(c,COACH,470,640,1.3,t+1,false);
-    c.fillStyle='#ffe14d';o.circ(476,556,9);c.fillStyle='#150d2e';o.txt('4',476,561,'800 12px Space Grotesk, sans-serif','#150d2e');
+    glasses.forEach(function(g){c.fillStyle='rgba(220,240,255,.55)';o.rr(g.x,350,26,40,5);c.fill();c.fillStyle=g.c;o.rr(g.x+3,362,20,26,4);c.fill();
+      if(g.beer){c.fillStyle='#fffaf0';o.rr(g.x+2,354,22,10,5);c.fill()}else{c.strokeStyle='#ff4fa8';c.lineWidth=2.5;c.beginPath();c.moveTo(g.x+16,352);c.lineTo(g.x+24,334);c.stroke()}});
+    c.fillStyle='#1d2a24';o.rr(BOARD.x,BOARD.y,BOARD.w,BOARD.h,10);c.fill();c.strokeStyle='#a8703f';c.lineWidth=4;c.stroke();
+    o.txt('LA CARTE',BOARD.x+BOARD.w/2,BOARD.y+20,'14px Bungee, Impact, sans-serif','#fbf4e6');
+    DRINKS.forEach(function(d,i){var b=drinkBox(i),on=hv.drink===i;c.fillStyle=on?'rgba(255,225,77,.25)':'rgba(255,255,255,.05)';o.rr(b.x,b.y,b.w,b.h,10);c.fill();
+      o.txt(d[1],b.x+b.w/2,b.y+30,'24px sans-serif','#fff');o.txt(d[0].length>10?d[0].split(' ')[0]:d[0],b.x+b.w/2,b.y+52,'700 12px Space Grotesk, sans-serif','#fbf4e6');o.txt(d[3],b.x+b.w/2,b.y+70,'700 12px Space Grotesk, sans-serif','#ffe14d')});
+    [80,190,300,390].forEach(function(sx){c.fillStyle='#1d1630';c.fillRect(sx-3,566,6,30);c.fillRect(sx-16,592,32,6);c.fillStyle='#ff4fa8';c.beginPath();c.ellipse(sx,566,22,7,0,0,Math.PI*2);c.fill()});
+    var coachOn=hv.coach;RL.draw(c,COACH,470,640,1.3,t+1,false);
+    c.fillStyle='#ffe14d';o.circ(476,556,9);o.txt('4',476,561,'800 12px Space Grotesk, sans-serif','#150d2e');
     o.txt('COACH',470,H-4,'15px Bungee, Impact, sans-serif',coachOn?'#ffe14d':'#c8a6ff');
-    // tables and the crew around them
     who.filter(function(w){return w.row===0}).forEach(function(w){RL.draw(c,w.c,w.x,w.y+Math.sin(t*2+w.ph)*1.5,KS,t+w.ph,w.flip)});
     tables.forEach(function(tb){c.fillStyle='rgba(0,0,0,.3)';c.beginPath();c.ellipse(tb.x,612,70,10,0,0,Math.PI*2);c.fill();c.fillStyle='#1d1630';c.fillRect(tb.x-5,540,10,72);c.fillRect(tb.x-30,606,60,6);
       c.fillStyle='#d8c3a0';c.beginPath();c.ellipse(tb.x,538,104,24,0,0,Math.PI*2);c.fill();c.fillStyle='#b89a72';c.beginPath();c.ellipse(tb.x,544,104,24,0,0,Math.PI);c.fill();c.fillStyle='#d8c3a0';c.beginPath();c.ellipse(tb.x,536,100,21,0,0,Math.PI*2);c.fill();
       [-50,-10,34,64].forEach(function(dx,i){c.fillStyle='rgba(220,240,255,.6)';o.rr(tb.x+dx,512,16,24,4);c.fill();c.fillStyle=['#3fd17a','#ff4fa8','#ffe14d','#e2561f'][i];o.rr(tb.x+dx+2,520,12,14,3);c.fill()})});
     who.filter(function(w){return w.row===1}).forEach(function(w){RL.draw(c,w.c,w.x,w.y+Math.sin(t*2+w.ph)*1.5,KS,t+w.ph,w.flip)});
-    // hover tip + Minou's bubble
-    if(o.hover&&o.hover.k){var k=o.hover.k;o.tip(k.name+' · '+k.age+' ans',o.hover.x,o.hover.y-112*o.hover.c.size*KS)}
-    if(o.hover&&o.hover.minou&&!say)o.tip('Minou, le barman',210,220);
-    if(say&&sayT>0){sayT-=1/60;o.say(say,330,230,300)}
+    if(hv.k)o.tip(hv.k.name+(hv.k.age?' · '+hv.k.age+' ans':''),hv.x,hv.y-112*(hv.c.size||1)*KS);
+    if(hv.minou&&!(sayT>0))o.tip('Minou, le barman',180,225);
+    if(sayT>0){sayT-=1/60;o.say(say,150,232,250)}
   }
   function hit(p){
-    for(var i=who.length-1;i>=0;i--){var w=who[i],sz=w.c.size*KS,h=100*sz;if(p.x>w.x-30*sz&&p.x<w.x+30*sz&&p.y>w.y-h&&p.y<w.y-10)return w}
-    for(var j=0;j<values.length;j++){var x=470+j*255;if(p.x>x&&p.x<x+228&&p.y>60&&p.y<256)return{v:values[j]}}
+    for(var i=0;i<DRINKS.length;i++)if(inBox(p,drinkBox(i)))return{drink:i};
+    for(var j=0;j<3;j++)if(inBox(p,handBox(j)))return{sfm:j};
+    for(var k=who.length-1;k>=0;k--){var w=who[k],sz=(w.c.size||1)*KS,h=100*sz;if(p.x>w.x-30*sz&&p.x<w.x+30*sz&&p.y>w.y-h&&p.y<w.y-10)return w}
+    for(var v=0;v<values.length;v++){var x=470+v*255;if(p.x>x&&p.x<x+228&&p.y>60&&p.y<256)return{v:values[v]}}
     if(p.x>420&&p.x<520&&p.y>500&&p.y<H)return{coach:1};
-    if(p.x>140&&p.x<290&&p.y>230&&p.y<420)return{minou:1};
+    if(p.x>110&&p.x<260&&p.y>230&&p.y<400)return{minou:1};
     return null}
-  function stance(s){return s==='?'?'stance à découvrir':s}
+  function stance(s){return!s||s==='?'?'stance à découvrir':s}
   function click(h){
-    if(h.k)info.innerHTML='<b>'+h.k.name+'</b> · '+h.k.age+' ans · '+stance(h.k.stance)+' · crew <b style="color:'+h.cr.col+'">'+h.cr.name+'</b> ('+h.cr.when+')';
+    if(h.drink!=null)drink(h.drink);
+    else if(h.sfm!=null)play(h.sfm);
+    else if(h.k)info.innerHTML='<b>'+h.k.name+'</b>'+(h.k.age?' · '+h.k.age+' ans':'')+' · '+stance(h.k.stance)+' · crew <b style="color:'+h.cr.col+'">'+h.cr.name+'</b> ('+h.cr.when+')';
     else if(h.v)info.innerHTML='<b>'+h.v.h+'</b> · '+h.v.p;
     else if(h.coach)info.innerHTML='<b>Laurène, la coach</b> · Coach professionnelle, 4ᵉ aux championnats de France de skate. Elle encadre tous les cours du club.';
-    else if(h.minou){info.innerHTML='<b>Minou, le barman</b> · Commande un sirop ou défie-le au shi-fu-mi juste en dessous !';var b=document.querySelector('#club .bar');if(b)b.scrollIntoView({behavior:'smooth',block:'center'})}}
+    else if(h.minou){say='Qu’est-ce que je te sers ? Ou un petit shi-fu-mi ?';sayT=4}}
   rlScene(cv,W,H,draw,hit,click);
 })();
 
@@ -1953,7 +1954,8 @@ window.RLLoad=function(){if(window.RLD)return RLD.ready;if(!RLLoad.p)RLLoad.p=ne
       var total=lines.reduce(function(a,l){return a+l.price*l.qty},0);btn.disabled=true;
       RLD.add('orders',{familyId:r.familyId,emails:r.emails||[],riderId:r.id,items:lines,total:total,status:'commandé',date:today()})
         .then(function(){return RLD.update('riders',r.id,{owned:owned,look:look})})
-        .then(function(){r.owned=owned;r.look=look;try{localStorage.setItem('rl-rider',r.id)}catch(e){}wear(r);window.RLCart.clear();
+        .then(function(){r.owned=owned;r.look=look;if(r.status!=='en attente')return RLD.set('publicRiders',r.id,{ch:RLD.charOf(r)},true).catch(function(){})})
+        .then(function(){try{localStorage.setItem('rl-rider',r.id)}catch(e){}wear(r);window.RLCart.clear();
           msg.textContent='Commande enregistrée ! '+r.firstName+' la porte déjà dans le village. Le club te confirme le retrait'+(total?' (total '+RLD.eur(total)+', à régler au club).':'.');btn.disabled=false},
           function(e){msg.textContent='Impossible d’enregistrer la commande : '+(e&&e.message||e);btn.disabled=false})}}
 })();

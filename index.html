@@ -335,7 +335,7 @@ body.noscroll{overflow:hidden}
 .cart-member select{font:inherit;border-radius:10px;padding:8px 10px;background:var(--night-2);color:var(--cream);border:1.5px solid var(--line)}
 .cart-member p{margin:0;width:100%;color:var(--yellow);font-weight:700}
 </style>
-<script src="firebase-config.js"></script>
+<script src="firebase-config.js?v=3"></script>
 </head>
 <body>
 <script>try{if(localStorage.getItem("rl-classic")!=="1")document.body.classList.add("vm")}catch(e){document.body.classList.add("vm")}</script>
@@ -1896,7 +1896,7 @@ function rlScene(cv,W,H,draw,hit,click){
 })();
 
 /* ===== online registration: Google sign-in, then the family, the rider and their village character ===== */
-window.RLLoad=function(){if(window.RLD)return RLD.ready;if(!RLLoad.p)RLLoad.p=new Promise(function(ok,ko){var s=document.createElement('script');s.src='rl-data.js';s.onload=function(){RLD.ready.then(ok,ko)};s.onerror=ko;document.body.appendChild(s)});return RLLoad.p};
+window.RLLoad=function(){if(window.RLD)return RLD.ready;if(!RLLoad.p)RLLoad.p=new Promise(function(ok,ko){var s=document.createElement('script');s.src='rl-data.js?v=3';s.onload=function(){RLD.ready.then(ok,ko)};s.onerror=ko;document.body.appendChild(s)});return RLLoad.p};
 (function(){
   var form=document.getElementById('form-inscription');if(!form||!(window.RL_FB||{}).config&&!/^(localhost|127\.0\.0\.1)$/.test(location.hostname))return;
   form.addEventListener('focusin',function(){RLLoad()},{once:true});

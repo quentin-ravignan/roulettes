@@ -50,6 +50,7 @@
             user={email:em,name:u.displayName||em,photo:u.photoURL||'',admin:adm};remember(true);if(first){first=false;ok()}emit()})})})});
     RLD.signIn=function(){var p=new firebase.auth.GoogleAuthProvider();p.setCustomParameters({prompt:'select_account'});return auth.signInWithPopup(p)};
     RLD.signOut=function(){return auth.signOut()};
+    RLD.token=function(){return auth.currentUser?auth.currentUser.getIdToken():Promise.resolve('')};
     function snap(qs){return qs.docs.map(function(d){var o=d.data();o.id=d.id;return o})}
     RLD.q=function(col,where,order){var r=db.collection(col);(where||[]).forEach(function(w){r=r.where(w[0],w[1],w[2])});if(order)r=r.orderBy(order[0],order[1]||'asc');return r.get().then(snap)};
     RLD.get=function(col,id){return db.collection(col).doc(id).get().then(function(d){if(!d.exists)return null;var o=d.data();o.id=d.id;return o})};

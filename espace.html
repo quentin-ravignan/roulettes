@@ -92,7 +92,7 @@ dialog::backdrop{background:rgba(8,4,20,.75)}
 <div class="toast" id="toast" role="status" hidden></div>
 
 <script src="firebase-config.js?v=3"></script>
-<script src="rl-data.js?v=3"></script>
+<script src="rl-data.js?v=4"></script>
 <script src="rl-rider.js?v=3"></script>
 <script>
 (function(){
@@ -427,7 +427,7 @@ dialog::backdrop{background:rgba(8,4,20,.75)}
       (RLD.mode==='demo'?'<p style="margin-top:14px"><button class="btn small" id="reset">Remettre les données de démo à zéro</button></p>':'');
     var f=document.getElementById('sf');f.onsubmit=function(e){e.preventDefault();
       RLD.set('settings','app',{season:val(f,'[name=season]'),adhesion:+val(f,'[name=adhesion]'),prices:[0,1,2].map(function(i){return+val(f,'[name=p'+i+']')}).filter(Boolean),shop:{tshirt:+val(f,'[name=tshirt]'),board:+val(f,'[name=board]')},payInfo:val(f,'[name=payInfo]'),
-        bankStart:{amount:+val(f,'[name=bstart]'),date:val(f,'[name=bdate]')},crews:S.crews||CREWS},true).then(function(){return RLD.set('settings','private',{mailUrl:val(f,'[name=mailUrl]'),mailKey:val(f,'[name=mailKey]')},true)}).then(function(){toast('Réglages enregistrés')},fail)};
+        bankStart:{amount:+val(f,'[name=bstart]'),date:val(f,'[name=bdate]')},crews:S.crews||CREWS,mailUrl:val(f,'[name=mailUrl]')},true).then(function(){return RLD.set('settings','private',{mailUrl:val(f,'[name=mailUrl]'),mailKey:val(f,'[name=mailKey]')},true)}).then(function(){toast('Réglages enregistrés')},fail)};
     var af=document.getElementById('af');af.onsubmit=function(e){e.preventDefault();RLD.set('admins',val(af,'[name=email]').toLowerCase(),{}).then(function(){go('set')},fail)};
     [].forEach.call(p.querySelectorAll('[data-adel]'),function(b){b.onclick=function(){if(confirm('Retirer l’accès admin de '+b.dataset.adel+' ?'))RLD.del('admins',b.dataset.adel).then(function(){go('set')},fail)}});
     var rs=document.getElementById('reset');if(rs)rs.onclick=function(){RLD.resetDemo();location.reload()}})}

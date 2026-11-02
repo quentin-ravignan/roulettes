@@ -362,7 +362,7 @@ body.noscroll{overflow:hidden}
 <section id="village" class="village" aria-label="Le village Roulettes : balade-toi en skate pour découvrir le club">
   <canvas id="vcv" tabindex="0" aria-label="Village Roulettes vu du dessus. Flèches ou Z Q S D pour rouler, Entrée pour entrer dans un lieu, ou utilise les boutons dessous."></canvas>
   <div class="vbar" role="navigation" aria-label="Lieux du village">
-    <button type="button" data-place="inscription">☎️ Inscription &amp; contact</button>
+    <button type="button" data-place="inscription">☎️ Contact &amp; inscription</button>
     <button type="button" data-place="club">🍹 Le Club</button>
     <button type="button" data-place="spots">🗺️ Spots</button>
     <button type="button" data-place="shop">👕 Shop</button>
@@ -487,9 +487,9 @@ body.noscroll{overflow:hidden}
       <fieldset><legend>L'enfant</legend>
         <div class="field"><label for="f-enfant">Prénom &amp; Nom de l'enfant <span class="req">*</span></label><input id="f-enfant" name="enfant" required autocomplete="off"></div>
         <div class="field"><label for="f-naissance">Date de naissance <span class="req">*</span></label><input id="f-naissance" name="naissance" type="date" required></div>
-        <div class="field"><span class="lbl" id="l-stance">Stance <span class="req">*</span></span>
+        <div class="field"><span class="lbl" id="l-stance">Stance <span class="muted">(si tu la connais)</span></span>
           <div class="seg" role="radiogroup" aria-labelledby="l-stance">
-            <input type="radio" id="f-st-reg" name="stance" value="Regular" required><label for="f-st-reg">Regular</label>
+            <input type="radio" id="f-st-reg" name="stance" value="Regular"><label for="f-st-reg">Regular</label>
             <input type="radio" id="f-st-goofy" name="stance" value="Goofy"><label for="f-st-goofy">Goofy</label>
             <input type="radio" id="f-st-nsp" name="stance" value="?"><label for="f-st-nsp">?</label>
           </div>
@@ -714,6 +714,10 @@ body.noscroll{overflow:hidden}
       <p class="lead">Une question sur les cours, les inscriptions ou le shop ? Écris-nous, on répond vite.</p>
     </div>
     <div class="contacts">
+      <a class="contact" style="--c:var(--yellow)" href="mailto:contact@roulettes.club">
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span>
+        <h3>Email</h3><p>contact@roulettes.club · pour les questions détaillées</p><span class="go">Écrire un email →</span>
+      </a>
       <a class="contact" style="--c:var(--pink)" href="https://www.instagram.com/roulettes.club/" target="_blank" rel="noopener">
         <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></span>
         <h3>Instagram</h3><p>@roulettes.club · les vidéos et les news du club</p><span class="go">Voir sur Instagram →</span>
@@ -1366,7 +1370,7 @@ document.querySelectorAll('.sizes').forEach(function(g){g.addEventListener('clic
   var body=document.body,cv=document.getElementById('vcv');if(!cv)return;
   var ctx=cv.getContext('2d'),W=1600,H=800,TOUCH=matchMedia('(hover:none)').matches;
   var PLACES={
-    inscription:{title:'La cabine · Inscription & contact',sections:['inscription','contact'],label:'INSCRIPTION · CONTACT',act:'Décrocher le téléphone'},
+    inscription:{title:'La cabine · Contact & inscription',sections:['contact','inscription'],label:'CONTACT · INSCRIPTION',act:'Décrocher le téléphone'},
     club:{title:'Le Club · le bar du crew',sections:['club','projet','valeurs','riders'],label:'LE CLUB',act:'Entrer dans Le Club'},
     spots:{title:'Le plan des spots',sections:['spots'],label:'SPOTS',act:'Regarder le plan des spots'},
     shop:{title:'Le shop Roulettes',sections:['shop'],label:'SHOP',act:'Entrer dans le shop'},

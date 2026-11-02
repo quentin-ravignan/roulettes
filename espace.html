@@ -143,7 +143,7 @@ dialog::backdrop{background:rgba(8,4,20,.75)}
     .then(function(r){return{fams:r[0],riders:r[1],pays:r[2],orders:r[3]}})}
 
   // ---------- app shell
-  var TABS_M=[['riders','Mes riders'],['pay','Paiements'],['orders','Commandes']],TABS_A=[['crm','Adhérent·es'],['kids','Riders'],['coach','Prof'],['bank','Banque'],['set','Réglages']];
+  var TABS_M=[['riders','Mes riders'],['pay','Paiements'],['orders','Commandes']],TABS_A=[['crm','Adhérent·es'],['coach','Prof'],['bank','Banque'],['set','Réglages']];
   function shell(){main.innerHTML=(RLD.mode==='demo'?'<p class="demo">Mode démo : données fictives, gardées seulement dans ce navigateur.</p>':'')+'<h1>Salut '+esc((user.name||'').split(' ')[0])+' !</h1><div class="tabs" role="tablist" id="tabs"></div><div id="panel"></div>';
     var tb=document.getElementById('tabs'),list=TABS_M.slice();if(user.admin)list=list.concat([['|']],TABS_A);
     tb.innerHTML=list.map(function(x){return x[0]==='|'?'<span class="sep"></span>':'<button role="tab" data-t="'+x[0]+'" aria-selected="false">'+x[1]+'</button>'}).join('');
@@ -231,7 +231,7 @@ dialog::backdrop{background:rgba(8,4,20,.75)}
     function draw(){var list=rows.filter(function(r){if(filter==='late'&&r.B.left<=0)return false;if(filter==='ok'&&r.B.left>0)return false;if(!q)return true;var h=(r.f.name+' '+(r.f.emails||[]).join(' ')+' '+r.riders.map(function(x){return x.firstName+' '+x.lastName}).join(' ')).toLowerCase();return h.indexOf(q)>=0});
       document.getElementById('ct').innerHTML='<table class="tbl"><tr><th>Famille</th><th>Riders</th><th class="num">Formule</th><th class="num">Dû</th><th class="num">Payé</th><th class="num">Reste</th><th>Dernière relance</th><th></th></tr>'+
         (list.length?list.map(function(r){return'<tr><td><b>'+esc(r.f.name)+'</b>'+(r.f.status==='en attente'?' <span class="tag warn">à valider</span>':'')+'<br><span class="muted" style="font-size:.8rem">'+esc((r.f.emails||[]).join(', '))+'</span></td><td>'+esc(r.riders.map(function(x){return x.firstName}).join(', '))+'</td><td class="num">'+eur(r.B.plan)+'</td><td class="num">'+eur(r.B.due)+'</td><td class="num ok">'+eur(r.B.paid)+'</td>'+
-          '<td class="num '+(r.B.left>0?'due':'ok')+'"><b>'+(r.B.left>0?eur(r.B.left):'À jour')+'</b></td><td class="muted">'+(r.rem[0]?fd(r.rem[0].date):'—')+'</td><td class="num">'+(r.f.status==='en attente'?'<button class="btn small primary" data-ok="'+r.f.id+'">Valider</button> ':'')+'<button class="btn small" data-open="'+r.f.id+'">Fiche</button> '+(r.B.left>0?'<button class="btn small pink" data-rel="'+r.f.id+'">Relancer</button>':'')+'</td></tr>'}).join(''):'<tr><td colspan="8" class="muted">Aucune famille.</td></tr>')+'</table>';
+          '<td class="num '+(r.B.left>0?'due':'ok')+'"><b>'+(r.B.left>0?eur(r.B.left):'À jour')+'</b></td><td class="muted">'+(r.rem[0]?fd(r.rem[0].date):'—')+'</td><td class="num">'+(r.f.status==='en attente'?'<button class="btn small primary" data-ok="'+r.f.id+'">Valider</button> ':'')+'<button class="btn small" data-open="'+r.f.id+'">Fiche</button> '+(wa(r.f.phone)?'<a class="btn small" style="text-decoration:none" href="'+wa(r.f.phone)+'" target="_blank" rel="noopener" title="WhatsApp : '+esc(r.f.phone)+'">WhatsApp</a> ':'')+(r.B.left>0?'<button class="btn small pink" data-rel="'+r.f.id+'">Relancer</button>':'')+'</td></tr>'}).join(''):'<tr><td colspan="8" class="muted">Aucune famille.</td></tr>')+'</table>';
       [].forEach.call(p.querySelectorAll('[data-open]'),function(b){b.onclick=function(){famForm(rows.filter(function(r){return r.f.id===b.dataset.open})[0])}});
       [].forEach.call(p.querySelectorAll('[data-ok]'),function(b){b.onclick=function(){validate(rows.filter(function(r){return r.f.id===b.dataset.ok})[0])}});
       [].forEach.call(p.querySelectorAll('[data-rel]'),function(b){b.onclick=function(){b.disabled=true;remind([rows.filter(function(r){return r.f.id===b.dataset.rel})[0]]).then(function(){go('crm')})}})}
@@ -239,12 +239,14 @@ dialog::backdrop{background:rgba(8,4,20,.75)}
     document.getElementById('cadd').onclick=function(){famForm(null)};document.getElementById('cimp').onclick=importMembers;
     document.getElementById('crel').onclick=function(){var late=rows.filter(function(r){return r.B.left>0&&(r.f.emails||[]).length});if(!late.length){toast('Personne à relancer');return}if(confirm('Envoyer une relance à '+late.length+' famille(s) ?'))remind(late).then(function(){go('crm')})};
     draw()})}
+  // WhatsApp chat link from a parent's phone (French 06… numbers become +33 6…)
+  function wa(ph){var n=String(ph||'').replace(/[^\d+]/g,'').replace(/^\+/,'').replace(/^00/,'');if(/^0\d{9}$/.test(n))n='33'+n.slice(1);return n.length>=10?'https://wa.me/'+n:''}
   // a registration made online: the club checks it, then it counts as a member
   function validate(r){var ops=[{col:'families',id:r.f.id,op:'update',data:{status:'validée'}}];
     r.riders.forEach(function(x){ops.push({col:'riders',id:x.id,op:'update',data:{status:'validée',crew:x.crew||x.wish||''}})});
     RLD.batch(ops).then(function(){toast(r.f.name+' validée');go('crm')},fail)}
   function famForm(r){var f=r?r.f:{name:'',emails:[],phone:'',plan:S.prices[0],adhesion:S.adhesion,season:S.season,notes:''};
-    var html='<form id="ff"><div class="form2"><label class="f">Nom de la famille<input name="name" required value="'+esc(f.name)+'"></label><label class="f">Téléphone<input name="phone" value="'+esc(f.phone)+'"></label></div>'+
+    var html='<form id="ff"><div class="form2"><label class="f">Nom de la famille<input name="name" required value="'+esc(f.name)+'"></label><label class="f">Téléphone'+(wa(f.phone)?' · <a href="'+wa(f.phone)+'" target="_blank" rel="noopener">Écrire sur WhatsApp</a>':'')+'<input name="phone" value="'+esc(f.phone)+'"></label></div>'+
       '<label class="f">E-mails Gmail des parents (séparés par des virgules) : ce sont eux qui ouvrent l’accès à l’espace<input name="emails" value="'+esc((f.emails||[]).join(', '))+'"></label>'+
       '<div class="form2"><label class="f">Formule annuelle<select name="plan">'+PLANS.map(function(x){return'<option value="'+x[0]+'"'+(+f.plan===+x[0]?' selected':'')+'>'+planName(x[0])+'</option>'}).join('')+'</select></label><label class="f">Adhésion (€)<input type="number" step="1" name="adhesion" value="'+esc(f.adhesion==null?S.adhesion:f.adhesion)+'"></label></div>'+
       '<label class="f">Notes internes<textarea name="notes">'+esc(f.notes)+'</textarea></label><div class="row end">'+(r?'<button type="button" class="btn small ghost due" id="fdel">Supprimer la famille</button>':'')+'<button class="btn primary">Enregistrer</button></div></form>';

@@ -1,4 +1,4 @@
-// Roulettes · e-mails sent from contact@roulettes.club: payment reminders (admin) and the registration summary (parents)
+// Roulettes · e-mails sent from contact@roulettes.club: payment reminders (admin) and the registration summary (parents), always with the club in Bcc
 // À coller dans un projet Google Apps Script (script.google.com) ouvert avec le Gmail qui a l'alias contact@roulettes.club.
 // 1. Projet > Paramètres > Propriétés du script : ajoute KEY = une longue phrase secrète (la même que dans l'admin du site).
 // 2. Déployer > Nouveau déploiement > Application Web : « Exécuter en tant que : moi », « Accès : tout le monde ».
@@ -17,7 +17,7 @@ function doPost(e) {
     if (!key || d.key !== key) return out({ ok: false, error: 'clé invalide' });
     var to = String(d.to || '').split(',').map(function (s) { return s.trim(); }).filter(valid);
     if (!to.length || to.length > MAX_TO) return out({ ok: false, error: 'destinataires invalides' });
-    var opts = mailOpts();
+    var opts = mailOpts(); opts.bcc = BCC;
     GmailApp.sendEmail(to.join(','), String(d.subject || 'Roulettes').slice(0, 200), String(d.text || '').slice(0, 5000), opts);
     return out({ ok: true, from: opts.from || Session.getActiveUser().getEmail() });
   } catch (err) {

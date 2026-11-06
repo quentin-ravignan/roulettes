@@ -316,6 +316,22 @@ body.noscroll{overflow:hidden}
 .scene{display:block;width:100%;min-width:760px;touch-action:pan-x pan-y}
 .scene-info{margin:12px 0 0;min-height:1.6em;color:var(--cream)}
 .shop .scene-info{color:var(--night)}
+/* Laurène's classroom: the video plays on the board drawn in the canvas */
+.class-inner{position:relative;min-width:760px}
+.class-board{position:absolute;left:27.5%;top:12.9%;width:45%;height:57.1%;border:0;background:#000;display:block}
+.class-board[hidden]{display:none}
+.lessons{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:18px}
+.lessons button{font:inherit;cursor:pointer;text-align:left;background:var(--night-2);color:var(--cream);border:1.5px solid var(--line);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+.lessons button b{font-family:var(--display);font-weight:400;font-size:1rem}
+.lessons button span{font-size:.8rem;color:var(--muted)}
+.lessons button:hover{border-color:var(--cyan)}
+.lessons button[aria-pressed="true"]{border-color:var(--yellow);background:#2b1d55}
+.lessons button[aria-pressed="true"] b{color:var(--yellow)}
+.lesson{margin-top:16px;background:var(--night-2);border-radius:20px;padding:18px 20px}
+.lesson h3{font-family:var(--display);font-weight:400;color:var(--cyan);font-size:1.3rem;margin:0 0 8px}
+.lesson ol{margin:0;padding-left:1.3em;display:grid;gap:4px}
+.lesson .yt{color:var(--muted);font-size:.9rem;margin:12px 0 0}
+.lesson .yt a{color:var(--cyan)}
 .chat{margin-top:16px;background:var(--night);color:var(--cream);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:12px}
 .chat h3{font-family:var(--display);font-weight:400;color:var(--cyan);font-size:1.3rem}
 .chat-log{max-height:360px;overflow:auto;display:flex;flex-direction:column;gap:10px;padding-right:4px}
@@ -354,6 +370,7 @@ body.noscroll{overflow:hidden}
       <li><a class="link" href="#inscription">Inscription</a></li>
       <li><a class="link" href="#spots">Spots</a></li>
       <li><a class="link" href="#riders">Riders</a></li>
+      <li><a class="link" href="#cours">Cours</a></li>
       <li><a class="link" href="#shop">Shop</a></li>
       <li><a class="link" href="#game">Game</a></li>
       <li><a class="link" href="#contact">Contact</a></li>
@@ -370,6 +387,7 @@ body.noscroll{overflow:hidden}
     <button type="button" data-place="club">🍹 Le Club</button>
     <button type="button" data-place="spots">🗺️ Spots</button>
     <button type="button" data-place="shop">👕 Shop</button>
+    <button type="button" data-place="cours">🎓 Les cours</button>
     <button type="button" data-place="rampe">🛹 Mini rampe</button>
     <button type="button" data-place="game">🛹 Aller rider</button>
   </div>
@@ -743,6 +761,22 @@ body.noscroll{overflow:hidden}
       <p>Tu peux lancer ta figure juste avant d’arriver en haut du mur ou une fois en l’air. Une figure pas finie quand tu retombes, c’est la <b>chute</b> : tu perds du temps. Un mur sans figure ne rapporte rien. Le 3-6 flip est long, lance-le tôt ! À 2 sur le même écran : J1 (plateforme de gauche) avec <b>Z Q S D</b>, puis J2 (plateforme de droite) avec les <b>flèches</b>.</p>
       <p>Record solo : <b id="ramp-best">–</b></p>
     </div>
+  </div>
+</section>
+
+<section id="cours" class="night">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow">Les cours</p>
+      <h2>La classe de Laurène</h2>
+      <p class="lead">Choisis une leçon : Laurène te montre la figure, te donne les étapes, et la vidéo se lance au tableau. Ensuite, on la travaille ensemble en vrai pendant les cours !</p>
+    </div>
+    <div class="scene-wrap"><div class="class-inner">
+      <canvas id="cours-cv" class="scene" style="aspect-ratio:1400/620" aria-label="La classe : Laurène la coach devant le tableau, le programme des figures au mur et les riders qui écoutent"></canvas>
+      <iframe class="class-board" id="class-board" hidden title="Vidéo de la leçon" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+    </div></div>
+    <div class="lessons" id="lessons" role="group" aria-label="Les leçons"></div>
+    <div class="lesson" id="lesson" aria-live="polite"><h3>Le programme</h3><p>Commence par le haut de la liste : on apprend d’abord à rouler, à s’arrêter et à tourner, puis les figures une par une.</p></div>
   </div>
 </section>
 
@@ -1420,12 +1454,14 @@ document.querySelectorAll('.sizes').forEach(function(g){g.addEventListener('clic
     spots:{title:'Le plan des spots',sections:['spots'],label:'SPOTS',act:'Regarder le plan des spots'},
     shop:{title:'Le shop Roulettes',sections:['shop'],label:'SHOP',act:'Entrer dans le shop'},
     game:{title:'Aller rider · Skate Cat Run',sections:['game'],label:'ALLER RIDER',act:'Aller rider'},
-    rampe:{title:'La mini rampe · Battle',sections:['rampe'],label:'MINI RAMPE',act:'Monter sur la mini rampe'}
+    rampe:{title:'La mini rampe · Battle',sections:['rampe'],label:'MINI RAMPE',act:'Monter sur la mini rampe'},
+    cours:{title:'Les cours · la classe de Laurène',sections:['cours'],label:'LES COURS',act:'Entrer en cours'}
   };
-  var HASH={accueil:'club',club:'club',projet:'club',valeurs:'club',riders:'club',inscription:'inscription',contact:'inscription','form-inscription':'inscription',spots:'spots',shop:'shop',game:'game',rampe:'rampe'};
+  var HASH={accueil:'club',club:'club',projet:'club',valeurs:'club',riders:'club',inscription:'inscription',contact:'inscription','form-inscription':'inscription',spots:'spots',shop:'shop',game:'game',rampe:'rampe',cours:'cours'};
   // hotspots: clickable box, x where the cat stops, label position
-  var XL=-430; // the street goes on past the villa, to the mini ramp
+  var XL=-880; // the street goes on past the villa, to the mini ramp and Laurène's classroom
   var SP=[
+    {id:'cours',x:-850,y:250,w:360,h:380,door:-670,lx:-670,ly:222},
     {id:'rampe',x:-410,y:440,w:350,h:240,door:-235,lx:-235,ly:452},
     {id:'inscription',x:60,y:330,w:125,h:300,door:122,lx:122,ly:360},
     {id:'club',x:220,y:120,w:500,h:510,door:470,lx:470,ly:96},
@@ -1435,8 +1471,8 @@ document.querySelectorAll('.sizes').forEach(function(g){g.addEventListener('clic
   ];
   var C={cyan:'#3ddcf0',pink:'#ff4fa8',yellow:'#ffe14d',cream:'#fbf4e6',night:'#150d2e'};
   var IMG={};['logo-roulettes.png','shop-logo.jpg','shop-flames.jpg','shop-wheel.jpg'].forEach(function(f){var i=new Image();i.src=f;IMG[f]=i});
-  var STARS=[];for(var i=0;i<70;i++)STARS.push([(i*397)%2400-400,(i*151)%300+8,(i%3)+1,i*.7]);
-  var ROOFS=[];(function(){var x=-400,k=0;while(x<2000){var w=60+(k*37)%70,h=60+(k*53)%90;ROOFS.push([x,w,h]);x+=w+((k*17)%3)*6;k++}})();
+  var STARS=[];for(var i=0;i<70;i++)STARS.push([(i*397)%2900-900,(i*151)%300+8,(i%3)+1,i*.7]);
+  var ROOFS=[];(function(){var x=-950,k=0;while(x<2000){var w=60+(k*37)%70,h=60+(k*53)%90;ROOFS.push([x,w,h]);x+=w+((k*17)%3)*6;k++}})();
   var R={x:470,y:640,vx:0,vy:0,dir:1,moved:0},MONA={x:300,dir:1};
   var keys={},target=null,near=null,hot=null,camX=0,camGoal=0,s=1,dpr=1,vw=W,t=0,last=0,running=false;
 
@@ -1454,7 +1490,7 @@ document.querySelectorAll('.sizes').forEach(function(g){g.addEventListener('clic
   // ---------- backdrop
   function sky(){
     var g=ctx.createLinearGradient(0,0,0,560);g.addColorStop(0,'#110a2c');g.addColorStop(.5,'#341c66');g.addColorStop(.82,'#94407f');g.addColorStop(1,'#ff8a6b');
-    ctx.fillStyle=g;ctx.fillRect(-500,0,W+1000,560);
+    ctx.fillStyle=g;ctx.fillRect(-1000,0,W+1500,560);
     STARS.forEach(function(q){ctx.globalAlpha=.4+.6*Math.abs(Math.sin(t*1.3+q[3]));ctx.fillStyle='#fff';ctx.fillRect(q[0],q[1],q[2],q[2])});ctx.globalAlpha=1;
     ctx.fillStyle='#fbf4e6';circ(1330,92,34);ctx.fillStyle='#e6dccb';circ(1320,84,7);circ(1342,104,5);
     // far rooftops of the 19e, the Buttes-Chaumont temple and the Eiffel tower
@@ -1466,14 +1502,14 @@ document.querySelectorAll('.sizes').forEach(function(g){g.addEventListener('clic
     ctx.fillStyle='#ffe14d';circ(1506,326,2.5);
   }
   function ground(){
-    ctx.fillStyle='#3d335e';ctx.fillRect(-500,560,W+1000,140);
+    ctx.fillStyle='#3d335e';ctx.fillRect(-1000,560,W+1500,140);
     ctx.strokeStyle='rgba(255,255,255,.07)';ctx.lineWidth=2;
-    [584,614,652,696].forEach(function(y){ctx.beginPath();ctx.moveTo(-500,y);ctx.lineTo(W+500,y);ctx.stroke()});
-    for(var x=-480;x<W+480;x+=90){ctx.beginPath();ctx.moveTo(x,560);ctx.lineTo(x+(x-800)*.14,700);ctx.stroke()}
-    ctx.fillStyle='rgba(0,0,0,.28)';ctx.fillRect(-500,560,W+1000,12);
-    ctx.fillStyle='#9a8fc2';ctx.fillRect(-500,700,W+1000,12);ctx.fillStyle='#5a4f80';ctx.fillRect(-500,712,W+1000,6);
-    ctx.fillStyle='#231b3c';ctx.fillRect(-500,718,W+1000,90);
-    ctx.fillStyle='rgba(251,244,230,.55)';for(var d=-480;d<W+480;d+=120)ctx.fillRect(d,764,60,6);
+    [584,614,652,696].forEach(function(y){ctx.beginPath();ctx.moveTo(-1000,y);ctx.lineTo(W+500,y);ctx.stroke()});
+    for(var x=-980;x<W+480;x+=90){ctx.beginPath();ctx.moveTo(x,560);ctx.lineTo(x+(x-800)*.14,700);ctx.stroke()}
+    ctx.fillStyle='rgba(0,0,0,.28)';ctx.fillRect(-1000,560,W+1500,12);
+    ctx.fillStyle='#9a8fc2';ctx.fillRect(-1000,700,W+1500,12);ctx.fillStyle='#5a4f80';ctx.fillRect(-1000,712,W+1500,6);
+    ctx.fillStyle='#231b3c';ctx.fillRect(-1000,718,W+1500,90);
+    ctx.fillStyle='rgba(251,244,230,.55)';for(var d=-980;d<W+480;d+=120)ctx.fillRect(d,764,60,6);
     // the street drops down to the right: "aller rider"
     ctx.fillStyle='#2b2347';poly([1420,560,W+500,700,W+500,808,1420,808]);
     ctx.fillStyle='#4a4070';poly([1420,560,W+500,700,W+500,760,1420,700]);
@@ -1573,6 +1609,22 @@ document.querySelectorAll('.sizes').forEach(function(g){g.addEventListener('clic
     ctx.save();ctx.translate(sx,sb-190);ctx.rotate(Math.PI/4);ctx.fillStyle='#ffe14d';rr(-40,-40,80,80,8);ctx.fill();ctx.strokeStyle='#150d2e';ctx.lineWidth=4;rr(-34,-34,68,68,6);ctx.stroke();ctx.restore();
     ctx.fillStyle='#150d2e';circ(sx+2,sb-212,7);ctx.fillRect(sx-6,sb-205,14,18);rr(sx-20,sb-186,40,6,3);ctx.fill();circ(sx-12,sb-176,3.5);circ(sx+12,sb-176,3.5);
   }
+  function school(){ // Laurène's classroom: a big window on the chalkboard, the coach inside
+    var x=-850,w=360,wx=x+22,wy=356,ww=210,wh=150,dx=x+w-100;
+    facade(x,w,260,'#4a2f6e','#4f5a80');
+    ctx.fillStyle='rgba(255,255,255,.05)';for(var y=290;y<560;y+=22)ctx.fillRect(x,y,w,2);
+    ctx.fillStyle='#120a2c';rr(x+50,282,w-100,50,10);ctx.fill();neon('LES COURS',x+w/2,318,26,C.cyan);
+    ctx.fillStyle='#ffe7b0';ctx.fillRect(wx,wy,ww,wh);
+    ctx.fillStyle='#2f5a46';ctx.fillRect(wx+24,wy+14,ww-48,72);ctx.strokeStyle='#8a5530';ctx.lineWidth=4;ctx.strokeRect(wx+24,wy+14,ww-48,72);
+    ctx.strokeStyle='rgba(255,255,255,.85)';ctx.lineWidth=2.5;ctx.setLineDash([6,5]);ctx.beginPath();ctx.moveTo(wx+44,wy+70);ctx.quadraticCurveTo(wx+105,wy+12,wx+166,wy+70);ctx.stroke();ctx.setLineDash([]);
+    ctx.beginPath();ctx.moveTo(wx+88,wy+40);ctx.lineTo(wx+122,wy+40);ctx.stroke();ctx.fillStyle='#fff';circ(wx+94,wy+45,3);circ(wx+116,wy+45,3);
+    if(window.RL){var co=RL.chars.filter(function(c){return c.info==='Coach'})[0];if(co){ctx.save();ctx.beginPath();ctx.rect(wx,wy,ww,wh);ctx.clip();RL.draw(ctx,co,wx+ww-44,wy+wh+24+Math.abs(Math.sin(t*2))*2,.62,t,true);ctx.restore()}}
+    ctx.fillStyle='#2a1745';ctx.fillRect(wx-6,wy-6,ww+12,6);ctx.fillRect(wx-6,wy+wh,ww+12,8);ctx.fillRect(wx-6,wy,6,wh);ctx.fillRect(wx+ww,wy,6,wh);ctx.fillRect(wx+ww/2-2,wy,4,wh);
+    ctx.fillStyle='rgba(255,255,255,.25)';poly([wx,wy,wx+30,wy,wx,wy+44]);
+    ctx.fillStyle='#2a1745';ctx.fillRect(dx,372,72,188);ctx.fillStyle='#ffcf7a';ctx.fillRect(dx+8,382,56,74);ctx.fillStyle=C.yellow;circ(dx+58,476,4);
+    ctx.fillStyle=C.pink;rr(dx-2,520,76,22,5);ctx.fill();txt('LUN · MAR',dx+36,536,'700 11px Space Grotesk, sans-serif','#fff');
+    deck(wx+ww+16,410,110,'#3ddcf0','#150d2e');
+  }
   function miniRamp(){ // the club's mini ramp, with a rider going back and forth
     var cx=-235,F=52,RR=70,D=48,b=606,L=F+RR*Math.PI/2;
     function prof(){ctx.beginPath();ctx.moveTo(cx-F-RR-D,b-RR);ctx.lineTo(cx-F-RR,b-RR);ctx.arc(cx-F,b-RR,RR,Math.PI,Math.PI/2,true);ctx.lineTo(cx+F,b);ctx.arc(cx+F,b-RR,RR,Math.PI/2,0,true);ctx.lineTo(cx+F+RR+D,b-RR)}
@@ -1621,7 +1673,7 @@ document.querySelectorAll('.sizes').forEach(function(g){g.addEventListener('clic
   function draw(){
     ctx.setTransform(dpr,0,0,dpr,0,0);ctx.fillStyle='#120c26';ctx.fillRect(0,0,cv.width,cv.height);
     ctx.setTransform(dpr*s,0,0,dpr*s,-camX*s*dpr,0);
-    sky();ground();miniRamp();villa();club();park();shop();slope();
+    sky();ground();school();miniRamp();villa();club();park();shop();slope();
     var it=[{y:612,f:booth},{y:606,f:mapBoard},{y:650,f:function(){terrace(300,650)}},{y:650,f:function(){terrace(640,650)}}];
     var ry=riderY(),me=window.RL?RL.pick():null;
     if(me)it.push({y:R.y,f:function(){drawCat(me,R.x,ry,sc(R.y),R.dir<0,t)}});
@@ -1749,6 +1801,90 @@ function rlScene(cv,W,H,draw,hit,click){
     lines.forEach(function(l,i){o.txt(l,x,y-h+28+i*22,'700 17px Space Grotesk, sans-serif','#150d2e')})};
   return o;
 }
+
+/* ===== Les cours: Laurène's classroom, the lesson list and the YouTube video on the board ===== */
+(function(){
+  var cv=document.getElementById('cours-cv'),yt=document.getElementById('class-board'),box=document.getElementById('lessons'),card=document.getElementById('lesson');if(!cv||!window.RL)return;
+  var W=1400,H=620,BX=385,BY=80,BW=630,BH=354,PX=1060,PY=70;
+  // k: demo the coach plays (a trick from the game, or rolling); v: YouTube id; c: channel
+  var L=[
+    {n:'Se tenir sur la planche',lv:'Premiers pas',v:'gQ2rIUiMpMs',c:'Braille Skateboarding France',k:'idle',
+      steps:['Trouve ton sens : regular (pied gauche devant) ou goofy (pied droit devant).','Pied avant sur les vis de devant, pied arrière sur le tail.','Genoux pliés, poids au milieu, et regarde devant toi, pas tes pieds.'],
+      say:'On commence tranquille : genoux pliés et le regard devant !'},
+    {n:'Avancer',lv:'Premiers pas',v:'QeRms2EcYtU',c:'Braille Skateboarding France',k:'roll',
+      steps:['Pied avant sur les vis de devant, tourné vers l’avant.','Pousse avec le pied arrière, par petites poussées, juste à côté de la planche.','Remets le pied arrière sur le tail et tourne le pied avant de travers pour rouler.'],
+      say:'Des petites poussées, et on remonte le pied sur le tail !'},
+    {n:'S’arrêter',lv:'Premiers pas',v:'VrS5bonEFXk',c:'SIKANA',k:'roll',
+      steps:['Le plus simple : pose le pied arrière à plat sur le sol et frotte doucement.','Tu peux aussi appuyer sur le tail pour le faire frotter par terre.','Si ça va trop vite : saute de la planche et cours quelques pas.'],
+      say:'Savoir s’arrêter, c’est la règle n°1. On frotte le pied doucement !'},
+    {n:'Tourner',lv:'Premiers pas',v:'Dw0KsFvXUOI',c:'UCPA',k:'roll',
+      steps:['Pour un virage : appuie sur les orteils ou sur les talons, la planche tourne toute seule.','Pour un kickturn : appuie sur le tail pour lever l’avant, et pivote.','Les épaules guident, les pieds suivent.'],
+      say:'Les épaules tournent d’abord, la planche suit !'},
+    {n:'Ollie',lv:'Débutant',v:'VZPr1zMXJ0o',c:'Braille Skateboarding France',k:'ollie',
+      steps:['Pied arrière sur le bout du tail, pied avant au milieu de la planche.','Claque le tail par terre (le pop) et saute en même temps.','Fais glisser le pied avant vers le nose pour faire monter la planche.','Remonte les genoux, puis atterris les pieds sur les vis.'],
+      say:'Pop… on glisse… on remonte les genoux ! L’ollie, c’est la base de tout.'},
+    {n:'Pop shove-it',lv:'Débutant',v:'-r9OrK2QLN8',c:'Braille Skateboarding France',k:'shove',
+      steps:['Pied arrière sur le tail, côté orteils. Pied avant près des vis de devant.','Pousse le tail derrière toi en le faisant claquer (le scoop).','Saute bien droit et laisse la planche faire un demi-tour sous toi.','Rattrape-la avec les deux pieds.'],
+      say:'On scoop le tail derrière et on saute droit : la planche fait demi-tour sous tes pieds.'},
+    {n:'Kickflip',lv:'Intermédiaire',v:'4_uLh-qiK0I',c:'Braille Skateboarding France',k:'flip',
+      steps:['Pied avant juste derrière les vis, un peu en biais.','Pop comme pour un ollie.','Fais glisser le pied avant vers le coin du nose et donne une pichenette.','La planche fait un tour : rattrape-la avec le pied arrière, puis le pied avant.'],
+      say:'Pop, et la pichenette sur le coin du nose ! La planche fait un tour complet.'},
+    {n:'Varial flip',lv:'Confirmé',v:'jhuzTQQKfVA',c:'Quartier',k:'shove',
+      steps:['C’est un pop shove-it et un kickflip en même temps.','Pied arrière en scoop sur le tail, pied avant comme pour un kickflip.','Scoop derrière avec le pied arrière, pichenette vers l’avant avec le pied avant.','Laisse la planche tourner sous toi et rattrape-la.'],
+      say:'Le varial, c’est shove-it plus kickflip : scoop derrière, pichenette devant !'},
+    {n:'360 flip',lv:'Confirmé',v:'yU6tsSP5B18',c:'Braille Skateboarding France',k:'tre',
+      steps:['Pied arrière sur le coin du tail, pied avant au milieu.','Gros scoop vers l’arrière : c’est le pied arrière qui fait presque tout.','Petite pichenette du pied avant, juste pour aider la planche à flipper.','Saute haut, attends que la planche ait fini et attrape-la.'],
+      say:'Le 3-6 flip, c’est le pied arrière qui travaille : gros scoop, et on reste bien au-dessus !'}
+  ];
+  var cur=-1,say='Salut ! Je suis Laurène. Choisis une leçon sur le programme, et on regarde la vidéo au tableau.',sayT=10,t0=0,T=0;
+  var COACH=RL.chars.filter(function(c){return c.info==='Coach'})[0]||RL.chars[0];
+  function kids(){var me=RL.pick(),k=RL.chars.filter(function(c){return c.age&&c!==me}).slice(0,3);if(me&&me!==COACH)k.splice(1,0,me);return k.slice(0,4)}
+  function draw(o){var c=o.ctx,t=o.t,hv=o.hover;T=t;
+    var g=c.createLinearGradient(0,0,0,470);g.addColorStop(0,'#3a2466');g.addColorStop(1,'#4d2f7e');c.fillStyle=g;c.fillRect(0,0,W,470);
+    c.fillStyle='#8a5530';c.fillRect(0,470,W,H-470);c.strokeStyle='rgba(0,0,0,.18)';c.lineWidth=2;for(var y=490;y<H;y+=26){c.beginPath();c.moveTo(0,y);c.lineTo(W,y);c.stroke()}
+    c.fillStyle='rgba(0,0,0,.25)';c.fillRect(0,462,W,10);
+    // window on the left wall: the 19e at night
+    c.fillStyle='#150d2e';c.fillRect(40,70,170,190);c.fillStyle='#2a1858';[[50,180,40,80],[96,150,36,110],[140,200,60,60]].forEach(function(b){c.fillRect(b[0],b[1],b[2],b[3])});c.fillStyle='#fbf4e6';o.circ(170,110,16);
+    c.strokeStyle='#2a1745';c.lineWidth=10;c.strokeRect(40,70,170,190);c.lineWidth=5;c.beginPath();c.moveTo(125,70);c.lineTo(125,260);c.moveTo(40,165);c.lineTo(210,165);c.stroke();
+    // the chalkboard (the video covers it once a lesson is chosen)
+    c.fillStyle='#8a5530';o.rr(BX-16,BY-16,BW+32,BH+32,10);c.fill();c.fillStyle='#2f5a46';c.fillRect(BX,BY,BW,BH);c.fillStyle='#6b4024';c.fillRect(BX-24,BY+BH+14,BW+48,12);
+    c.fillStyle='#fff';c.fillRect(BX+60,BY+BH+6,26,8);c.fillStyle=C2.pink;c.fillRect(BX+100,BY+BH+6,20,8);
+    if(cur<0){o.txt('LES LEÇONS DE LAURÈNE',BX+BW/2,BY+70,'30px Bungee, Impact, sans-serif','rgba(255,255,255,.9)');
+      c.strokeStyle='rgba(255,255,255,.8)';c.lineWidth=3;c.setLineDash([10,8]);c.beginPath();c.moveTo(BX+160,BY+270);c.quadraticCurveTo(BX+BW/2,BY+110,BX+BW-160,BY+270);c.stroke();c.setLineDash([]);
+      RL.draw(c,COACH,BX+BW/2,BY+230-Math.abs(Math.sin(t*2))*30,.9,t,false,0,'ollie',(t*.6)%1);
+      o.txt('Choisis une leçon sur le programme →',BX+BW/2,BY+BH-26,'700 20px Space Grotesk, sans-serif','rgba(255,255,255,.85)')}
+    // the programme on the right wall: click a line to start the lesson
+    c.fillStyle='#fbf4e6';o.rr(PX,PY,300,400,12);c.fill();c.fillStyle=C2.pink;o.circ(PX+150,PY+8,8);
+    o.txt('PROGRAMME',PX+150,PY+44,'24px Bungee, Impact, sans-serif','#150d2e');
+    L.forEach(function(l,i){var y=PY+76+i*36,on=i===cur,h=hv==='L'+i;if(on||h){c.fillStyle=on?C2.yellow:'rgba(61,220,240,.25)';o.rr(PX+12,y-4,276,32,8);c.fill()}
+      c.strokeStyle='#150d2e';c.lineWidth=2;c.strokeRect(PX+22,y+4,16,16);if(on)o.txt('✓',PX+30,y+19,'700 16px Space Grotesk, sans-serif','#c2187a');
+      o.txt(l.n,PX+48,y+19,(on?'700 ':'500 ')+'17px Space Grotesk, sans-serif','#150d2e','left')});
+    // Laurène: rolls back and forth for the first lessons, or shows the trick
+    var l=L[cur]||{k:'idle'},cx=250,cy=560,tk=null,tp=0,fl=false,e=(t-t0)%3.2;
+    if(l.k==='roll'){cx=250+Math.sin((t-t0)*1.3)*90;fl=Math.cos((t-t0)*1.3)<0}
+    else if(l.k!=='idle'&&e<.75){cy-=Math.sin(e/.75*Math.PI)*90;tk=l.k;tp=e/.75}
+    c.fillStyle='rgba(0,0,0,.3)';c.beginPath();c.ellipse(cx,562,46,8,0,0,Math.PI*2);c.fill();
+    RL.draw(c,COACH,cx,cy+(tk||l.k==='roll'?0:Math.abs(Math.sin(t*2))*2),1.2,t,fl,0,tk,tp);
+    // the riders listening at the front (they try the trick a bit after Laurène)
+    kids().forEach(function(k,i){var x=520+i*150,y=600,e2=(t-t0-.9-i*.25)%3.2,j=cur>=0&&l.k!=='idle'&&l.k!=='roll'&&e2>0&&e2<.6;
+      c.fillStyle='rgba(0,0,0,.3)';c.beginPath();c.ellipse(x,602,34,7,0,0,Math.PI*2);c.fill();
+      RL.draw(c,k,x,y-(j?Math.sin(e2/.6*Math.PI)*40:Math.abs(Math.sin(t*2+i))*1.5),.95,t+i,true,0,j?l.k:null,j?e2/.6:0)});
+    if(hv==='coach')o.tip('Laurène, la coach · 4ᵉ aux championnats de France',cx,cy-170);
+    if(sayT>0){sayT-=1/60;o.say(say,230,360,240)}}
+  var C2={pink:'#ff4fa8',yellow:'#ffe14d'};
+  function hit(p){if(p.x>PX&&p.x<PX+300)for(var i=0;i<L.length;i++){var y=PY+72+i*36;if(p.y>y&&p.y<y+34)return'L'+i}
+    if(p.x>140&&p.x<360&&p.y>380&&p.y<570)return'coach';if(cur<0&&p.x>BX&&p.x<BX+BW&&p.y>BY&&p.y<BY+BH)return'board';return null}
+  function click(h){if(h==='coach'){say=(L[cur]||{}).say||'Choisis une leçon, je te montre !';sayT=8}else if(h==='board')choose(0);else choose(+h.slice(1))}
+  var o=rlScene(cv,W,H,draw,hit,click);
+  function choose(i){var l=L[i];cur=i;t0=T;say=l.say;sayT=9;
+    yt.src='https://www.youtube-nocookie.com/embed/'+l.v+'?autoplay=1&rel=0&hl=fr&cc_lang_pref=fr';yt.title='Vidéo : '+l.n;yt.hidden=false;
+    [].forEach.call(box.children,function(b,k){b.setAttribute('aria-pressed',String(k===i))});
+    card.innerHTML='<h3>'+l.n+' · '+l.lv+'</h3><ol>'+l.steps.map(function(x){return'<li>'+x+'</li>'}).join('')+'</ol><p class="yt">Vidéo : '+l.c+' · <a href="https://www.youtube.com/watch?v='+l.v+'" target="_blank" rel="noopener">l’ouvrir sur YouTube</a>. Pendant les cours, Laurène t’aide à la réussir en vrai.</p>'}
+  box.innerHTML=L.map(function(l){return'<button type="button" aria-pressed="false"><b>'+l.n+'</b><span>'+l.lv+'</span></button>'}).join('');
+  [].forEach.call(box.children,function(b,i){b.addEventListener('click',function(){choose(i)})});
+  // stop the video when the classroom closes (the section moves back out of the dialog)
+  var dlg=document.getElementById('place');if(dlg)dlg.addEventListener('close',function(){yt.removeAttribute('src');yt.hidden=true;cur=-1;[].forEach.call(box.children,function(b){b.setAttribute('aria-pressed','false')})});
+})();
 
 /* ===== Le Club: a bar with the values on the walls, the coach and the members' riders around their crew's table ===== */
 (function(){

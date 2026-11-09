@@ -50,9 +50,9 @@ header{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:rg
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--display);font-size:1rem;line-height:1}
 .brand img{width:44px;height:44px}
 .nav ul{display:flex;gap:4px;list-style:none;margin:0;padding:0;flex-wrap:wrap}
-.nav a.link{display:block;text-decoration:none;font-weight:700;font-size:.95rem;padding:8px 12px;border-radius:999px;color:var(--muted)}
+.nav a.link{display:block;text-decoration:none;font-weight:700;font-size:.92rem;padding:8px 9px;white-space:nowrap;border-radius:999px;color:var(--muted)}
 .nav a.link:hover,.nav a.link.on{color:var(--night);background:var(--cyan)}
-@media (max-width:640px){.brand span{display:none}.nav a.link{padding:6px 9px;font-size:.88rem}}
+@media (max-width:640px){.brand span{display:none}.nav{gap:8px;padding-block:6px}.brand img{width:36px;height:36px}.nav ul{flex:1;min-width:0;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}.nav ul::-webkit-scrollbar{display:none}.nav a.link{padding:6px 9px;font-size:.88rem;white-space:nowrap}}
 
 section{padding-block:clamp(56px,9vw,104px)}
 .night{background:var(--night);color:var(--cream)}
@@ -149,7 +149,24 @@ td.num.cy{color:var(--cyan)}
 
 /* riders */
 .crews{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-.crew{background:var(--night-2);border-radius:20px;border-top:8px solid var(--c);padding:22px 22px 10px;min-width:0;overflow-x:auto}
+.crew,.xcrew{background:var(--night-2);border-radius:20px;border-top:8px solid var(--c);padding:18px 18px 16px;min-width:0}
+.xcrew{margin-top:16px}.xcrew h3{font-family:var(--display);font-weight:400;font-size:1.3rem;color:var(--c)}
+.rcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:10px;margin-top:8px}
+.rcard{background:var(--night);border:1px solid var(--line);border-radius:16px;padding:12px 8px 10px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;min-width:0}
+.rcard .rav{width:84px;height:84px;border-radius:50%;border:3px solid var(--c);background:#2a1d55;display:block;object-fit:cover;flex:none}
+.rcard b{font-size:1rem;line-height:1.2;overflow-wrap:anywhere}
+.rcard small{color:var(--muted);font-weight:600;font-size:.82rem}
+.rcards.adm{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.rcards.adm .rcard{flex-direction:row;align-items:flex-start;text-align:left;gap:12px;padding:12px}
+.rcards.adm .rav{width:72px;height:72px;border-radius:14px}
+.rmeta{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+.rmeta .note{font-size:.8rem;color:var(--muted);line-height:1.3}
+.racts{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.racts a{font-weight:700;font-size:.82rem;text-decoration:none;border-radius:999px;padding:6px 10px;border:1.5px solid var(--line);color:var(--cream)}
+.racts a.wa{background:#25d366;border-color:#25d366;color:#0b2a17}
+.radm[hidden]{display:none}
+.radm{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;background:#2a1d55;border:1.5px dashed var(--yellow);border-radius:16px;padding:10px 14px;margin-bottom:16px;font-weight:600}
+.radm button{font:inherit;font-weight:700;cursor:pointer;border-radius:999px;padding:7px 14px;border:0;background:var(--yellow);color:var(--night)}
 .crew-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:6px}
 .crew-head h3{font-family:var(--display);font-weight:400;font-size:1.6rem;color:var(--c)}
 .crew-head span{color:var(--muted);font-weight:700;font-size:.9rem;white-space:nowrap}
@@ -157,7 +174,7 @@ td.num.cy{color:var(--cyan)}
 .crew td{font-variant-numeric:tabular-nums}
 .crew td:first-child{font-weight:700}
 .crew tr:last-child td{border-bottom:0}
-@media (max-width:760px){.crews{grid-template-columns:1fr}}
+@media (max-width:760px){.crews{grid-template-columns:1fr}.crew,.xcrew{padding:14px 12px 12px}.crew-head h3{font-size:1.3rem}}
 
 /* spots / riders */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
@@ -270,10 +287,15 @@ input[type=date]{color-scheme:dark}
 /* ===== village mode ===== */
 .village{background:#120c26;padding:0}
 #vcv{display:block;width:100%;height:clamp(440px,76vh,760px);touch-action:none;cursor:pointer;outline:none}
-.vbar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:14px 16px 6px;background:var(--night-2);border-top:1px solid var(--line)}
-.vbar button{font:inherit;font-weight:700;font-size:.92rem;cursor:pointer;border-radius:999px;padding:8px 14px;border:1.5px solid var(--line);background:var(--night);color:var(--cream)}
+/* the whole village (scene + places) fits on one screen */
+body.vm #village{display:flex;flex-direction:column;height:calc(100svh - var(--hdr,62px));min-height:420px}
+body.vm #vcv{flex:1 1 0;height:auto;min-height:170px}
+.vbar{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:10px 12px 4px;background:var(--night-2);border-top:1px solid var(--line);flex:none}
+.vbar button{font:inherit;font-weight:700;font-size:.9rem;cursor:pointer;border-radius:999px;padding:7px 12px;border:1.5px solid var(--line);background:var(--night);color:var(--cream)}
 .vbar button:hover{border-color:var(--cyan);color:var(--cyan)}
-.vhelp{margin:0;text-align:center;color:var(--muted);font-size:.9rem;padding:6px 16px 16px;background:var(--night-2)}
+.vhelp{margin:0;text-align:center;color:var(--muted);font-size:.85rem;padding:4px 16px 10px;background:var(--night-2);flex:none}
+/* phone: every place is one tap away, in a grid under a smaller scene */
+@media (max-width:700px){.vbar{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 12px 6px}.vbar button{border-radius:14px;padding:10px 10px;min-height:46px;text-align:left;font-size:.92rem;line-height:1.15}.vhelp{font-size:.8rem;padding:2px 12px 8px}}
 .vhelp button{font:inherit;color:var(--cyan);background:none;border:0;text-decoration:underline;cursor:pointer;padding:0}
 body.vm main>section:not(#village){position:absolute;left:-10000px;top:0;width:min(1120px,100vw);visibility:hidden}
 body.noscroll{overflow:hidden}
@@ -372,7 +394,8 @@ body.noscroll{overflow:hidden}
       <li><a class="link" href="#riders">Riders</a></li>
       <li><a class="link" href="#cours">Cours</a></li>
       <li><a class="link" href="#shop">Shop</a></li>
-      <li><a class="link" href="#game">Game</a></li>
+      <li><a class="link" href="#game">Street Game</a></li>
+      <li><a class="link" href="#rampe">Mini Rampe Game</a></li>
       <li><a class="link" href="#contact">Contact</a></li>
       <li><a class="link" id="nav-espace" href="espace.html">Mon espace</a></li>
     </ul>
@@ -388,8 +411,9 @@ body.noscroll{overflow:hidden}
     <button type="button" data-place="spots">🗺️ Spots</button>
     <button type="button" data-place="shop">👕 Shop</button>
     <button type="button" data-place="cours">🎓 Les cours</button>
-    <button type="button" data-place="rampe">🛹 Mini rampe</button>
-    <button type="button" data-place="game">🛹 Aller rider</button>
+    <button type="button" data-place="riders">⭐ Les riders</button>
+    <button type="button" data-place="rampe">🛹 Mini Rampe Game</button>
+    <button type="button" data-place="game">🏙️ Street Game</button>
   </div>
   <p class="vhelp"><span id="vhelp-txt">Clique sur un lieu ou roule avec les flèches (Z Q S D), Entrée pour entrer.</span> · <button type="button" id="to-classic">Voir le site en version classique</button></p>
 </section>
@@ -602,29 +626,32 @@ body.noscroll{overflow:hidden}
     <div class="head">
       <p class="eyebrow">Riders</p>
       <h2>Le crew</h2>
-      <p class="lead">Les riders de Roulettes.</p>
+      <p class="lead">Les riders de Roulettes, crew par crew.</p>
     </div>
+    <div class="radm" id="riders-admin" hidden></div>
     <div class="crews">
       <div class="crew" style="--c:var(--cyan)">
         <div class="crew-head"><h3>AlleyOop</h3><span>Lundi · 16h30</span></div>
-        <table><thead><tr><th>Rider</th><th>Âge</th><th>Stance</th></tr></thead><tbody>
+        <table hidden><thead><tr><th>Rider</th><th>Âge</th><th>Stance</th></tr></thead><tbody>
           <tr><td>Virgile A.</td><td>7 ans</td><td>?</td></tr>
           <tr><td>Georgia A.</td><td>5 ans</td><td>?</td></tr>
           <tr><td>Joseph B.</td><td>9 ans</td><td>?</td></tr>
           <tr><td>Joseph E.</td><td>5 ans</td><td>Regular</td></tr>
         </tbody></table>
+        <div class="rcards"></div>
       </div>
       <div class="crew" style="--c:var(--pink)">
         <div class="crew-head"><h3>Benihana</h3><span>Lundi · 18h00</span></div>
-        <table><thead><tr><th>Rider</th><th>Âge</th><th>Stance</th></tr></thead><tbody>
+        <table hidden><thead><tr><th>Rider</th><th>Âge</th><th>Stance</th></tr></thead><tbody>
           <tr><td>Mathis H.</td><td>8 ans</td><td>Regular</td></tr>
           <tr><td>Salomé H.</td><td>6 ans</td><td>Goofy</td></tr>
           <tr><td>Abigaëlle H.</td><td>4 ans</td><td>Regular</td></tr>
         </tbody></table>
+        <div class="rcards"></div>
       </div>
       <div class="crew" style="--c:var(--yellow)">
         <div class="crew-head"><h3>Caballerial</h3><span>Mardi · 16h30</span></div>
-        <table><thead><tr><th>Rider</th><th>Âge</th><th>Stance</th></tr></thead><tbody>
+        <table hidden><thead><tr><th>Rider</th><th>Âge</th><th>Stance</th></tr></thead><tbody>
           <tr><td>Jim L.</td><td>8 ans</td><td>?</td></tr>
           <tr><td>Leo F.</td><td>8 ans</td><td>Regular</td></tr>
           <tr><td>Léonie R.</td><td>7 ans</td><td>Regular</td></tr>
@@ -632,17 +659,20 @@ body.noscroll{overflow:hidden}
           <tr><td>Victoire B.</td><td>8 ans</td><td>Regular</td></tr>
           <tr><td>Timothée H.</td><td>8 ans</td><td>Regular</td></tr>
         </tbody></table>
+        <div class="rcards"></div>
       </div>
       <div class="crew" style="--c:#7aa8ff">
         <div class="crew-head"><h3>Disaster</h3><span>Mardi · 18h00</span></div>
-        <table><thead><tr><th>Rider</th><th>Âge</th><th>Stance</th></tr></thead><tbody>
+        <table hidden><thead><tr><th>Rider</th><th>Âge</th><th>Stance</th></tr></thead><tbody>
           <tr><td>Salif S.</td><td>4 ans</td><td>Regular</td></tr>
           <tr><td>Ismaël S.</td><td>10 ans</td><td>Regular</td></tr>
           <tr><td>Achille D.</td><td>5 ans</td><td>Regular</td></tr>
           <tr><td>Noémie M.</td><td>4 ans</td><td>?</td></tr>
         </tbody></table>
+        <div class="rcards"></div>
       </div>
     </div>
+    <div id="riders-extra"></div>
   </div>
 </section>
 <section id="shop" class="shop">
@@ -698,7 +728,7 @@ body.noscroll{overflow:hidden}
 <section id="game" class="cream">
   <div class="wrap">
     <div class="head">
-      <p class="eyebrow">Game</p>
+      <p class="eyebrow">Street Game</p>
       <h2>Skate Cat Run · 19e</h2>
       <p class="lead">Choisis ton rider, traverse le 19e de la Mouzaïa à la Villette et enchaîne les tricks. Premier objectif : <b>100 points</b> !</p>
     </div>
@@ -731,7 +761,7 @@ body.noscroll{overflow:hidden}
 <section id="rampe" class="cream">
   <div class="wrap">
     <div class="head">
-      <p class="eyebrow">Game</p>
+      <p class="eyebrow">Mini Rampe Game</p>
       <h2>Mini rampe · Battle</h2>
       <p class="lead">Chaque rider attend sur sa plateforme, puis fait son <b>run d’1 minute</b>. Une figure en l’air à chaque mur : le plus de points gagne !</p>
     </div>
@@ -1450,14 +1480,15 @@ document.querySelectorAll('.sizes').forEach(function(g){g.addEventListener('clic
   var ctx=cv.getContext('2d'),W=1600,H=800,TOUCH=matchMedia('(hover:none)').matches;
   var PLACES={
     inscription:{title:'La cabine · Contact & inscription',sections:['contact','inscription'],label:'CONTACT · INSCRIPTION',act:'Décrocher le téléphone'},
-    club:{title:'Le Club · le bar du crew',sections:['club','projet','valeurs','riders'],label:'LE CLUB',act:'Entrer dans Le Club'},
+    club:{title:'Le Club · le bar du crew',sections:['club','projet','valeurs'],label:'LE CLUB',act:'Entrer dans Le Club'},
     spots:{title:'Le plan des spots',sections:['spots'],label:'SPOTS',act:'Regarder le plan des spots'},
     shop:{title:'Le shop Roulettes',sections:['shop'],label:'SHOP',act:'Entrer dans le shop'},
-    game:{title:'Aller rider · Skate Cat Run',sections:['game'],label:'ALLER RIDER',act:'Aller rider'},
-    rampe:{title:'La mini rampe · Battle',sections:['rampe'],label:'MINI RAMPE',act:'Monter sur la mini rampe'},
+    game:{title:'Street Game · Skate Cat Run',sections:['game'],label:'STREET GAME',act:'Jouer au Street Game'},
+    rampe:{title:'Mini Rampe Game · Battle',sections:['rampe'],label:'MINI RAMPE GAME',act:'Jouer à la Mini Rampe Game'},
+    riders:{title:'Les riders · le crew',sections:['riders'],label:'RIDERS',act:''},
     cours:{title:'Les cours · la classe de Laurène',sections:['cours'],label:'LES COURS',act:'Entrer en cours'}
   };
-  var HASH={accueil:'club',club:'club',projet:'club',valeurs:'club',riders:'club',inscription:'inscription',contact:'inscription','form-inscription':'inscription',spots:'spots',shop:'shop',game:'game',rampe:'rampe',cours:'cours'};
+  var HASH={accueil:'club',club:'club',projet:'club',valeurs:'club',riders:'riders',inscription:'inscription',contact:'inscription','form-inscription':'inscription',spots:'spots',shop:'shop',game:'game',rampe:'rampe',cours:'cours'};
   // hotspots: clickable box, x where the cat stops, label position
   var XL=-880; // the street goes on past the villa, to the mini ramp and Laurène's classroom
   var SP=[
@@ -1896,7 +1927,7 @@ function rlScene(cv,W,H,draw,hit,click){
   function hsh(s){var h=7;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h}
   // the members' riders, as they look in their family space (public list: first name, initial, crew, age, look)
   var who=[],tables=crews.map(function(cr,ci){return{x:650+ci*240,cr:cr}});
-  function place(list){who=[];tables.forEach(function(tb){var kids=list.filter(function(k){return k.crew===tb.cr.name}).sort(function(a,b){return a.name.localeCompare(b.name)});
+  function place(list){window.RLCrew=list;document.dispatchEvent(new Event('rl-crew'));who=[];tables.forEach(function(tb){var kids=list.filter(function(k){return k.crew===tb.cr.name}).sort(function(a,b){return a.name.localeCompare(b.name)});
     var back=kids.slice(0,3),front=kids.slice(3);
     function put(l,y,sp,row){l.forEach(function(k,j){var x=tb.x+(j-(l.length-1)/2)*sp,ch=Object.assign({},k.ch,{noBoard:1});who.push({k:k,cr:tb.cr,x:x,y:y,row:row,ph:(hsh(k.name)%100)/16,flip:x>tb.x,c:ch})})}
     put(back,548,80,0);put(front,646,Math.min(84,236/Math.max(front.length,1)),1)})}
@@ -2181,6 +2212,62 @@ window.RLLoad=function(){if(window.RLD)return RLD.ready;if(!RLLoad.p)RLLoad.p=ne
         .then(function(){try{localStorage.setItem('rl-rider',r.id)}catch(e){}wear(r);window.RLCart.clear();
           msg.textContent='Commande enregistrée ! '+r.firstName+' la porte déjà dans le village. Le club te confirme le retrait'+(total?' (total '+RLD.eur(total)+', à régler au club).':'.');btn.disabled=false},
           function(e){msg.textContent='Impossible d’enregistrer la commande : '+(e&&e.message||e);btn.disabled=false})}}
+})();
+</script>
+
+<script>
+/* ===== header height → the village fits on one screen ===== */
+(function(){var h=document.querySelector('header'),st=document.querySelector('.stripe');
+  function set(){document.documentElement.style.setProperty('--hdr',(h.offsetHeight+(st?st.offsetHeight:0))+'px')}
+  set();window.addEventListener('resize',set);if(window.ResizeObserver)new ResizeObserver(set).observe(h)})();
+
+/* ===== riders page: cards by crew; admins also see the real photo, the family and a WhatsApp link ===== */
+(function(){
+  var sec=document.getElementById('riders');if(!sec)return;
+  var bar=document.getElementById('riders-admin'),extra=document.getElementById('riders-extra');
+  var COL={AlleyOop:'#3ddcf0',Benihana:'#ff4fa8',Caballerial:'#ffe14d',Disaster:'#7aa8ff'};
+  var adm=null,showAdm=true;
+  function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+  function wa(ph){var n=String(ph||'').replace(/[^\d+]/g,'').replace(/^\+/,'').replace(/^00/,'');if(/^0\d{9}$/.test(n))n='33'+n.slice(1);return n.length>=10?'https://wa.me/'+n:''}
+  function tel(ph){return String(ph||'').replace(/[^\d+]/g,'')}
+  function fd(d){if(!d)return'';var p=String(d).slice(0,10).split('-');return p.length===3?p[2]+'/'+p[1]+'/'+p[0]:d}
+  // the village character's head and shoulders, in a round frame
+  function face(ch,col){var c=document.createElement('canvas'),S=84,d=2;c.width=c.height=S*d;c.className='rav';c.setAttribute('aria-hidden','true');
+    var x=c.getContext('2d');x.scale(d,d);x.fillStyle='#2a1d55';x.fillRect(0,0,S,S);x.fillStyle=col;x.globalAlpha=.25;x.beginPath();x.arc(S/2,S*1.02,S*.46,0,7);x.fill();x.globalAlpha=1;
+    if(window.RL&&ch){var k=Object.assign({},ch,{noBoard:1,size:1});try{RL.draw(x,k,S/2,S*1.27,1,.2,false)}catch(e){}}return c}
+  function avatar(src,ch,col){if(src){var i=new Image();i.className='rav';i.alt='';i.loading='lazy';i.src=src;return i}return face(ch,col)}
+  function pubCard(k,col){var d=document.createElement('div');d.className='rcard';d.appendChild(face(k.ch,col));
+    d.insertAdjacentHTML('beforeend','<b>'+esc(k.name)+'</b><small>'+(k.age?esc(k.age)+' ans · ':'')+esc(k.stance&&k.stance!=='?'?k.stance:'stance ?')+'</small>');return d}
+  function admCard(r,col){var d=document.createElement('div');d.className='rcard';d.appendChild(avatar(r.photo,RLD.charOf(r),col));
+    var f=r.fam||{},a=RLD.age(r.birthDate),w=wa(f.phone),t=tel(f.phone),mail=(f.emails||r.emails||[])[0];
+    d.insertAdjacentHTML('beforeend','<div class="rmeta"><b>'+esc(r.firstName)+' '+esc(r.lastName||'')+'</b>'+
+      '<small>'+(a!=null?a+' ans · ':'')+(r.birthDate?'né·e le '+fd(r.birthDate)+' · ':'')+esc(r.stance||'stance ?')+'</small>'+
+      '<span class="note">'+esc(f.name||'Famille ?')+(f.phone?' · '+esc(f.phone):' · pas de téléphone')+'</span>'+
+      (r.emergency?'<span class="note">🚨 Urgence : '+esc(r.emergency)+'</span>':'')+
+      (r.medical?'<span class="note">🩹 Santé : '+esc(r.medical)+'</span>':'')+
+      '<span class="note">📷 Photos : '+(r.imageRights?'autorisées':'non autorisées')+'</span>'+
+      '<div class="racts">'+(w?'<a class="wa" href="'+w+'" target="_blank" rel="noopener">WhatsApp</a>':'')+(t?'<a href="tel:'+esc(t)+'">Appeler</a>':'')+(mail?'<a href="mailto:'+esc(mail)+'">E-mail</a>':'')+'</div></div>');return d}
+  function byName(a,b){return String(a.name||a.firstName).localeCompare(String(b.name||b.firstName),'fr')}
+  function render(){var useAdm=adm&&showAdm,pub=window.RLCrew||[];
+    [].forEach.call(sec.querySelectorAll('.crew'),function(c){var cn=c.querySelector('h3').textContent.trim(),col=COL[cn]||'#3ddcf0',box=c.querySelector('.rcards');box.innerHTML='';box.classList.toggle('adm',!!useAdm);
+      var l=(useAdm?adm.filter(function(r){return r.crew===cn&&r.status!=='en attente'}):pub.filter(function(k){return k.crew===cn})).sort(byName);
+      l.forEach(function(k){box.appendChild(useAdm?admCard(k,col):pubCard(k,col))});
+      if(!l.length)box.innerHTML='<small class="muted">Personne pour l’instant.</small>'});
+    extra.innerHTML='';
+    if(useAdm){var known=[].map.call(sec.querySelectorAll('.crew h3'),function(h){return h.textContent.trim()});
+      [['En attente de validation',function(r){return r.status==='en attente'}],['Sans crew',function(r){return r.status!=='en attente'&&known.indexOf(r.crew)<0}]].forEach(function(g){
+        var l=adm.filter(g[1]).sort(byName);if(!l.length)return;var d=document.createElement('div');d.className='xcrew';d.style.setProperty('--c','#c8a6ff');
+        d.innerHTML='<h3>'+g[0]+' · '+l.length+'</h3><div class="rcards adm"></div>';l.forEach(function(r){d.lastChild.appendChild(admCard(r,'#c8a6ff'))});extra.appendChild(d)})}
+    if(adm){bar.hidden=false;bar.innerHTML='<span>'+(showAdm?'🔒 Vue admin : photos et contacts, visible par toi seul·e.':'👀 Vue publique (ce que tout le monde voit).')+'</span><button type="button">'+(showAdm?'Vue publique':'Vue admin')+'</button>';
+      bar.querySelector('button').onclick=function(){showAdm=!showAdm;render()}}else bar.hidden=true}
+  document.addEventListener('rl-crew',render);
+  if(window.RL)render();else window.addEventListener('load',render);
+  // admins: everything the member space knows, read with their own rights
+  function loadAdm(){return Promise.all([RLD.q('riders'),RLD.q('families'),RLD.q('inscriptionFiles').catch(function(){return[]})]).then(function(r){
+    var fam={},ph={};r[1].forEach(function(f){fam[f.id]=f});r[2].sort(function(a,b){return String(a.date||'')<String(b.date||'')?-1:1}).forEach(function(x){if(x.riderId&&x.photo)ph[x.riderId]=x.photo});
+    adm=r[0].map(function(k){k.fam=fam[k.familyId];k.photo=ph[k.id]||'';return k});render()}).catch(function(e){console.warn('riders admin',e)})}
+  var flag=false;try{flag=localStorage.getItem('rl-auth')==='1'}catch(e){}
+  if(flag&&window.RLLoad)RLLoad().then(function(){RLD.onAuth(function(u){if(u&&u.admin)loadAdm();else if(adm){adm=null;render()}})});
 })();
 </script>
 

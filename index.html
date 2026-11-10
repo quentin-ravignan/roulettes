@@ -165,6 +165,11 @@ td.num.cy{color:var(--cyan)}
 .racts a{font-weight:700;font-size:.82rem;text-decoration:none;border-radius:999px;padding:6px 10px;border:1.5px solid var(--line);color:var(--cream)}
 .racts a.wa{background:#25d366;border-color:#25d366;color:#0b2a17}
 .radm[hidden]{display:none}
+.rfilt{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.rfilt button{font:inherit;font-weight:700;font-size:.92rem;cursor:pointer;border-radius:999px;padding:8px 14px;border:2px solid var(--c,var(--line));background:var(--night-2);color:var(--cream)}
+.rfilt button[aria-pressed=true]{background:var(--c,var(--cream));color:var(--night)}
+.crews.one{grid-template-columns:1fr}
+.radm.lock{border-color:var(--line);background:var(--night-2)}
 .radm{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;background:#2a1d55;border:1.5px dashed var(--yellow);border-radius:16px;padding:10px 14px;margin-bottom:16px;font-weight:600}
 .radm button{font:inherit;font-weight:700;cursor:pointer;border-radius:999px;padding:7px 14px;border:0;background:var(--yellow);color:var(--night)}
 .crew-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:6px}
@@ -633,6 +638,7 @@ body.noscroll{overflow:hidden}
       <h2>Le crew</h2>
       <p class="lead">Les riders de Roulettes, crew par crew.</p>
     </div>
+    <div class="rfilt" id="riders-filter" role="group" aria-label="Choisir un groupe"></div>
     <div class="radm" id="riders-admin" hidden></div>
     <div class="crews">
       <div class="crew" style="--c:var(--cyan)">
@@ -2219,7 +2225,8 @@ window.RLLoad=function(){if(window.RLD)return RLD.ready;if(!RLLoad.p)RLLoad.p=ne
   var sec=document.getElementById('riders');if(!sec)return;
   var bar=document.getElementById('riders-admin'),extra=document.getElementById('riders-extra');
   var COL={AlleyOop:'#3ddcf0',Benihana:'#ff4fa8',Caballerial:'#ffe14d',Disaster:'#7aa8ff'};
-  var adm=null,showAdm=true;
+  var adm=null,showAdm=true,who=null,hooked=false,grp='all',busy='';try{grp=localStorage.getItem('rl-crew-filter')||'all'}catch(e){}
+  var filt=document.getElementById('riders-filter'),crewsBox=sec.querySelector('.crews');
   function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
   function wa(ph){var n=String(ph||'').replace(/[^\d+]/g,'').replace(/^\+/,'').replace(/^00/,'');if(/^0\d{9}$/.test(n))n='33'+n.slice(1);return n.length>=10?'https://wa.me/'+n:''}
   function tel(ph){return String(ph||'').replace(/[^\d+]/g,'')}
@@ -2241,18 +2248,27 @@ window.RLLoad=function(){if(window.RLD)return RLD.ready;if(!RLLoad.p)RLLoad.p=ne
       '<span class="note">📷 Photos : '+(r.imageRights?'autorisées':'non autorisées')+'</span>'+
       '<div class="racts">'+(w?'<a class="wa" href="'+w+'" target="_blank" rel="noopener">WhatsApp</a>':'')+(t?'<a href="tel:'+esc(t)+'">Appeler</a>':'')+(mail?'<a href="mailto:'+esc(mail)+'">E-mail</a>':'')+'</div></div>');return d}
   function byName(a,b){return String(a.name||a.firstName).localeCompare(String(b.name||b.firstName),'fr')}
-  function render(){var useAdm=adm&&showAdm,pub=window.RLCrew||[];
-    [].forEach.call(sec.querySelectorAll('.crew'),function(c){var cn=c.querySelector('h3').textContent.trim(),col=COL[cn]||'#3ddcf0',box=c.querySelector('.rcards');box.innerHTML='';box.classList.toggle('adm',!!useAdm);
+  function chips(){var names=[].map.call(sec.querySelectorAll('.crew h3'),function(h){return h.textContent.trim()});if(grp!=='all'&&names.indexOf(grp)<0)grp='all';
+    filt.innerHTML=[['all','Tous les groupes']].concat(names.map(function(n){return[n,n]})).map(function(g){return'<button type="button" data-g="'+esc(g[0])+'" aria-pressed="'+(grp===g[0])+'"'+(COL[g[0]]?' style="--c:'+COL[g[0]]+'"':'')+'>'+esc(g[1])+'</button>'}).join('');
+    [].forEach.call(filt.querySelectorAll('button'),function(b){b.onclick=function(){grp=b.dataset.g;try{localStorage.setItem('rl-crew-filter',grp)}catch(e){}render()}})}
+  function render(){var useAdm=adm&&showAdm,pub=window.RLCrew||[];chips();crewsBox.classList.toggle('one',grp!=='all');
+    [].forEach.call(sec.querySelectorAll('.crew'),function(c){var cn=c.querySelector('h3').textContent.trim(),col=COL[cn]||'#3ddcf0',box=c.querySelector('.rcards');c.hidden=grp!=='all'&&grp!==cn;box.innerHTML='';box.classList.toggle('adm',!!useAdm);
       var l=(useAdm?adm.filter(function(r){return r.crew===cn&&r.status!=='en attente'}):pub.filter(function(k){return k.crew===cn})).sort(byName);
       l.forEach(function(k){box.appendChild(useAdm?admCard(k,col):pubCard(k,col))});
       if(!l.length)box.innerHTML='<small class="muted">Personne pour l’instant.</small>'});
     extra.innerHTML='';
-    if(useAdm){var known=[].map.call(sec.querySelectorAll('.crew h3'),function(h){return h.textContent.trim()});
+    if(useAdm&&grp==='all'){var known=[].map.call(sec.querySelectorAll('.crew h3'),function(h){return h.textContent.trim()});
       [['En attente de validation',function(r){return r.status==='en attente'}],['Sans crew',function(r){return r.status!=='en attente'&&known.indexOf(r.crew)<0}]].forEach(function(g){
         var l=adm.filter(g[1]).sort(byName);if(!l.length)return;var d=document.createElement('div');d.className='xcrew';d.style.setProperty('--c','#c8a6ff');
         d.innerHTML='<h3>'+g[0]+' · '+l.length+'</h3><div class="rcards adm"></div>';l.forEach(function(r){d.lastChild.appendChild(admCard(r,'#c8a6ff'))});extra.appendChild(d)})}
-    if(adm){bar.hidden=false;bar.innerHTML='<span>'+(showAdm?'🔒 Vue admin : photos et contacts, visible par toi seul·e.':'👀 Vue publique (ce que tout le monde voit).')+'</span><button type="button">'+(showAdm?'Vue publique':'Vue admin')+'</button>';
-      bar.querySelector('button').onclick=function(){showAdm=!showAdm;render()}}else bar.hidden=true}
+    bar.hidden=false;bar.classList.toggle('lock',!adm);
+    if(adm){bar.innerHTML='<span>'+(showAdm?'🔒 Vue admin : photos et contacts, visible par toi seul·e.':'👀 Vue publique (ce que tout le monde voit).')+'</span><button type="button">'+(showAdm?'Vue publique':'Vue admin')+'</button>';
+      bar.querySelector('button').onclick=function(){showAdm=!showAdm;render()}}
+    else if(who){bar.innerHTML='<span>Connecté·e avec <b>'+esc(who.email)+'</b> : ce compte n’est pas admin. Les photos et contacts restent cachés.</span><button type="button">Changer de compte</button>';
+      bar.querySelector('button').onclick=function(){RLD.signOut().then(login)}}
+    else{bar.innerHTML='<span>'+(busy||'🔒 Vraies photos et contacts des parents : réservés aux admins du club.')+'</span><button type="button">Se connecter</button>';bar.querySelector('button').onclick=login}}
+  function hook(){if(hooked)return;hooked=true;RLD.onAuth(function(u){who=u;if(u&&u.admin)loadAdm();else{adm=null;render()}})}
+  function login(){busy='';if(!window.RLLoad)return;RLLoad().then(function(){hook();return RLD.user()?null:RLD.signIn()}).catch(function(e){busy='Connexion impossible : '+(e&&e.message||e);render()})}
   document.addEventListener('rl-crew',render);
   if(window.RL)render();else window.addEventListener('load',render);
   // admins: everything the member space knows, read with their own rights
@@ -2260,7 +2276,7 @@ window.RLLoad=function(){if(window.RLD)return RLD.ready;if(!RLLoad.p)RLLoad.p=ne
     var fam={},ph={};r[1].forEach(function(f){fam[f.id]=f});r[2].sort(function(a,b){return String(a.date||'')<String(b.date||'')?-1:1}).forEach(function(x){if(x.riderId&&x.photo)ph[x.riderId]=x.photo});
     adm=r[0].map(function(k){k.fam=fam[k.familyId];k.photo=ph[k.id]||'';return k});render()}).catch(function(e){console.warn('riders admin',e)})}
   var flag=false;try{flag=localStorage.getItem('rl-auth')==='1'}catch(e){}
-  if(flag&&window.RLLoad)RLLoad().then(function(){RLD.onAuth(function(u){if(u&&u.admin)loadAdm();else if(adm){adm=null;render()}})});
+  if(window.RLLoad){if(flag)RLLoad().then(hook);else document.addEventListener('rl-page',function(e){if(e.detail==='riders')RLLoad().catch(function(){})})}
 })();
 </script>
 

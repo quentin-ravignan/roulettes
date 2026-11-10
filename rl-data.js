@@ -41,13 +41,25 @@
   // ---------- Firebase
   if(RLD.mode==='firebase'){
     RLD.ready=load('https://www.gstatic.com/firebasejs/'+FBV+'/firebase-app-compat.js').then(function(){return Promise.all([load('https://www.gstatic.com/firebasejs/'+FBV+'/firebase-auth-compat.js'),load('https://www.gstatic.com/firebasejs/'+FBV+'/firebase-firestore-compat.js')])})
-      .then(function(){firebase.initializeApp(CFG);auth=firebase.auth();db=firebase.firestore();
+      .then(function(){firebase.initializeApp(CFG);auth=firebase.auth();db=firebase.firestore();return fromLink()})
+      .then(function(){
         return new Promise(function(ok){var first=true;auth.onAuthStateChanged(function(u){
           if(!u){user=null;remember(false);if(first){first=false;ok()}emit();return}
           var em=(u.email||'').toLowerCase();
           db.collection('admins').doc(em).get().then(function(d){return d.exists},function(){return false}).then(function(adm){
             adm=adm||((window.RL_FB||{}).owners||[]).indexOf(em)>=0;
             user={email:em,name:u.displayName||em,photo:u.photoURL||'',admin:adm};remember(true);if(first){first=false;ok()}emit()})})})});
+    // e-mail link: the address gets a one-time link; opening it signs in (same rules: the link proves the address)
+    function fromLink(){var href=location.href;if(!auth.isSignInWithEmailLink(href))return Promise.resolve();
+      var em='';try{em=localStorage.getItem('rl-link-email')||''}catch(e){}
+      if(!em)em=(prompt('Pour finir la connexion, retape ton adresse e-mail (celle qui a reçu le lien) :')||'').trim();
+      var p=(/[?&]p=([^&#]*)/.exec(location.search)||[])[1]||'';
+      function clean(){try{localStorage.removeItem('rl-link-email')}catch(e){}history.replaceState(null,'',location.pathname+(p?'#'+decodeURIComponent(p):''));window.dispatchEvent(new HashChangeEvent('hashchange'))}
+      if(!em){clean();return Promise.resolve()}
+      return auth.signInWithEmailLink(em,href).then(clean,function(e){clean();alert('Ce lien de connexion ne marche plus (déjà utilisé ou trop ancien). Demande un nouveau lien.')})}
+    RLD.sendLink=function(email){email=String(email||'').trim().toLowerCase();if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))return Promise.reject(new Error('adresse e-mail invalide'));
+      var pg=location.hash.slice(1);try{localStorage.setItem('rl-link-email',email)}catch(e){}
+      return auth.sendSignInLinkToEmail(email,{url:location.origin+location.pathname+(pg?'?p='+encodeURIComponent(pg):''),handleCodeInApp:true})};
     RLD.signIn=function(){var p=new firebase.auth.GoogleAuthProvider();p.setCustomParameters({prompt:'select_account'});return auth.signInWithPopup(p)};
     RLD.signOut=function(){return auth.signOut()};
     RLD.token=function(){return auth.currentUser?auth.currentUser.getIdToken():Promise.resolve('')};
@@ -89,6 +101,9 @@
     user=adm?{email:'admin@demo.roulettes',name:'Admin démo',photo:'',admin:true}:{email:'parent@demo.roulettes',name:'Parent démo',photo:'',admin:false};
     try{localStorage.setItem('rl-demo-user',JSON.stringify(user))}catch(e){}remember(true);emit();return Promise.resolve()};
   RLD.signOut=function(){user=null;try{localStorage.removeItem('rl-demo-user')}catch(e){}remember(false);emit();return Promise.resolve()};
+  // demo: the "link" signs in at once (admin if the address contains "admin")
+  RLD.sendLink=function(email){email=String(email||'').trim().toLowerCase();if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))return Promise.reject(new Error('adresse e-mail invalide'));
+    user={email:email,name:email,photo:'',admin:email.indexOf('admin')>=0};try{localStorage.setItem('rl-demo-user',JSON.stringify(user))}catch(e){}remember(true);emit();return Promise.resolve()};
   RLD.q=function(col,where,order){var r=all(col).filter(function(v){return(where||[]).every(function(w){return match(v,w)})});if(order)r.sort(function(a,b){var x=a[order[0]],y=b[order[0]];return(x>y?1:x<y?-1:0)*(order[1]==='desc'?-1:1)});return wait(r)};
   RLD.get=function(col,id){var v=(DB[col]||{})[id];if(!v)return wait(null);v=JSON.parse(JSON.stringify(v));v.id=id;return wait(v)};
   RLD.add=function(col,data){var id=uid();(DB[col]=DB[col]||{})[id]=JSON.parse(JSON.stringify(data));save();return wait(id)};

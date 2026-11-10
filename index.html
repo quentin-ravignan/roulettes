@@ -170,6 +170,8 @@ td.num.cy{color:var(--cyan)}
 .rfilt button[aria-pressed=true]{background:var(--c,var(--cream));color:var(--night)}
 .crews.one{grid-template-columns:1fr}
 .radm.lock{border-color:var(--line);background:var(--night-2)}
+.rlog{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.rlog form{display:flex;gap:6px;flex-wrap:wrap}
+.rlog input{font:inherit;padding:7px 12px;border-radius:999px;border:1.5px solid var(--line);background:var(--night);color:var(--cream);min-width:0;width:210px;max-width:100%}
 .radm{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;background:#2a1d55;border:1.5px dashed var(--yellow);border-radius:16px;padding:10px 14px;margin-bottom:16px;font-weight:600}
 .radm button{font:inherit;font-weight:700;cursor:pointer;border-radius:999px;padding:7px 14px;border:0;background:var(--yellow);color:var(--night)}
 .crew-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:6px}
@@ -2147,7 +2149,7 @@ function rlScene(cv,W,H,draw,hit,click){
 })();
 
 /* ===== online registration: Google sign-in, then the family, the rider and their village character ===== */
-window.RLLoad=function(){if(window.RLD)return RLD.ready;if(!RLLoad.p)RLLoad.p=new Promise(function(ok,ko){var s=document.createElement('script');s.src='rl-data.js?v=4';s.onload=function(){RLD.ready.then(ok,ko)};s.onerror=ko;document.body.appendChild(s)});return RLLoad.p};
+window.RLLoad=function(){if(window.RLD)return RLD.ready;if(!RLLoad.p)RLLoad.p=new Promise(function(ok,ko){var s=document.createElement('script');s.src='rl-data.js?v=5';s.onload=function(){RLD.ready.then(ok,ko)};s.onerror=ko;document.body.appendChild(s)});return RLLoad.p};
 (function(){
   var form=document.getElementById('form-inscription');if(!form||!(window.RL_FB||{}).config&&!/^(localhost|127\.0\.0\.1)$/.test(location.hostname))return;
   form.addEventListener('focusin',function(){RLLoad()},{once:true});
@@ -2225,7 +2227,7 @@ window.RLLoad=function(){if(window.RLD)return RLD.ready;if(!RLLoad.p)RLLoad.p=ne
   var sec=document.getElementById('riders');if(!sec)return;
   var bar=document.getElementById('riders-admin'),extra=document.getElementById('riders-extra');
   var COL={AlleyOop:'#3ddcf0',Benihana:'#ff4fa8',Caballerial:'#ffe14d',Disaster:'#7aa8ff'};
-  var adm=null,showAdm=true,who=null,hooked=false,grp='all',busy='';try{grp=localStorage.getItem('rl-crew-filter')||'all'}catch(e){}
+  var adm=null,showAdm=true,who=null,hooked=false,open=false,grp='all',busy='';try{grp=localStorage.getItem('rl-crew-filter')||'all'}catch(e){}
   var filt=document.getElementById('riders-filter'),crewsBox=sec.querySelector('.crews');
   function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
   function wa(ph){var n=String(ph||'').replace(/[^\d+]/g,'').replace(/^\+/,'').replace(/^00/,'');if(/^0\d{9}$/.test(n))n='33'+n.slice(1);return n.length>=10?'https://wa.me/'+n:''}
@@ -2266,7 +2268,11 @@ window.RLLoad=function(){if(window.RLD)return RLD.ready;if(!RLLoad.p)RLLoad.p=ne
       bar.querySelector('button').onclick=function(){showAdm=!showAdm;render()}}
     else if(who){bar.innerHTML='<span>Connecté·e avec <b>'+esc(who.email)+'</b> : ce compte n’est pas admin. Les photos et contacts restent cachés.</span><button type="button">Changer de compte</button>';
       bar.querySelector('button').onclick=function(){RLD.signOut().then(login)}}
-    else{bar.innerHTML='<span>'+(busy||'🔒 Vraies photos et contacts des parents : réservés aux admins du club.')+'</span><button type="button">Se connecter</button>';bar.querySelector('button').onclick=login}}
+    else if(!open){bar.innerHTML='<span>'+(busy||'🔒 Vraies photos et contacts des parents : réservés aux admins du club.')+'</span><button type="button">Se connecter</button>';bar.querySelector('button').onclick=function(){open=true;busy='';render()}}
+    else{bar.innerHTML='<span>'+(busy||'Connexion admin :')+'</span><span class="rlog"><button type="button" data-google>Avec Google</button><form><input type="email" required placeholder="ou ton e-mail" autocomplete="email"><button type="submit">Recevoir un lien</button></form></span>';
+      bar.querySelector('[data-google]').onclick=login;var fm=bar.querySelector('form');
+      fm.onsubmit=function(e){e.preventDefault();var em=fm.querySelector('input').value;busy='Envoi…';render();
+        RLLoad().then(function(){hook();return RLD.sendLink(em)}).then(function(){busy=RLD.user()?'':'📩 Lien envoyé à '+esc(em.trim())+' : ouvre-le pour te connecter (regarde aussi les indésirables).';render()},function(er){busy='Envoi impossible : '+esc(er&&er.message||er);render()})}}}
   function hook(){if(hooked)return;hooked=true;RLD.onAuth(function(u){who=u;if(u&&u.admin)loadAdm();else{adm=null;render()}})}
   function login(){busy='';if(!window.RLLoad)return;RLLoad().then(function(){hook();return RLD.user()?null:RLD.signIn()}).catch(function(e){busy='Connexion impossible : '+(e&&e.message||e);render()})}
   document.addEventListener('rl-crew',render);
@@ -2276,6 +2282,7 @@ window.RLLoad=function(){if(window.RLD)return RLD.ready;if(!RLLoad.p)RLLoad.p=ne
     var fam={},ph={};r[1].forEach(function(f){fam[f.id]=f});r[2].sort(function(a,b){return String(a.date||'')<String(b.date||'')?-1:1}).forEach(function(x){if(x.riderId&&x.photo)ph[x.riderId]=x.photo});
     adm=r[0].map(function(k){k.fam=fam[k.familyId];k.photo=ph[k.id]||'';return k});render()}).catch(function(e){console.warn('riders admin',e)})}
   var flag=false;try{flag=localStorage.getItem('rl-auth')==='1'}catch(e){}
+  if(/[?&]mode=signIn/.test(location.search)&&/[?&]oobCode=/.test(location.search))flag=true;
   if(window.RLLoad){if(flag)RLLoad().then(hook);else document.addEventListener('rl-page',function(e){if(e.detail==='riders')RLLoad().catch(function(){})})}
 })();
 </script>

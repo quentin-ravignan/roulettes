@@ -323,8 +323,82 @@ body.vm #vcv{flex:1 1 0;height:auto;min-height:170px}
 .mbub .mx{position:absolute;top:4px;right:6px;border:0;background:none;font:inherit;font-size:1.1rem;line-height:1;cursor:pointer;color:#5a5175;padding:4px}
 .mbub[hidden]{display:none}
 .mimosa .acc{display:none}.mimosa[data-acc=bow] .acc-bow,.mimosa[data-acc=cap] .acc-cap,.mimosa[data-acc=helmet] .acc-helmet{display:inline}
+.mbub{max-height:min(60vh,520px);display:flex;flex-direction:column}.mbub p{overflow:auto;min-height:0;padding-right:4px}
+.mbub .mq{display:block;color:#5a5175;font-style:italic;margin-bottom:6px}
+.mbub ol,.mbub ul{margin:6px 0 0;padding-left:1.2em}.mbub a{color:#0e7c8c;font-weight:700}
+.mask{display:flex;gap:6px;margin-top:10px}.mask input{flex:1;min-width:0;font:inherit;font-size:.9rem;border:2px solid #150d2e;border-radius:12px;padding:7px 10px;background:#fff;color:#150d2e}
+.mask button{border:0;border-radius:12px;background:#150d2e;color:#ffe14d;font-weight:700;padding:0 12px;cursor:pointer}
+.mimosa .mcat canvas{display:block;width:100%;height:auto}.mimosa .mcat canvas[hidden]{display:none}.mimosa.lau svg{display:none}
+body[data-page=club] .mimosa,body[data-page=shop] .mimosa{display:none}
 @keyframes mpop{0%{transform:scale(.6) translateY(10px);opacity:0}70%{transform:scale(1.04)}100%{transform:none;opacity:1}}
 @media (max-width:640px){body[data-page=accueil] .mimosa{top:calc(var(--hdr,56px) + 14px);bottom:auto;align-items:flex-start}body[data-page=accueil] .mbub{margin:18px 0 0}body[data-page=accueil] .mbub::after{bottom:auto;top:20px}body[data-page=accueil] .mbub::before{bottom:auto;top:23px}.mimosa .mcat{width:84px}.mbub{max-width:calc(100vw - 120px);font-size:.86rem;margin-bottom:44px;padding:10px 26px 10px 12px}}
+
+/* sub-tabs (pages made of several parts) */
+.subnav{position:sticky;top:var(--hdr,62px);z-index:9;display:flex;gap:6px;justify-content:center;flex-wrap:wrap;padding:8px 12px;background:var(--night-2);border-bottom:1px solid var(--line)}
+.subnav[hidden]{display:none}
+.subnav a{text-decoration:none;font-weight:700;font-size:.9rem;padding:6px 14px;border-radius:999px;color:var(--muted);border:1.5px solid var(--line)}
+.subnav a.on{background:var(--yellow);color:var(--night);border-color:var(--yellow)}
+.chat-form.ask{margin-top:10px}
+/* laptop and up: no page scroll, each page fits the screen (long lists scroll inside their box) */
+@media (min-width:900px){
+  footer{display:none}
+  body:not([data-page=accueil]) main>section:not(.off){position:relative;height:calc(100svh - var(--hdr,62px) - var(--sub,0px));padding-block:14px 12px;overflow-y:auto;overflow-x:hidden;box-sizing:border-box}
+  #inscription form,#inscription .ins-info,#shop .shop-r,#cours .cours-side,#riders .crews{position:relative}
+  body:not([data-page=accueil]) main>section:not(.off)>.wrap{height:100%;display:flex;flex-direction:column;max-width:1240px;box-sizing:border-box}
+  body:not([data-page=accueil]) main .head{margin-bottom:10px;gap:2px;max-width:none;flex:none}
+  body:not([data-page=accueil]) main .head h2{font-size:clamp(1.5rem,2.3vw,2.1rem)}
+  body:not([data-page=accueil]) main .head .lead{font-size:.95rem;max-width:none;margin:0}
+  body:not([data-page=accueil]) main .scene-wrap{margin-top:0;flex:1 1 auto;min-height:0;container-type:size;overflow:hidden;background:transparent;border-radius:0}
+  body:not([data-page=accueil]) main .scene{min-width:0;width:min(100cqw,calc(100cqh * var(--ar)));margin:0 auto;border-radius:18px}
+  body:not([data-page=accueil]) main .scene-info{flex:none;margin-top:8px;font-size:.95rem}
+  /* club: projet, values and hero */
+  #projet .wrap{justify-content:center}#projet h2{font-size:clamp(2.2rem,5vw,4rem)}
+  #valeurs .values{gap:12px}#valeurs .value{padding:12px 14px;gap:4px}#valeurs .value p{font-size:.92rem;margin:0}#valeurs .coach{margin-top:12px;gap:20px}#valeurs .coach img{width:120px}#valeurs .coach h3{font-size:1.6rem}#valeurs .coach .info{gap:6px}#valeurs .coach p{margin:0;font-size:.95rem}
+  #accueil .hero{height:100%;gap:28px}#accueil .hero .logo{max-height:calc(100svh - var(--hdr,62px) - var(--sub,0px) - 60px);width:auto}
+  #accueil .hero h1{font-size:clamp(2.6rem,6vw,4.4rem)}
+  /* inscription: what to know | the form */
+  #inscription .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:0 20px}
+  #inscription .head{grid-column:1/-1}
+  #inscription .ins-info,#inscription form{min-height:0;overflow:auto;padding-right:6px}
+  #inscription .slots{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}#inscription .slot{padding:14px 16px}
+  #inscription .facts{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}#inscription .fact{padding:12px}
+  #inscription .price-wrap{margin-top:14px;grid-template-columns:1fr;gap:12px}#inscription .join{padding:16px}
+  #inscription form{margin-top:0!important}
+  /* spots: map | list, both as tall as the screen allows */
+  #spots .spots{flex:1;min-height:0;grid-template-rows:minmax(0,1fr);align-items:stretch}
+  #spots .spot-map-wrap{min-height:0}#spots .spot-map{height:auto;flex:1;min-height:0}#spots .spot-list{max-height:none;min-height:0}
+  /* riders: the four crews side by side, scrolling inside */
+  #riders .rfilt{margin-bottom:8px;flex:none}#riders .radm{margin-bottom:10px;padding:8px 12px;flex:none}
+  #riders .crews{flex:1;min-height:0;overflow:auto;grid-template-columns:repeat(4,minmax(0,1fr));align-content:start;gap:12px;padding-right:4px}
+  #riders .crews.one{grid-template-columns:1fr}#riders #riders-extra{grid-column:1/-1}
+  #riders .rcards.adm{grid-template-columns:1fr}#riders .crews.one .rcards.adm{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+  /* shop: the counter + Mimosa | the articles + cart */
+  #shop .wrap{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);grid-template-rows:auto minmax(0,1fr);gap:0 20px}
+  #shop .head{grid-column:1/-1}
+  #shop .shop-l{display:flex;flex-direction:column;min-height:0;gap:10px}
+  #shop .shop-l .scene-wrap{flex:none;height:auto;container-type:normal}#shop .shop-l .scene{width:min(100%,calc((100svh - var(--hdr,62px) - 395px) * 2.5926))}
+  #shop .chat{margin-top:0;flex:1;min-height:0;padding:12px 14px;gap:8px}#shop .chat-log{max-height:none;flex:1;min-height:80px}#shop .chips{flex-wrap:nowrap;overflow-x:auto;flex:none;padding-bottom:4px}#shop .chips button{white-space:nowrap}
+  #shop .shop-r{min-height:0;overflow:auto;padding-right:6px}
+  #shop .products{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}#shop .product img{aspect-ratio:4/3}#shop .product .pbody{padding:12px 14px;gap:8px}
+  #shop .cart{margin-top:12px}
+  /* cours: the classroom | the lessons */
+  #cours .wrap{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:0 18px}
+  #cours .head{grid-column:1/-1}
+  #cours .scene-wrap{container-type:size;height:100%}
+  #cours .class-inner{min-width:0;width:min(100cqw,calc(100cqh * 2.258));margin:0 auto}#cours .class-inner .scene{width:100%}
+  #cours .cours-side{min-height:0;overflow:auto;padding-right:6px}#cours .lessons{margin-top:0;grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}#cours .lesson{margin-top:10px}
+  /* games */
+  #game .modes,#rampe .modes{margin-bottom:8px;flex:none}#game .modes button,#rampe .modes button{padding:8px 10px}
+  #game .game-bar>p:first-child,#rampe .game-bar>p:first-child,#game .tricks,#rampe .tricks{display:none}
+  #game .game-wrap{width:min(100%,calc((100svh - var(--hdr,62px) - var(--sub,0px) - 240px) * 1.866));margin:0 auto;flex:none}
+  #rampe .ramp-pick{margin-bottom:8px;flex:none}
+  #rampe .game-wrap{width:min(100%,calc((100svh - var(--hdr,62px) - var(--sub,0px) - 290px) * 2.045));margin:0 auto;flex:none}
+  #game .tricks,#rampe .tricks{margin-top:8px;flex:none}#game .tricks button,#rampe .tricks button{padding:6px 8px}
+  #game .game-bar,#rampe .game-bar{margin-top:8px;flex:none}
+  /* contact: the five ways in one row */
+  #contact .contacts{grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}#contact .contact{padding:18px}
+  #games .gcards{flex:1;min-height:0}
+}
 /* pages: only the sections of the current page are shown */
 main>section.off{display:none!important}
 body.noscroll{overflow:hidden}
@@ -429,6 +503,7 @@ body.noscroll{overflow:hidden}
 </header>
 
 <main>
+<nav class="subnav" id="subnav" aria-label="Rubriques" hidden></nav>
 <section id="village" class="village" aria-label="Le village Roulettes : balade-toi en skate pour découvrir le club">
   <canvas id="vcv" tabindex="0" aria-label="Village Roulettes vu du dessus. Flèches ou Z Q S D pour rouler, Entrée pour entrer dans un lieu, ou utilise les boutons dessous."></canvas>
 </section>
@@ -439,8 +514,9 @@ body.noscroll{overflow:hidden}
       <p class="eyebrow">Le Club</p>
       <h2>Le bar du crew</h2>
     </div>
-    <div class="scene-wrap"><canvas id="club-cv" class="scene" style="aspect-ratio:1500/660" aria-label="Le bar du club : Mimosa le chat barman au comptoir, les valeurs du club affichées au mur, Laurène la coach et les riders de chaque crew autour de leur table"></canvas></div>
+    <div class="scene-wrap"><canvas id="club-cv" class="scene" style="aspect-ratio:1500/660;--ar:2.2727" aria-label="Le bar du club : Mimosa le chat barman au comptoir, les valeurs du club affichées au mur, Laurène la coach et les riders de chaque crew autour de leur table"></canvas></div>
     <p class="scene-info" id="club-info" aria-live="polite">Clique sur l’ardoise pour commander, sur une main pour jouer, ou sur un rider pour le découvrir.</p>
+    <form class="chat-form ask" id="club-ask"><input type="text" maxlength="200" autocomplete="off" placeholder="Parle à Mimosa le barman…" aria-label="Ta question pour Mimosa"><button type="submit">Envoyer</button></form>
   </div>
 </section>
 
@@ -504,6 +580,7 @@ body.noscroll{overflow:hidden}
       <h2>Rejoins le club</h2>
       <p class="lead">Les places sont limitées : 4 groupes de 6 élèves maximum.</p>
     </div>
+    <div class="ins-info">
     <div class="slots">
       <div class="slot" style="--c:var(--cyan)"><span class="day">Lundi</span><span class="time">16h30</span><span class="note">AlleyOop · 6 max</span></div>
       <div class="slot" style="--c:var(--pink)"><span class="day">Lundi</span><span class="time">18h00</span><span class="note">Benihana · 6 max</span></div>
@@ -538,6 +615,7 @@ body.noscroll{overflow:hidden}
       </div>
     </div>
 
+    </div>
     <form id="form-inscription" class="reg" novalidate>
       <div class="reg-head">
         <p class="eyebrow">Formulaire d'inscription</p>
@@ -691,8 +769,8 @@ body.noscroll{overflow:hidden}
         </tbody></table>
         <div class="rcards"></div>
       </div>
-    </div>
     <div id="riders-extra"></div>
+    </div>
   </div>
 </section>
 <section id="shop" class="shop">
@@ -702,13 +780,16 @@ body.noscroll{overflow:hidden}
       <h2>Les t-shirts du crew</h2>
       <p class="lead">Trois t-shirts noirs Roulettes, en tailles enfant et adulte. Et Mimosa, le chat du club (vendeur à ses heures), répond à toutes tes questions sur le skate.</p>
     </div>
-    <div class="scene-wrap"><canvas id="shop-cv" class="scene" style="aspect-ratio:1400/540" aria-label="L'intérieur du shop : le mur de planches, les roues, les casques, les trois t-shirts et Mimosa le chat vendeur derrière le comptoir"></canvas></div>
+    <div class="shop-l">
+    <div class="scene-wrap"><canvas id="shop-cv" class="scene" style="aspect-ratio:1400/540;--ar:2.5926" aria-label="L'intérieur du shop : le mur de planches, les roues, les casques, les trois t-shirts et Mimosa le chat vendeur derrière le comptoir"></canvas></div>
     <div class="chat" id="chat">
       <h3>Demande à Mimosa</h3>
       <div class="chat-log" id="chat-log" aria-live="polite"></div>
       <div class="chips" id="chat-chips"></div>
       <form class="chat-form" id="chat-form"><input id="chat-in" type="text" autocomplete="off" maxlength="200" placeholder="Pose ta question à Mimosa…" aria-label="Ta question pour Mimosa"><button type="submit">Envoyer</button></form>
     </div>
+    </div>
+    <div class="shop-r">
     <div class="products">
       <article class="product">
         <img src="shop-logo.jpg" alt="T-shirt noir avec le logo Roulettes : le chat skateur dans le cercle néon" loading="lazy" width="900" height="900">
@@ -741,6 +822,7 @@ body.noscroll{overflow:hidden}
         <p id="cart-msg" aria-live="polite"></p>
       </div>
       <small>La commande part en message WhatsApp au club : on te confirme le prix et quand récupérer ton t-shirt.</small>
+    </div>
     </div>
   </div>
 </section>
@@ -838,8 +920,10 @@ body.noscroll{overflow:hidden}
       <canvas id="cours-cv" class="scene" style="aspect-ratio:1400/620" aria-label="La classe : Laurène la coach devant le tableau, le programme des figures au mur et les riders qui écoutent"></canvas>
       <iframe class="class-board" id="class-board" hidden title="Vidéo de la leçon" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
     </div></div>
-    <div class="lessons" id="lessons" role="group" aria-label="Les leçons"></div>
+    <div class="cours-side">
+  <div class="lessons" id="lessons" role="group" aria-label="Les leçons"></div>
     <div class="lesson" id="lesson" aria-live="polite"><h3>Le programme</h3><p>Commence par le haut de la liste : on apprend d’abord à rouler, à s’arrêter et à tourner, puis les figures une par une.</p></div>
+    </div>
   </div>
 </section>
 
@@ -889,7 +973,7 @@ document.querySelectorAll('.sizes').forEach(function(g){g.addEventListener('clic
 (function(){
   var PAGES={
     accueil:{t:'Accueil',s:['village']},
-    club:{t:'Le Club',s:['club','projet','valeurs','accueil']},
+    club:{t:'Le Club',s:['club','projet','valeurs','accueil'],tabs:['Le bar','Le projet','Valeurs & coach','Le club']},
     games:{t:'Skate Games',s:['games']},
     inscription:{t:'Inscription',s:['inscription']},
     spots:{t:'Spots',s:['spots']},
@@ -901,16 +985,21 @@ document.querySelectorAll('.sizes').forEach(function(g){g.addEventListener('clic
     contact:{t:'Contact',s:['contact']}
   };
   var ALIAS={village:'accueil',projet:'club',valeurs:'club','form-inscription':'inscription'},MENU={game:'games',rampe:'games',inscription:'contact'};
+  var sub=document.getElementById('subnav'),tab='';
   var secs=[].slice.call(document.querySelectorAll('main>section')),links=[].slice.call(document.querySelectorAll('.nav a.link')),cur='';
   function pageOf(id){return PAGES[id]?id:ALIAS[id]||(function(){var el=id&&document.getElementById(id),sec=el&&el.closest('main>section');if(!sec)return'';for(var k in PAGES)if(PAGES[k].s.indexOf(sec.id)>=0)return k;return''})()}
-  function route(first){var id=decodeURIComponent(location.hash.slice(1)),pg=pageOf(id)||'accueil',P=PAGES[pg],changed=pg!==cur;
-    if(changed){secs.forEach(function(sc){sc.classList.toggle('off',P.s.indexOf(sc.id)<0)});cur=pg;
+  function route(first){var id=decodeURIComponent(location.hash.slice(1)),pg=pageOf(id)||'accueil',P=PAGES[pg],
+      tb=P.tabs?(P.s.indexOf(id)>=0?id:P.s[0]):'',changed=pg!==cur||tb!==tab;
+    if(changed){tab=tb;secs.forEach(function(sc){sc.classList.toggle('off',tb?sc.id!==tb:P.s.indexOf(sc.id)<0)});
+      if(tb)sub.innerHTML=P.s.map(function(x,i){return'<a href="#'+x+'"'+(x===tb?' class="on" aria-current="true"':'')+'>'+P.tabs[i]+'</a>'}).join('');
+      sub.hidden=!tb;document.body.style.setProperty('--sub',tb?sub.offsetHeight+'px':'0px');
+      cur=pg;
       window.RLPage=pg;document.body.dataset.page=pg;links.forEach(function(a){var lp=pageOf(a.getAttribute('href').slice(1)),on=lp===pg||lp===MENU[pg];a.classList.toggle('on',on);if(on)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
       var on=document.querySelector('.nav a.link.on');if(on&&on.scrollIntoView&&window.innerWidth<=640)on.scrollIntoView({block:'nearest',inline:'center'});
       document.title=pg==='accueil'?'Roulettes · cours de skate pour les filles · Paris 19e':P.t+' · Roulettes';
       document.dispatchEvent(new CustomEvent('rl-page',{detail:pg}));
       setTimeout(function(){window.dispatchEvent(new Event('resize'))},30)}
-    var el=id&&!PAGES[id]&&document.getElementById(id);
+    var el=id&&!PAGES[id]&&!(P.tabs&&P.s.indexOf(id)>=0)&&document.getElementById(id);
     if(el)setTimeout(function(){el.scrollIntoView({behavior:changed||first?'instant':'smooth'})},changed?120:20);else if(changed||!id)window.scrollTo({top:0,left:0,behavior:changed?'instant':'smooth'})}
   window.addEventListener('hashchange',function(){route(false)});
   route(true);
@@ -1678,7 +1767,7 @@ document.querySelectorAll('.sizes').forEach(function(g){g.addEventListener('clic
     awning(x+12,160,340,'#3ddcf0','#ffe14d');awning(x+w-176,160,340,'#3ddcf0','#ffe14d');
     // door with the vendor cat behind the glass
     ctx.fillStyle='#0f2c40';ctx.fillRect(x+w/2-40,372,80,188);ctx.fillStyle='#bfe6f0';ctx.fillRect(x+w/2-32,380,64,170);
-    if(window.RL){ctx.save();ctx.beginPath();ctx.rect(x+w/2-32,380,64,170);ctx.clip();RL.draw(ctx,OLLIE,x+w/2+2,560,.72,t,true);ctx.restore()}
+    var mi=window.RLMimosa&&RLMimosa('cap');if(mi&&mi.complete&&mi.naturalWidth){ctx.save();ctx.beginPath();ctx.rect(x+w/2-32,380,64,170);ctx.clip();ctx.drawImage(mi,x+w/2-34,462,68,73);ctx.restore()}else if(window.RL){ctx.save();ctx.beginPath();ctx.rect(x+w/2-32,380,64,170);ctx.clip();RL.draw(ctx,OLLIE,x+w/2+2,560,.72,t,true);ctx.restore()}
     ctx.fillStyle='rgba(255,255,255,.3)';poly([x+w/2-32,380,x+w/2-12,380,x+w/2-32,430]);
     ctx.fillStyle='#ff4fa8';rr(x+w/2-26,452,52,18,4);ctx.fill();txt('OUVERT',x+w/2,465,'700 11px Space Grotesk, sans-serif','#fff');
   }
@@ -1969,6 +2058,7 @@ function rlScene(cv,W,H,draw,hit,click){
   // ---------- the bar: drinks on the chalkboard, shi-fu-mi next to Mimosa
   var DRINKS=[['Diabolo menthe','🍹','#3fd17a','1 €'],['Grenadine','🥤','#e0313a','1 €'],['Limonade','🍋','#f5f0c8','1 €'],['Chocolat chaud','☕','#7a4a2c','1,50 €'],['Bière','🍺','#f0b429','3 €']];
   var HANDS=['✊','✋','✌️'],HN=['Pierre','Feuille','Ciseaux'];
+  window.RLBarSay=function(x){say=x;sayT=7};
   var INTRO='Installe-toi ! Commande à boire sur l’ardoise du comptoir, défie-moi au shi-fu-mi, et retrouve les riders des adhérent·es autour de la table de leur crew.';
   var glasses=[],say=INTRO,sayT=12,score=[0,0],last='',served=0,T=0,serve=null,hand=null,TAP=262;
   // a drink: Mimosa pours it under the tap, then slides it along the counter
@@ -1985,7 +2075,8 @@ function rlScene(cv,W,H,draw,hit,click){
   function handBox(i){return{x:SFM.x+8+i*36,y:SFM.y+40,w:32,h:38}}
   function inBox(p,b){return p.x>b.x&&p.x<b.x+b.w&&p.y>b.y&&p.y<b.y+b.h}
 
-  function minou(o,x,y){var c=o.ctx,b=Math.sin(o.t*2)*2;
+  function minou(o,x,y){var c=o.ctx,b=Math.sin(o.t*2)*2,mi=window.RLMimosa&&RLMimosa('bow');
+    if(mi&&mi.complete&&mi.naturalWidth)c.drawImage(mi,x-76,y-116+b,152,163);else{
     c.fillStyle='#151021';o.rr(x-46,y-10+b,92,90,24);c.fill();c.fillStyle='#fbf4e6';o.poly([x-12,y-8+b,x+12,y-8+b,x,y+34+b]);c.fillStyle='#ff4fa8';o.poly([x-16,y-6+b,x,y+2+b,x-16,y+10+b]);o.poly([x+16,y-6+b,x,y+2+b,x+16,y+10+b]);
     c.fillStyle='#9a7e5e';o.circ(x,y-44+b,44);o.poly([x-40,y-62+b,x-34,y-108+b,x-6,y-84+b]);o.poly([x+40,y-62+b,x+34,y-108+b,x+6,y-84+b]);
     c.strokeStyle='#4a3a2a';c.lineWidth=5;c.lineCap='round';[[-14,-84,-9,-68],[0,-88,0,-70],[14,-84,9,-68],[-44,-50,-30,-47],[-43,-38,-30,-38],[44,-50,30,-47],[43,-38,30,-38]].forEach(function(l){c.beginPath();c.moveTo(x+l[0],y+l[1]+b);c.lineTo(x+l[2],y+l[3]+b);c.stroke()});
@@ -1993,7 +2084,7 @@ function rlScene(cv,W,H,draw,hit,click){
     c.fillStyle='#efe5d2';c.beginPath();c.ellipse(x,y-28+b,24,16,0,0,Math.PI*2);c.fill();
     var blink=(o.t%4)<.12;c.fillStyle='#2a1d3a';if(blink){c.fillRect(x-22,y-52+b,12,3);c.fillRect(x+10,y-52+b,12,3)}else{c.fillStyle='#b5cf4f';c.beginPath();c.ellipse(x-16,y-50+b,7.5,8.5,0,0,Math.PI*2);c.ellipse(x+16,y-50+b,7.5,8.5,0,0,Math.PI*2);c.fill();c.fillStyle='#1a1410';c.beginPath();c.ellipse(x-16,y-50+b,2.6,7,0,0,Math.PI*2);c.ellipse(x+16,y-50+b,2.6,7,0,0,Math.PI*2);c.fill();c.fillStyle='#fff';o.circ(x-14,y-54+b,1.8);o.circ(x+18,y-54+b,1.8)}
     c.fillStyle='#ff6f9f';o.poly([x-5,y-36+b,x+5,y-36+b,x,y-30+b]);c.strokeStyle='#2a1d3a';c.lineWidth=2;c.beginPath();c.arc(x-5,y-28+b,5,0,Math.PI*.9);c.moveTo(x+10,y-28+b);c.arc(x+5,y-28+b,5,0,Math.PI*.9);c.stroke();
-    c.strokeStyle='rgba(255,255,255,.7)';c.lineWidth=1.4;[-1,1].forEach(function(sd){for(var k=0;k<3;k++){c.beginPath();c.moveTo(x+sd*20,y-30+b+k*5);c.lineTo(x+sd*48,y-36+b+k*8);c.stroke()}});
+    c.strokeStyle='rgba(255,255,255,.7)';c.lineWidth=1.4;[-1,1].forEach(function(sd){for(var k=0;k<3;k++){c.beginPath();c.moveTo(x+sd*20,y-30+b+k*5);c.lineTo(x+sd*48,y-36+b+k*8);c.stroke()}})}
     var e,px,py;
     if(hand&&(e=o.t-hand.t0)<2.6){px=x+66;py=e<.95?y-34-Math.abs(Math.sin(e/.95*Math.PI*3))*34:y-40;arm(o,x+36,y+12+b,px,py);paw(o,px,py,e<.95?0:hand.c);if(e>=.95)o.txt(HANDS[hand.c],px,py-34,'28px sans-serif','#fff')}
     else if(serve&&(e=o.t-serve.t0)<1.5){if(e<.8){px=TAP+22;py=300+Math.min(e*40,10)}else{px=glassX(e)-6;py=372}arm(o,x+36,y+12+b,px,py);c.fillStyle='#9a7e5e';o.circ(px,py,11)}
@@ -2098,7 +2189,7 @@ function rlScene(cv,W,H,draw,hit,click){
       c.fillStyle=on?'#ffe14d':'#fbf4e6';c.fillRect(x-5,y-5,w+10,w+36);if(im.complete&&im.naturalWidth)c.drawImage(im,im.naturalWidth*.12,im.naturalHeight*.08,im.naturalWidth*.76,im.naturalHeight*.8,x,y,w,w);
       o.txt(sh[1],x+w/2,y+w+22,'15px Bungee, Impact, sans-serif','#150d2e')});
     // counter, register and Ollie
-    var b=Math.sin(t*2)*2;RL.draw(c,OLLIE,1080,350+b,1.5,t,false);
+    var b=Math.sin(t*2)*2,mi=window.RLMimosa&&RLMimosa('cap');if(mi&&mi.complete&&mi.naturalWidth)c.drawImage(mi,975,128+b,210,225);else RL.draw(c,OLLIE,1080,350+b,1.5,t,false);
     c.fillStyle='#3ddcf0';c.fillRect(900,330,420,14);c.fillStyle='#1d4d6b';c.fillRect(910,344,400,120);c.fillStyle='rgba(255,255,255,.08)';for(var k=0;k<4;k++)c.fillRect(930+k*95,360,70,86);
     c.fillStyle='#150d2e';o.rr(1200,282,90,50,8);c.fill();c.fillStyle='#3fd17a';c.fillRect(1212,292,66,16);c.fillStyle='#ffe14d';c.fillRect(1214,316,62,8);
     var L=IMG['logo-roulettes.png'];if(L.complete&&L.naturalWidth)c.drawImage(L,1290,170,100,100);
@@ -2160,6 +2251,7 @@ function rlScene(cv,W,H,draw,hit,click){
     {k:['merci','thanks','top','cool','super','genial'],a:'Avec plaisir ! Ride safe 🤙'}
   ];
   var START=['Quel matériel pour débuter ?','Quelle taille de planche ?','Comment faire un ollie ?','L’histoire du skate','Les filles dans le skate','Regular ou goofy ?','Vos t-shirts'];
+  window.RLAsk=function(q){return answer(q)};
   function answer(q){var n=norm(q),best=null,bs=0;KB.forEach(function(e){var sc=0;e.k.forEach(function(k){if(n.indexOf(' '+k+' ')>=0)sc+=2+k.split(' ').length;else if(k.length>4&&n.indexOf(' '+k)>=0)sc+=1});if(sc>bs){bs=sc;best=e}});
     if(!best)return'Hmm, ça je sais pas encore… Essaie de me demander le matériel, une taille de planche, un trick (ollie, kickflip, shove-it…), l’histoire du skate ou nos t-shirts !';
     return Array.isArray(best.a)?best.a[Math.floor(Math.random()*best.a.length)]:best.a}
@@ -2316,59 +2408,89 @@ window.RLLoad=function(){if(window.RLD)return RLD.ready;if(!RLLoad.p)RLLoad.p=ne
 </script>
 
 <div class="mimosa" id="mimosa" aria-live="polite">
-  <div class="mbub" id="mbub"><button type="button" class="mx" aria-label="Fermer la bulle">×</button><p></p></div>
+  <div class="mbub" id="mbub"><button type="button" class="mx" aria-label="Fermer la bulle">×</button><p></p><form class="mask"><input type="text" maxlength="200" autocomplete="off" placeholder="Pose-moi une question…" aria-label="Ta question"><button type="submit" aria-label="Envoyer">➤</button></form></div>
   <button type="button" class="mcat" aria-label="Mimosa, le chat du club : un conseil ?">
     <svg viewBox="0 0 140 150" aria-hidden="true">
-      <path d="M112 128c22-6 26-34 14-50-6-8-14-6-12 2 6 14 4 34-14 40z" fill="#8c7254"/>
-      <path d="M118 84l9-3M123 98l10 0M121 112l9 4" stroke="#3e3024" stroke-width="5" stroke-linecap="round"/>
-      <ellipse cx="66" cy="110" rx="46" ry="36" fill="#8c7254"/>
-      <path d="M26 100c6-4 12-4 16 0M22 116c7-3 14-2 18 2M106 100c-6-4-12-4-16 0M110 116c-7-3-14-2-18 2" stroke="#3e3024" stroke-width="5" stroke-linecap="round" fill="none"/>
-      <ellipse cx="66" cy="106" rx="22" ry="26" fill="#efe5d2"/>
-      <ellipse cx="50" cy="141" rx="13" ry="8" fill="#e6dac3"/><ellipse cx="82" cy="141" rx="13" ry="8" fill="#e6dac3"/>
-      <path d="M44 138v6M50 138v7M56 138v6M76 138v6M82 138v7M88 138v6" stroke="#b9a78a" stroke-width="1.6"/>
+      <path d="M112 128c22-6 26-34 14-50-6-8-14-6-12 2 6 14 4 34-14 40z" fill="#3a2b28"/>
+      <ellipse cx="66" cy="110" rx="46" ry="36" fill="#3a2b28"/>
+      <ellipse cx="66" cy="106" rx="22" ry="26" fill="#dcc8a8"/>
+      <ellipse cx="50" cy="141" rx="13" ry="8" fill="#dcc8a8"/><ellipse cx="82" cy="141" rx="13" ry="8" fill="#dcc8a8"/>
+      <path d="M44 138v6M50 138v7M56 138v6M76 138v6M82 138v7M88 138v6" stroke="#a8957a" stroke-width="1.6"/>
       <g class="acc acc-bow"><path d="M66 82l-16-9v18zM66 82l16-9v18z" fill="#ff4fa8" stroke="#150d2e" stroke-width="2.5" stroke-linejoin="round"/><circle cx="66" cy="82" r="5" fill="#150d2e"/></g>
-      <path d="M22 44L30 6l26 22z" fill="#8c7254"/><path d="M110 44L102 6 76 28z" fill="#8c7254"/>
-      <path d="M28 36l5-22 14 13z" fill="#e9a5a0"/><path d="M104 36l-5-22-14 13z" fill="#e9a5a0"/>
-      <path d="M31 8l-3-6M101 8l3-6" stroke="#8c7254" stroke-width="3" stroke-linecap="round"/>
-      <path d="M14 60c0-24 24-40 52-40s52 16 52 40c0 10-3 18-8 24l6 6-12-1c-9 7-22 11-38 11s-29-4-38-11l-12 1 6-6c-5-6-8-14-8-24z" fill="#8c7254"/>
-      <path d="M50 26l4 14M66 22v16M82 26l-4 14M18 58l14 2M17 68l14-1M118 58l-14 2M119 68l-14-1" stroke="#3e3024" stroke-width="5" stroke-linecap="round"/>
-      <ellipse cx="66" cy="76" rx="20" ry="13" fill="#efe5d2"/>
-      <ellipse cx="46" cy="58" rx="11" ry="12" fill="#b8d14e"/><ellipse cx="86" cy="58" rx="11" ry="12" fill="#b8d14e"/>
+      <path d="M22 44L30 6l26 22z" fill="#3a2b28"/><path d="M110 44L102 6 76 28z" fill="#3a2b28"/>
+      <path d="M28 36l5-22 14 13z" fill="#e8a3b4"/><path d="M104 36l-5-22-14 13z" fill="#e8a3b4"/>
+      <path d="M31 8l-3-6M101 8l3-6" stroke="#3a2b28" stroke-width="3" stroke-linecap="round"/>
+      <path d="M14 60c0-24 24-40 52-40s52 16 52 40c0 10-3 18-8 24l6 6-12-1c-9 7-22 11-38 11s-29-4-38-11l-12 1 6-6c-5-6-8-14-8-24z" fill="#3a2b28"/>
+      <ellipse cx="66" cy="76" rx="20" ry="13" fill="#dcc8a8"/>
+      <ellipse cx="46" cy="58" rx="11" ry="12" fill="#4fb24a"/><ellipse cx="86" cy="58" rx="11" ry="12" fill="#4fb24a"/>
       <ellipse cx="46" cy="58" rx="3.6" ry="9.5" fill="#1a1410"/><ellipse cx="86" cy="58" rx="3.6" ry="9.5" fill="#1a1410"/>
       <circle cx="49" cy="53" r="2.8" fill="#fff"/><circle cx="89" cy="53" r="2.8" fill="#fff"/>
-      <path d="M61 70h10l-5 6z" fill="#d98a8a"/><path d="M66 76v4M66 80c-3 4-8 4-10 1M66 80c3 4 8 4 10 1" stroke="#3e3024" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M61 70h10l-5 6z" fill="#d98a8a"/><path d="M66 76v4M66 80c-3 4-8 4-10 1M66 80c3 4 8 4 10 1" stroke="#1a1210" stroke-width="2" fill="none" stroke-linecap="round"/>
       <path d="M48 74l-30-4M48 79l-30 3M84 74l30-4M84 79l30 3" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".9"/>
       <g class="acc acc-cap"><path d="M28 34c4-18 20-26 38-26s34 8 38 26z" fill="#ffe14d" stroke="#150d2e" stroke-width="2.5"/><path d="M96 33c10 0 20 2 26 6-8 2-18 2-28 0z" fill="#ffe14d" stroke="#150d2e" stroke-width="2.5" stroke-linejoin="round"/><text x="66" y="28" text-anchor="middle" font-family="Bungee, Impact, sans-serif" font-size="10" fill="#150d2e">SHOP</text></g>
       <g class="acc acc-helmet"><path d="M24 40c2-22 22-34 42-34s40 12 42 34z" fill="#3ddcf0" stroke="#150d2e" stroke-width="2.5"/><path d="M40 20c6-6 14-9 26-9" stroke="#fff" stroke-width="4" stroke-linecap="round" fill="none" opacity=".7"/></g>
     </svg>
+    <canvas class="lau" width="236" height="300" hidden></canvas>
   </button>
 </div>
 <script>
-/* ===== Mimosa, the club's big tabby cat: a tip for every page ===== */
+/* ===== Mimosa, the club's cat: a tip for every page, and you can talk to him (Laurène speaks in the classroom) ===== */
 (function(){
-  var box=document.getElementById('mimosa'),bub=document.getElementById('mbub'),p=bub.querySelector('p'),cat=box.querySelector('.mcat'),touch=matchMedia('(hover:none)').matches;
+  var box=document.getElementById('mimosa'),bub=document.getElementById('mbub'),p=bub.querySelector('p'),cat=box.querySelector('.mcat'),svg=cat.querySelector('svg'),lau=cat.querySelector('canvas.lau'),fm=bub.querySelector('form'),touch=matchMedia('(hover:none)').matches;
   var TIPS={
-    accueil:['Hello, bienvenue à <b>Roulettes Club</b> ! Moi c’est Mimosa, le chat du club.','Déplace-toi dans le village : '+(touch?'touche':'clique sur')+' un endroit'+(touch?'':' ou roule avec les flèches')+' pour choisir ce que tu veux faire.','Le <b>Club</b> pour boire un coup, les <b>Cours</b> avec Laurène, le <b>Shop</b>, les <b>Skate Games</b> sur la mini rampe… À toi !'],
-    club:['Ici c’est moi le <b>barman</b> ! Commande une boisson sur l’ardoise du comptoir.','Tu veux un shi-fu-mi ? Clique sur une main, je ne triche presque jamais.','Les riders sont assis à la table de leur groupe : clique sur l’un d’eux pour voir sa fiche.'],
-    shop:['Bienvenue dans ma boutique ! Ici je suis le <b>vendeur</b>.','Choisis une taille, ajoute au panier, et la commande part sur WhatsApp.','Une question sur le matos ou les tricks ? Écris-moi plus bas, je réponds à tout.'],
+    accueil:['Hello, bienvenue à <b>Roulettes Club</b> ! Moi c’est Mimosa, le chat du club.','Déplace-toi dans le village : '+(touch?'touche':'clique sur')+' un endroit'+(touch?'':' ou roule avec les flèches')+' pour choisir ce que tu veux faire.','Une question ? Écris-la-moi juste en dessous, je réponds à tout.'],
+    club:['Ici c’est moi le barman !'],
+    shop:['Bienvenue dans ma boutique !'],
     spots:['Tous nos spots du 19e. <b>Vert</b> = facile, <b>orange</b> = intermédiaire, <b>rouge</b> = confirmé·e.','Clique sur un spot dans la liste pour le voir sur la carte.'],
     riders:['Voici le crew ! Choisis un groupe en haut pour ne voir que lui.','Les admins du club peuvent se connecter pour voir les photos et les contacts des parents.'],
-    cours:['Choisis une leçon : Laurène montre la figure et la vidéo se lance au tableau.','Casque et protections, toujours ! Même les chats en mettent.'],
+    cours:['Salut, moi c’est <b>Laurène</b>, ta coach ! Choisis une leçon : je te montre la figure et la vidéo se lance au tableau.','Casque et protections, toujours ! On commence doucement, on progresse ensemble.','Une question sur une figure ? Écris-la-moi en dessous.'],
     games:['Street ou Mini Rampe ? Choisis ton jeu !','Tu peux jouer seul·e, ou à deux sur le même écran.'],
-    game:['Ollie <b>↑</b>, shove-it <b>←</b>, flip <b>→</b>, 360 flip <b>↓</b>. Premier·e à <b>100 points</b> !','Atterris sur les rails pour grinder, et prends les tremplins pour voler plus haut.'],
-    rampe:['Chacun·e son run d’une minute : place une figure à chaque mur !','Plus la figure est dure, plus elle rapporte. Mais attention au bail…'],
-    contact:['Une question ? Le plus rapide, c’est <b>WhatsApp</b>.','Pour t’inscrire, c’est la carte <b>Inscription</b>.'],
+    game:['Ollie <b>↑</b> ou Z, shove-it <b>←</b> ou Q, flip <b>→</b> ou D, 360 flip <b>↓</b> ou S. Premier·e à <b>100 points</b> !','Saute le mobilier urbain, atterris sur les rails pour grinder et prends les tremplins pour voler plus haut. Un trick pas fini = bail !'],
+    rampe:['Chacun·e son run d’une minute : place une figure à chaque mur !','Lance ta figure juste avant d’arriver en haut du mur. Plus elle est dure, plus elle rapporte.'],
+    contact:['Une question ? Le plus rapide, c’est <b>WhatsApp</b>. Ou écris-la-moi ici !','Pour t’inscrire, c’est la carte <b>Inscription</b>.'],
     inscription:['4 groupes de 6 maximum : ne traîne pas !','Prépare une photo de l’enfant et l’attestation de quotient familial.']
   };
-  var ACC={club:'bow',shop:'cap',games:'helmet',game:'helmet',rampe:'helmet'};
+  var ACC={games:'helmet',game:'helmet',rampe:'helmet'};
+  // what Mimosa knows about the club; the rest comes from the shop's skate knowledge
+  var SITE=[
+    [['inscri','inscrire','adhesion','adherer','rejoindre','place'],'Pour t’inscrire, c’est la page <a href="#inscription">Inscription</a> : 4 groupes de 6 élèves maximum, il faut une photo de l’enfant et l’attestation de quotient familial.'],
+    [['prix','tarif','combien','cout','coute','quotient','payer','paiement'],'Le tarif annuel dépend du quotient familial : <b>390 €</b> (T1 à T4), <b>450 €</b> (T5 à T7), <b>490 €</b> (T8 à T10), plus l’adhésion de <b>20 €</b>. Le matériel est prêté. Détails sur <a href="#inscription">Inscription</a>.'],
+    [['horaire','heure','quand','jour','creneau','lundi','mardi','groupe','alleyoop','benihana','caballerial','disaster'],'Les cours : <b>lundi 16h30</b> AlleyOop, <b>lundi 18h</b> Benihana, <b>mardi 16h30</b> Caballerial, <b>mardi 18h</b> Disaster. 1 h par semaine, 35 semaines hors vacances scolaires.'],
+    [['ou ','lieu','adresse','spot','dehors','pluie'],'Les cours ont lieu dehors, sur les spots autour de la Mouzaïa : tout est sur la page <a href="#spots">Spots</a>.'],
+    [['contact','telephone','tel ','appeler','mail','whatsapp','joindre','instagram'],'Pour nous joindre : WhatsApp ou téléphone au <b>07 68 77 48 19</b>, e-mail <b>contact@roulettes.club</b>, Instagram <b>@roulettes.club</b>. Tout est sur <a href="#contact">Contact</a>.'],
+    [['laurene','coach','prof','professeur'],'<b>Laurène Begaud</b> encadre tous les cours : coach professionnelle, 4ᵉ aux championnats de France de skate, CQP sports à roulettes, BAFA et premiers secours.'],
+    [['rider','crew','eleve','enfant','qui fait'],'Tous les riders du club sont sur la page <a href="#riders">Riders</a>, groupe par groupe.'],
+    [['jeu','game','jouer','street','mini rampe'],'Va sur <a href="#games">Games</a> : le Street Game dans les rues du 19e, ou la Mini Rampe en battle.'],
+    [['mimosa','qui es tu','t es qui','ton nom','tu es qui'],'Moi c’est <b>Mimosa</b>, le chat du club : barman au Club, vendeur au shop, et je te donne des conseils partout sur le site.'],
+    [['fille','garcon','adulte','cool guy'],'Les cours sont pensés par et pour les filles, mais les garçons et les adultes (« cool guys ») sont les bienvenus !']
+  ];
+  function norm(x){return' '+String(x).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim()+' '}
+  window.RLGuideAnswer=function(q){var n=norm(q),best=null,bs=0;SITE.forEach(function(e){var sc=0;e[0].forEach(function(k){if(n.indexOf(k.charAt(k.length-1)===' '?' '+k:k)>=0)sc++});if(sc>bs){bs=sc;best=e[1]}});
+    if(best)return best;var a=window.RLAsk?RLAsk(q):'';return a||'Hmm, ça je ne sais pas encore… Écris-nous sur <a href="#contact">Contact</a>, on te répond vite !'};
+  // the guide's picture, reused in the canvas scenes (shop counter, bar)
+  var CACHE={};
+  window.RLMimosa=function(acc){if(CACHE[acc||''])return CACHE[acc||''];var c=svg.cloneNode(true);c.setAttribute('xmlns','http://www.w3.org/2000/svg');
+    [].forEach.call(c.querySelectorAll('.acc'),function(gp){if(!gp.classList.contains('acc-'+acc))gp.remove()});
+    var im=new Image();im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(c.outerHTML);return CACHE[acc||'']=im};
+  [['bow','bow'],['cap','cap']].forEach(function(a){RLMimosa(a[0])});
+  function drawLau(){if(!window.RL)return;var co=RL.chars.filter(function(c){return c.info==='Coach'})[0];if(!co)return;var x=lau.getContext('2d');x.clearRect(0,0,236,300);RL.draw(x,Object.assign({},co,{noBoard:1}),118,292,1.6,.3,false)}
   var page='',i=0,closed={};try{closed=JSON.parse(sessionStorage.getItem('rl-mimosa')||'{}')}catch(e){}
   function show(){var l=TIPS[page]||TIPS.accueil;p.innerHTML=l[i%l.length];bub.hidden=false;bub.style.animation='none';void bub.offsetWidth;bub.style.animation=''}
-  function go(pg){page=pg||'accueil';i=0;box.dataset.acc=ACC[page]||'';if(closed[page])bub.hidden=true;else show()}
+  function go(pg){page=pg||'accueil';i=0;var isL=page==='cours';box.dataset.acc=ACC[page]||'';box.classList.toggle('lau',isL);lau.hidden=!isL;if(isL)drawLau();
+    cat.setAttribute('aria-label',isL?'Laurène, la coach : un conseil ?':'Mimosa, le chat du club : un conseil ?');
+    fm.querySelector('input').placeholder=isL?'Pose ta question à Laurène…':'Pose-moi une question…';if(closed[page])bub.hidden=true;else show()}
   cat.onclick=function(){if(bub.hidden){closed[page]=false;i=0}else i++;show();save()};
   bub.querySelector('.mx').onclick=function(){bub.hidden=true;closed[page]=true;save()};
+  fm.onsubmit=function(e){e.preventDefault();var inp=fm.querySelector('input'),q=inp.value.trim();if(!q)return;inp.value='';
+    p.innerHTML='<span class="mq">« '+q.replace(/[<>&]/g,'')+' »</span>'+RLGuideAnswer(q);bub.scrollTop=0};
+  bub.addEventListener('click',function(e){var a=e.target.closest('a[href^="#"]');if(a)setTimeout(function(){i=0},0)});
   function save(){try{sessionStorage.setItem('rl-mimosa',JSON.stringify(closed))}catch(e){}}
   document.addEventListener('rl-page',function(e){go(e.detail)});
   go(window.RLPage);
+  // at the bar: talk to Mimosa the barman
+  var ca=document.getElementById('club-ask'),ci=document.getElementById('club-info');
+  if(ca)ca.onsubmit=function(e){e.preventDefault();var inp=ca.querySelector('input'),q=inp.value.trim();if(!q)return;inp.value='';var a=RLGuideAnswer(q);
+    if(ci)ci.innerHTML='<b>Mimosa :</b> '+a;var t=a.replace(/<[^>]+>/g,'').split(/(?<=[.!?:])\s/)[0];if(window.RLBarSay)RLBarSay(t.length>90?t.slice(0,88)+'…':t)};
 })();
 </script>
 

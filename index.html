@@ -49,6 +49,8 @@ header{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:rg
 .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:10px}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--display);font-size:1rem;line-height:1}
 .brand img{width:44px;height:44px}
+.backq{display:inline-flex;align-items:center;gap:6px;margin-right:auto;padding:8px 16px 8px 11px;border-radius:999px;background:#ffd23f;color:#150d2e;font-family:var(--display);font-size:.86rem;line-height:1;white-space:nowrap;text-decoration:none;border:2px solid #150d2e;box-shadow:0 3px 0 #ff4fa8;transition:transform .15s}.backq:hover{transform:translateY(-2px)}.backq:active{transform:translateY(2px);box-shadow:0 1px 0 #ff4fa8}.backq svg{width:16px;height:16px;flex:none}body[data-page=accueil] .backq{display:none}
+@media (max-width:640px){body:not([data-page=accueil]) .brand{display:none}.backq{font-size:.7rem;padding:7px 11px 7px 8px;gap:4px}.backq svg{width:13px;height:13px}}
 .nav ul{display:flex;gap:4px;list-style:none;margin:0;padding:0;flex-wrap:wrap}
 .nav a.link{display:block;text-decoration:none;font-weight:700;font-size:.92rem;padding:8px 9px;white-space:nowrap;border-radius:999px;color:var(--muted)}
 .nav a.link:hover,.nav a.link.on{color:var(--night);background:var(--cyan)}
@@ -489,7 +491,8 @@ body.noscroll{overflow:hidden}
 <div class="stripe" aria-hidden="true"><i></i><i></i><i></i></div>
 <header>
   <nav class="wrap nav" aria-label="Navigation principale">
-    <a class="brand" href="#accueil"><img src="logo-roulettes.png?v=2" alt=""><span>Roulettes</span></a>
+    <a class="brand" href="#accueil"><img src="logo-roulettes.png?v=2" alt=""><span>Roulettes Club</span></a>
+    <a class="backq" href="#accueil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Retour au quartier</a>
     <ul>
       <li><a class="link" href="#accueil">Accueil</a></li>
       <li><a class="link" href="#club">Club</a></li>
@@ -1767,7 +1770,7 @@ document.querySelectorAll('.sizes').forEach(function(g){g.addEventListener('clic
     awning(x+12,160,340,'#3ddcf0','#ffe14d');awning(x+w-176,160,340,'#3ddcf0','#ffe14d');
     // door with the vendor cat behind the glass
     ctx.fillStyle='#0f2c40';ctx.fillRect(x+w/2-40,372,80,188);ctx.fillStyle='#bfe6f0';ctx.fillRect(x+w/2-32,380,64,170);
-    var mi=window.RLMimosa&&RLMimosa('cap');if(mi&&mi.complete&&mi.naturalWidth){ctx.save();ctx.beginPath();ctx.rect(x+w/2-32,380,64,170);ctx.clip();ctx.drawImage(mi,x+w/2-36,474,72,71);ctx.restore()}else if(window.RL){ctx.save();ctx.beginPath();ctx.rect(x+w/2-32,380,64,170);ctx.clip();RL.draw(ctx,OLLIE,x+w/2+2,560,.72,t,true);ctx.restore()}
+    var mi=window.RLMimosa&&RLMimosa('cap');if(mi&&mi.complete&&mi.naturalWidth){ctx.save();ctx.beginPath();ctx.rect(x+w/2-32,380,64,170);ctx.clip();ctx.drawImage(mi,x+w/2-36,476,72,70);ctx.restore()}else if(window.RL){ctx.save();ctx.beginPath();ctx.rect(x+w/2-32,380,64,170);ctx.clip();RL.draw(ctx,OLLIE,x+w/2+2,560,.72,t,true);ctx.restore()}
     ctx.fillStyle='rgba(255,255,255,.3)';poly([x+w/2-32,380,x+w/2-12,380,x+w/2-32,430]);
     ctx.fillStyle='#ff4fa8';rr(x+w/2-26,452,52,18,4);ctx.fill();txt('OUVERT',x+w/2,465,'700 11px Space Grotesk, sans-serif','#fff');
   }
@@ -2076,7 +2079,7 @@ function rlScene(cv,W,H,draw,hit,click){
   function inBox(p,b){return p.x>b.x&&p.x<b.x+b.w&&p.y>b.y&&p.y<b.y+b.h}
 
   function minou(o,x,y){var c=o.ctx,b=Math.sin(o.t*2)*2,mi=window.RLMimosa&&RLMimosa('bow');
-    if(mi&&mi.complete&&mi.naturalWidth)c.drawImage(mi,x-84,y-120+b,168,166);else{
+    if(mi&&mi.complete&&mi.naturalWidth)c.drawImage(mi,x-84,y-112+b,168,163);else{
     c.fillStyle='#151021';o.rr(x-46,y-10+b,92,90,24);c.fill();c.fillStyle='#fbf4e6';o.poly([x-12,y-8+b,x+12,y-8+b,x,y+34+b]);c.fillStyle='#ff4fa8';o.poly([x-16,y-6+b,x,y+2+b,x-16,y+10+b]);o.poly([x+16,y-6+b,x,y+2+b,x+16,y+10+b]);
     c.fillStyle='#9a7e5e';o.circ(x,y-44+b,44);o.poly([x-40,y-62+b,x-34,y-108+b,x-6,y-84+b]);o.poly([x+40,y-62+b,x+34,y-108+b,x+6,y-84+b]);
     c.strokeStyle='#4a3a2a';c.lineWidth=5;c.lineCap='round';[[-14,-84,-9,-68],[0,-88,0,-70],[14,-84,9,-68],[-44,-50,-30,-47],[-43,-38,-30,-38],[44,-50,30,-47],[43,-38,30,-38]].forEach(function(l){c.beginPath();c.moveTo(x+l[0],y+l[1]+b);c.lineTo(x+l[2],y+l[3]+b);c.stroke()});
@@ -2189,7 +2192,7 @@ function rlScene(cv,W,H,draw,hit,click){
       c.fillStyle=on?'#ffe14d':'#fbf4e6';c.fillRect(x-5,y-5,w+10,w+36);if(im.complete&&im.naturalWidth)c.drawImage(im,im.naturalWidth*.12,im.naturalHeight*.08,im.naturalWidth*.76,im.naturalHeight*.8,x,y,w,w);
       o.txt(sh[1],x+w/2,y+w+22,'15px Bungee, Impact, sans-serif','#150d2e')});
     // counter, register and Ollie
-    var b=Math.sin(t*2)*2,mi=window.RLMimosa&&RLMimosa('cap');if(mi&&mi.complete&&mi.naturalWidth)c.drawImage(mi,968,140+b,224,221);else RL.draw(c,OLLIE,1080,350+b,1.5,t,false);
+    var b=Math.sin(t*2)*2,mi=window.RLMimosa&&RLMimosa('cap');if(mi&&mi.complete&&mi.naturalWidth)c.drawImage(mi,968,150+b,224,217);else RL.draw(c,OLLIE,1080,350+b,1.5,t,false);
     c.fillStyle='#3ddcf0';c.fillRect(900,330,420,14);c.fillStyle='#1d4d6b';c.fillRect(910,344,400,120);c.fillStyle='rgba(255,255,255,.08)';for(var k=0;k<4;k++)c.fillRect(930+k*95,360,70,86);
     c.fillStyle='#150d2e';o.rr(1200,282,90,50,8);c.fill();c.fillStyle='#3fd17a';c.fillRect(1212,292,66,16);c.fillStyle='#ffe14d';c.fillRect(1214,316,62,8);
     var L=IMG['logo-roulettes.png?v=2'];if(L.complete&&L.naturalWidth)c.drawImage(L,1290,170,100,100);
@@ -2410,7 +2413,7 @@ window.RLLoad=function(){if(window.RLD)return RLD.ready;if(!RLLoad.p)RLLoad.p=ne
 <div class="mimosa" id="mimosa" aria-live="polite">
   <div class="mbub" id="mbub"><button type="button" class="mx" aria-label="Fermer la bulle">×</button><p></p><form class="mask"><input type="text" maxlength="200" autocomplete="off" placeholder="Pose-moi une question…" aria-label="Ta question"><button type="submit" aria-label="Envoyer">➤</button></form></div>
   <button type="button" class="mcat" aria-label="Mimosa, le chat du club : un conseil ?">
-    <img class="mimg" src="mimosa.png?v=1" alt="" width="420" height="414">
+    <img class="mimg" src="mimosa.png?v=2" alt="" width="380" height="368">
     <canvas class="lau" width="236" height="300" hidden></canvas>
   </button>
 </div>
@@ -2450,7 +2453,7 @@ window.RLLoad=function(){if(window.RLD)return RLD.ready;if(!RLLoad.p)RLLoad.p=ne
     if(best)return best;var a=window.RLAsk?RLAsk(q):'';return a||'Hmm, ça je ne sais pas encore… Écris-nous sur <a href="#contact">Contact</a>, on te répond vite !'};
   // the guide's picture, reused in the canvas scenes (shop counter, bar)
   var CACHE={};
-  var MIM=new Image();MIM.src='mimosa.png?v=1';window.RLMimosa=function(){return MIM};
+  var MIM=new Image();MIM.src='mimosa.png?v=2';window.RLMimosa=function(){return MIM};
   function drawLau(){if(!window.RL)return;var co=RL.chars.filter(function(c){return c.info==='Coach'})[0];if(!co)return;var x=lau.getContext('2d');x.clearRect(0,0,236,300);RL.draw(x,Object.assign({},co,{noBoard:1}),118,292,1.6,.3,false)}
   var page='',i=0,closed={};try{closed=JSON.parse(sessionStorage.getItem('rl-mimosa')||'{}')}catch(e){}
   function show(){var l=TIPS[page]||TIPS.accueil;p.innerHTML=l[i%l.length];bub.hidden=false;bub.style.animation='none';void bub.offsetWidth;bub.style.animation=''}

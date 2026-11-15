@@ -312,7 +312,7 @@ body.vm #vcv{flex:1 1 0;height:auto;min-height:170px}
 .gcards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
 .gcard{display:flex;flex-direction:column;gap:10px;text-decoration:none;color:var(--cream);background:var(--night-2);border-radius:22px;border-top:8px solid var(--c);padding:26px;transition:transform .15s}
 .gcard:hover{transform:translateY(-4px)}.gcard .gi{font-size:3rem;line-height:1}.gcard h3{font-family:var(--display);font-weight:400;font-size:1.7rem;color:var(--c)}
-.gcard p{color:var(--muted);margin:0}.gcard .go{margin-top:auto;font-weight:700;color:var(--c)}
+.gcard p{color:var(--muted);margin:0}.gcard .gshot{display:block;width:100%;height:auto;aspect-ratio:2/1;object-fit:cover;border-radius:14px;border:2px solid var(--c);min-height:0;flex:0 1 auto}.gcard .go{margin-top:auto;font-weight:700;color:var(--c)}
 @media (max-width:700px){.gcards{grid-template-columns:1fr}}
 /* Mimosa, the club's tabby cat, gives tips everywhere in white comic bubbles */
 .mimosa{position:fixed;right:max(12px,env(safe-area-inset-right));bottom:max(10px,env(safe-area-inset-bottom));z-index:30;display:flex;align-items:flex-end;gap:2px;pointer-events:none}
@@ -391,15 +391,15 @@ body[data-page=club] .mimosa,body[data-page=shop] .mimosa{display:none}
   #cours .cours-side{min-height:0;overflow:auto;padding-right:6px}#cours .lessons{margin-top:0;grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}#cours .lesson{margin-top:10px}
   /* games */
   #game .modes,#rampe .modes{margin-bottom:8px;flex:none}#game .modes button,#rampe .modes button{padding:8px 10px}
-  #game .game-bar>p:first-child,#rampe .game-bar>p:first-child,#game .tricks,#rampe .tricks{display:none}
+  #game .game-bar>p:first-child,#rampe .game-bar>p:first-child,#game .tricks{display:none}
   #game .game-wrap{width:min(100%,calc((100svh - var(--hdr,62px) - var(--sub,0px) - 240px) * 1.866));margin:0 auto;flex:none}
   #rampe .ramp-pick{margin-bottom:8px;flex:none}
-  #rampe .game-wrap{width:min(100%,calc((100svh - var(--hdr,62px) - var(--sub,0px) - 290px) * 2.045));margin:0 auto;flex:none}
-  #game .tricks,#rampe .tricks{margin-top:8px;flex:none}#game .tricks button,#rampe .tricks button{padding:6px 8px}
+  #rampe .game-wrap{width:min(100%,calc((100svh - var(--hdr,62px) - var(--sub,0px) - 340px) * 2.045));margin:0 auto;flex:none}
+  #game .tricks,#rampe .tricks{margin-top:8px;flex:none}#game .tricks button,#rampe .tricks button{padding:6px 8px;flex-direction:row;justify-content:center;gap:10px}
   #game .game-bar,#rampe .game-bar{margin-top:8px;flex:none}
   /* contact: the five ways in one row */
   #contact .contacts{grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}#contact .contact{padding:18px}
-  #games .gcards{flex:1;min-height:0}
+  #games .gcards{flex:1;min-height:0}#games .gcard{min-height:0;overflow:hidden;padding:20px 22px}#games .gcard .gshot{flex:1 1 0;aspect-ratio:auto;min-height:80px}
 }
 /* pages: only the sections of the current page are shown */
 main>section.off{display:none!important}
@@ -838,8 +838,8 @@ body.noscroll{overflow:hidden}
       <p class="lead">Deux jeux de skate, seul·e ou à deux, avec les riders du club.</p>
     </div>
     <div class="gcards">
-      <a class="gcard" href="#game" style="--c:var(--cyan)"><span class="gi" aria-hidden="true">🏙️</span><h3>Street Game</h3><p>Traverse le 19e de la Mouzaïa à la Villette : saute le mobilier urbain, grinde les rails et enchaîne les tricks. Premier·e à 100 points !</p><span class="go">Jouer au Street Game →</span></a>
-      <a class="gcard" href="#rampe" style="--c:var(--pink)"><span class="gi" aria-hidden="true">🛹</span><h3>Mini Rampe Game</h3><p>Chacun·e son run d’une minute sur la mini rampe : une figure à chaque mur, le plus de points gagne.</p><span class="go">Jouer à la Mini Rampe →</span></a>
+      <a class="gcard" href="#game" style="--c:var(--cyan)"><img class="gshot" src="game-street.jpg" alt="Capture du Street Game : une rideuse saute en skate dans les rues du 19e, la nuit" width="729" height="379" loading="lazy"><h3>Street Game</h3><p>Traverse le 19e de la Mouzaïa à la Villette : saute le mobilier urbain, grinde les rails et enchaîne les tricks. Premier·e à 100 points !</p><span class="go">Jouer au Street Game →</span></a>
+      <a class="gcard" href="#rampe" style="--c:var(--pink)"><img class="gshot" src="game-rampe.jpg" alt="Capture du Mini Rampe Game : une rideuse fait un ollie sur la mini rampe en bois" width="729" height="351" loading="lazy"><h3>Mini Rampe Game</h3><p>Chacun·e son run d’une minute sur la mini rampe : une figure à chaque mur, le plus de points gagne.</p><span class="go">Jouer à la Mini Rampe →</span></a>
     </div>
   </div>
 </section>

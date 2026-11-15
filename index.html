@@ -332,7 +332,7 @@ body.vm #vcv{flex:1 1 0;height:auto;min-height:170px}
 .mask{display:flex;gap:6px;margin-top:10px}.mask input{flex:1;min-width:0;font:inherit;font-size:.9rem;border:2px solid #150d2e;border-radius:12px;padding:7px 10px;background:#fff;color:#150d2e}
 .mask button{border:0;border-radius:12px;background:#150d2e;color:#fce91d;font-weight:700;padding:0 12px;cursor:pointer}
 .mimosa .mcat canvas{display:block;width:100%;height:auto}.mimosa .mcat canvas[hidden]{display:none}.mimosa.lau .mimg{display:none}
-body[data-page=club] .mimosa,body[data-page=shop] .mimosa,body[data-page=games] .mimosa,body[data-page=game] .mimosa,body[data-page=rampe] .mimosa,body[data-page=cours] .mimosa{display:none}
+#chat[hidden]{display:none!important}body[data-page=shop] .mimosa.force{display:flex}body[data-page=club] .mimosa,body[data-page=shop] .mimosa,body[data-page=games] .mimosa,body[data-page=game] .mimosa,body[data-page=rampe] .mimosa,body[data-page=cours] .mimosa{display:none}
 @keyframes mpop{0%{transform:scale(.6) translateY(10px);opacity:0}70%{transform:scale(1.04)}100%{transform:none;opacity:1}}
 @media (max-width:640px){body[data-page=accueil] .mimosa{top:calc(var(--hdr,56px) + 14px);bottom:auto;align-items:flex-start}body[data-page=accueil] .mbub{margin:18px 0 0}body[data-page=accueil] .mbub::after{bottom:auto;top:20px}body[data-page=accueil] .mbub::before{bottom:auto;top:23px}.mimosa .mcat{width:84px}.mbub{max-width:calc(100vw - 120px);font-size:.86rem;margin-bottom:44px;padding:10px 26px 10px 12px}}
 
@@ -376,10 +376,10 @@ body[data-page=club] .mimosa,body[data-page=shop] .mimosa,body[data-page=games] 
   #riders .crews.one{grid-template-columns:1fr}#riders #riders-extra{grid-column:1/-1}
   #riders .rcards.adm{grid-template-columns:1fr}#riders .crews.one .rcards.adm{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
   /* shop: the counter + Mimosa | the articles + cart */
-  #shop .wrap{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);grid-template-rows:auto minmax(0,1fr);gap:0 20px}
+  #shop .wrap{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,.9fr);grid-template-rows:auto minmax(0,1fr);gap:0 20px}
   #shop .head{grid-column:1/-1}
   #shop .shop-l{display:flex;flex-direction:column;min-height:0;gap:10px}
-  #shop .shop-l .scene-wrap{flex:none;height:auto;container-type:normal}#shop .shop-l .scene{width:min(100%,calc((100svh - var(--hdr,62px) - 395px) * 2.5926))}
+  #shop .shop-l .scene-wrap{flex:none;height:auto;container-type:normal}#shop .shop-l .scene{width:min(100%,calc((100svh - var(--hdr,62px) - 215px) * 2.5926))}
   #shop .chat{margin-top:0;flex:1;min-height:0;padding:12px 14px;gap:8px}#shop .chat-log{max-height:none;flex:1;min-height:80px}#shop .chips{flex-wrap:nowrap;overflow-x:auto;flex:none;padding-bottom:4px}#shop .chips button{white-space:nowrap}
   #shop .shop-r{min-height:0;overflow:auto;padding-right:6px}
   #shop .products{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}#shop .product img{aspect-ratio:4/3}#shop .product .pbody{padding:12px 14px;gap:8px}
@@ -499,6 +499,7 @@ body.noscroll{overflow:hidden}
     <ul>
       <li><a class="link" href="#accueil">Accueil</a></li>
       <li><a class="link" href="#club">Club</a></li>
+      <li><a class="link" href="#cours">Les cours</a></li>
       <li><a class="link" href="#spots">Spots</a></li>
       <li><a class="link" href="#riders">Riders</a></li>
       <li><a class="link" href="#games">Games</a></li>
@@ -784,11 +785,11 @@ body.noscroll{overflow:hidden}
     <div class="head">
       <p class="eyebrow">Shop</p>
       <h2>Les t-shirts du crew</h2>
-      <p class="lead">Trois t-shirts noirs Roulettes, en tailles enfant et adulte. Et Mimosa, le chat du club (vendeur à ses heures), répond à toutes tes questions sur le skate.</p>
+      <p class="lead">Trois t-shirts noirs Roulettes, en tailles enfant et adulte. Et Mimosa, le chat vendeur : clique sur lui pour lui poser tes questions sur le skate.</p>
     </div>
     <div class="shop-l">
     <div class="scene-wrap"><canvas id="shop-cv" class="scene" style="aspect-ratio:1400/540;--ar:2.5926" aria-label="L'intérieur du shop : le mur de planches, les roues, les casques, les trois t-shirts et Mimosa le chat vendeur derrière le comptoir"></canvas></div>
-    <div class="chat" id="chat">
+    <div class="chat" id="chat" hidden>
       <h3>Demande à Mimosa</h3>
       <div class="chat-log" id="chat-log" aria-live="polite"></div>
       <div class="chips" id="chat-chips"></div>
@@ -2206,9 +2207,9 @@ function rlScene(cv,W,H,draw,hit,click){
     if(p.x>990&&p.x<1180&&p.y>130&&p.y<470)return{ollie:1};
     return null}
   function click(h){
-    if(h.id==='decks')ask('Quelle taille de planche ?');else if(h.id==='wheels')ask('Quelles roues choisir ?');else if(h.id==='helmets')ask('Quelles protections ?');
+    var G=window.RLGuideOpen||function(){};if(h.id==='decks')G('Quelle taille de planche ?');else if(h.id==='wheels')G('Quelles roues choisir ?');else if(h.id==='helmets')G('Quelles protections ?');
     else if(h.shirt!==undefined){var pr=document.querySelectorAll('#shop .product')[h.shirt];if(pr)pr.scrollIntoView({behavior:'smooth',block:'center'})}
-    else if(h.ollie)inp.focus()}
+    else if(h.ollie)G()}
   rlScene(cv,W,H,draw,hit,click);
 
   // ---------- the bot: keywords → answers
@@ -2431,7 +2432,7 @@ window.RLLoad=function(){if(window.RLD)return RLD.ready;if(!RLLoad.p)RLLoad.p=ne
   var TIPS={
     accueil:['Hello, bienvenue à <b>Roulettes Club</b> ! Moi c’est Mimosa, le chat du club.','Déplace-toi dans le village : '+(touch?'touche':'clique sur')+' un endroit'+(touch?'':' ou roule avec les flèches')+' pour choisir ce que tu veux faire.','Une question ? Écris-la-moi juste en dessous, je réponds à tout.'],
     club:['Ici c’est moi le barman !'],
-    shop:['Bienvenue dans ma boutique !'],
+    shop:['Bienvenue dans ma boutique ! Clique sur les planches, les roues ou les casques, ou pose-moi ta question en dessous.'],
     spots:['Tous nos spots du 19e. <b>Vert</b> = facile, <b>orange</b> = intermédiaire, <b>rouge</b> = confirmé·e.','Clique sur un spot dans la liste pour le voir sur la carte.'],
     riders:['Voici le crew ! Choisis un groupe en haut pour ne voir que lui.','Les admins du club peuvent se connecter pour voir les photos et les contacts des parents.'],
     cours:['Salut, moi c’est <b>Laurène</b>, ta coach ! Choisis une leçon : je te montre la figure et la vidéo se lance au tableau.','Casque et protections, toujours ! On commence doucement, on progresse ensemble.','Une question sur une figure ? Écris-la-moi en dessous.'],
@@ -2466,9 +2467,11 @@ window.RLLoad=function(){if(window.RLD)return RLD.ready;if(!RLLoad.p)RLLoad.p=ne
   function show(){var l=TIPS[page]||TIPS.accueil;p.innerHTML=l[i%l.length];bub.hidden=false;bub.style.animation='none';void bub.offsetWidth;bub.style.animation=''}
   function go(pg){page=pg||'accueil';i=0;var isL=page==='cours';box.dataset.acc=ACC[page]||'';box.classList.toggle('lau',isL);lau.hidden=!isL;if(isL)drawLau();
     cat.setAttribute('aria-label',isL?'Laurène, la coach : un conseil ?':'Mimosa, le chat du club : un conseil ?');
-    fm.querySelector('input').placeholder=isL?'Pose ta question à Laurène…':'Pose-moi une question…';bub.hidden=true}
+    fm.querySelector('input').placeholder=isL?'Pose ta question à Laurène…':'Pose-moi une question…';bub.hidden=true;box.classList.remove('force')}
+  // from a scene (the shop counter): show the guide with a tip, or straight with the answer to a question
+  window.RLGuideOpen=function(q){box.classList.add('force');if(q){p.innerHTML='<span class="mq">« '+q+' »</span>'+RLGuideAnswer(q);bub.hidden=false}else{i=0;show()}}
   cat.onclick=function(){if(bub.hidden)i=0;else i++;show()};
-  bub.querySelector('.mx').onclick=function(){bub.hidden=true};
+  bub.querySelector('.mx').onclick=function(){bub.hidden=true;box.classList.remove('force')};
   fm.onsubmit=function(e){e.preventDefault();var inp=fm.querySelector('input'),q=inp.value.trim();if(!q)return;inp.value='';
     p.innerHTML='<span class="mq">« '+q.replace(/[<>&]/g,'')+' »</span>'+RLGuideAnswer(q);bub.scrollTop=0};
   bub.addEventListener('click',function(e){var a=e.target.closest('a[href^="#"]');if(a)setTimeout(function(){i=0},0)});

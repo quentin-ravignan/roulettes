@@ -18,13 +18,13 @@
   RLD.HAIR=['#f7d460','#e2561f','#b98b52','#5a3a26','#2b1d16','#8a5a2b','#1d1a24','#d8d8d8'];
   RLD.STYLES=[['long','Longs'],['pigtails','Couettes'],['curly','Bouclés'],['messy','Courts en bataille'],['wavy','Ondulés'],['quiff','Banane'],['cap','Casquette']];
   RLD.SKINS=['#fde4d4','#f6d2b8','#e8b48f','#c98e62','#a26a43','#7a4a2e','#5a3420'];
-  RLD.TOPS=['#ff4fa8','#3ddcf0','#ffe14d','#9b6dff','#3fd17a','#e2561f','#fbf4e6'];
+  RLD.TOPS=['#fc058f','#1ae9f5','#fce91d','#9b6dff','#3fd17a','#e2561f','#fbf4e6'];
   RLD.PANTS=['#3b5ba8','#2f3f6e','#23233a','#5a6b8a','#c8b48a'];
   RLD.SHIRTS=[['logo','T-shirt Le Logo'],['flames','T-shirt Flames'],['wheel','T-shirt Wheel']];
-  RLD.BOARDS=[['#ff4fa8','Rose'],['#3ddcf0','Cyan'],['#ffe14d','Jaune'],['#9b6dff','Violet'],['#3fd17a','Vert']];
-  RLD.defaultLook=function(){return{hair:'#5a3a26',style:'long',skin:'#fde4d4',top:'#ff4fa8',pants:'#3b5ba8',glasses:false,lashes:false,shirt:'',board:''}};
+  RLD.BOARDS=[['#fc058f','Rose'],['#1ae9f5','Cyan'],['#fce91d','Jaune'],['#9b6dff','Violet'],['#3fd17a','Vert']];
+  RLD.defaultLook=function(){return{hair:'#5a3a26',style:'long',skin:'#fde4d4',top:'#fc058f',pants:'#3b5ba8',glasses:false,lashes:false,shirt:'',board:''}};
   RLD.charOf=function(r){var L=Object.assign(RLD.defaultLook(),r&&r.look||{}),a=RLD.age(r&&r.birthDate)||8;
-    return{name:(r&&r.firstName)||'Rider',skin:L.skin,hair:L.hair,hair2:shade(L.hair,.78),style:L.style,cap:'#ffe14d',top:L.shirt?'#151515':L.top,shirt:L.shirt||'',pants:L.pants,board:L.board||'',glasses:L.glasses?1:0,girl:L.lashes?1:0,size:Math.max(.8,Math.min(1.25,.8+Math.min(a,14)*.03))}};
+    return{name:(r&&r.firstName)||'Rider',skin:L.skin,hair:L.hair,hair2:shade(L.hair,.78),style:L.style,cap:'#fce91d',top:L.shirt?'#151515':L.top,shirt:L.shirt||'',pants:L.pants,board:L.board||'',glasses:L.glasses?1:0,girl:L.lashes?1:0,size:Math.max(.8,Math.min(1.25,.8+Math.min(a,14)*.03))}};
   RLD.itemOf=function(name,variant){var n=(name||'').toLowerCase();
     if(n.indexOf('logo')>=0)return'shirt:logo';if(n.indexOf('flames')>=0)return'shirt:flames';if(n.indexOf('wheel')>=0)return'shirt:wheel';
     if(n.indexOf('planche')>=0){var b=RLD.BOARDS.filter(function(q){return q[1].toLowerCase()===(variant||'').toLowerCase()})[0];return'board:'+(b?b[0]:RLD.BOARDS[0][0])}return''};
@@ -80,8 +80,8 @@
   function seed(){var y=new Date().getFullYear(),s=(new Date().getMonth()>=7?y:y-1)+'-'+(new Date().getMonth()>=7?y+1:y),d=function(m,dd){return(new Date().getMonth()>=7?y:y-1)+'-'+m+'-'+dd};
     var D={families:{},riders:{},payments:{},orders:{},coaches:{},lessons:{},coachPays:{},bank:{},reminders:{},settings:{},admins:{'admin@demo.roulettes':{}}};
     D.settings.app={season:s,prices:[390,450,490],adhesion:20,shop:{tshirt:25,board:90},payInfo:'Virement au club (IBAN donné par le club) ou chèque à l’ordre de Roulettes.'};D.settings.private={mailUrl:'',mailKey:''};
-    var fams=[['Famille Démo','parent@demo.roulettes',450,[['Lou','Démo','2017-03-14','Regular','AlleyOop',{hair:'#f7d460',style:'pigtails',top:'#3ddcf0'}],['Sam','Démo','2019-09-02','?','Benihana',{hair:'#f7d460',style:'messy',top:'#3fd17a'}]],[[180,'virement','Cotisation 1/2'],[20,'chèque','Adhésion']]],
-      ['Famille Exemple','exemple@demo.roulettes',390,[['Nina','Exemple','2016-06-21','Goofy','Caballerial',{hair:'#2b1d16',style:'curly',top:'#ff4fa8'}]],[[410,'virement','Cotisation + adhésion']]],
+    var fams=[['Famille Démo','parent@demo.roulettes',450,[['Lou','Démo','2017-03-14','Regular','AlleyOop',{hair:'#f7d460',style:'pigtails',top:'#1ae9f5'}],['Sam','Démo','2019-09-02','?','Benihana',{hair:'#f7d460',style:'messy',top:'#3fd17a'}]],[[180,'virement','Cotisation 1/2'],[20,'chèque','Adhésion']]],
+      ['Famille Exemple','exemple@demo.roulettes',390,[['Nina','Exemple','2016-06-21','Goofy','Caballerial',{hair:'#2b1d16',style:'curly',top:'#fc058f'}]],[[410,'virement','Cotisation + adhésion']]],
       ['Famille Test','test@demo.roulettes',490,[['Alex','Test','2015-01-30','Regular','Disaster',{hair:'#e2561f',style:'long',top:'#9b6dff',glasses:true}]],[]]];
     fams.forEach(function(f){var fid=uid();D.families[fid]={name:f[0],emails:[f[1]],phone:'06 00 00 00 00',plan:f[2],adhesion:20,season:s,notes:''};
       f[3].forEach(function(r){D.riders[uid()]={familyId:fid,emails:[f[1]],firstName:r[0],lastName:r[1],birthDate:r[2],stance:r[3],crew:r[4],medical:'',emergency:'',imageRights:true,look:Object.assign(RLD.defaultLook(),r[5]),owned:[]}});

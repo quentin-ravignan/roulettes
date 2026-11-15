@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{--night:#150d2e;--night2:#1f1442;--night3:#2a1b57;--line:#3a2a6e;--cream:#fbf4e6;--muted:#b9acd8;--cyan:#3ddcf0;--pink:#ff4fa8;--yellow:#ffe14d;--green:#3fd17a;--red:#ff6b6b;--display:"Bungee",Impact,sans-serif}
+:root{--night:#150d2e;--night2:#1f1442;--night3:#2a1b57;--line:#3a2a6e;--cream:#fbf4e6;--muted:#b9acd8;--cyan:#1ae9f5;--pink:#fc058f;--yellow:#fce91d;--green:#3fd17a;--red:#ff6b6b;--display:"Bungee",Impact,sans-serif}
 *{box-sizing:border-box}
 html{color-scheme:dark}
 body{margin:0;background:var(--night);color:var(--cream);font-family:"Space Grotesk",system-ui,sans-serif;line-height:1.5}
@@ -57,7 +57,7 @@ h3{margin:0 0 8px;font-size:1.05rem}
 .tbl th{text-align:left;color:var(--muted);font-weight:500;font-size:.82rem;padding:8px;border-bottom:1px solid var(--line);white-space:nowrap}
 .tbl td{padding:8px;border-bottom:1px solid var(--line);vertical-align:middle}
 .tbl td.num,.tbl th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-.tbl tr:hover td{background:rgba(61,220,240,.04)}
+.tbl tr:hover td{background:rgba(26,233,245,.04)}
 .scroll{overflow-x:auto}
 .tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
 .tools input[type=search]{flex:1;min-width:180px}
@@ -92,8 +92,8 @@ dialog::backdrop{background:rgba(8,4,20,.75)}
 <div class="toast" id="toast" role="status" hidden></div>
 
 <script src="firebase-config.js?v=3"></script>
-<script src="rl-data.js?v=5"></script>
-<script src="rl-rider.js?v=3"></script>
+<script src="rl-data.js?v=6"></script>
+<script src="rl-rider.js?v=4"></script>
 <script>
 (function(){
   var main=document.getElementById('main'),who=document.getElementById('who'),dlg=document.getElementById('dlg'),dlgT=document.getElementById('dlg-t'),dlgB=document.getElementById('dlg-b');
@@ -432,7 +432,7 @@ dialog::backdrop{background:rgba(8,4,20,.75)}
     function X(t){return pad+(Date.parse(t)-t0)/Math.max(1,t1-t0)*(w-pad-10)}function Y(v){return h-24-(v-lo)/Math.max(1,hi-lo)*(h-40)}
     x.strokeStyle='#3a2a6e';x.lineWidth=1;x.fillStyle='#b9acd8';x.font='11px Space Grotesk';[lo,(lo+hi)/2,hi].forEach(function(v){x.beginPath();x.moveTo(pad,Y(v));x.lineTo(w-10,Y(v));x.stroke();x.fillText(Math.round(v)+'€',2,Y(v)+4)});
     x.fillText(fd(pts[0][0]),pad,h-6);x.textAlign='right';x.fillText(fd(pts[pts.length-1][0]),w-10,h-6);x.textAlign='left';
-    x.strokeStyle='#3ddcf0';x.lineWidth=2.5;x.beginPath();pts.forEach(function(p,i){var px=X(p[0]),py=Y(p[1]);if(i)x.lineTo(px,py);else x.moveTo(px,py)});x.stroke()}
+    x.strokeStyle='#1ae9f5';x.lineWidth=2.5;x.beginPath();pts.forEach(function(p,i){var px=X(p[0]),py=Y(p[1]);if(i)x.lineTo(px,py);else x.moveTo(px,py)});x.stroke()}
 
   // ---------- admin: settings
   function pSet(p){return Promise.all([settings(),RLD.q('admins')]).then(function(r){var adm=r[1];

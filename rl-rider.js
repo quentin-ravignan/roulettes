@@ -1,7 +1,7 @@
 /* Roulettes · rider drawing shared with the member space.
    Generated from the game code in index.html (drawBoard + drawRider): edit it there, then regenerate. */
 (function(){
-  var ctx=null,t=0,C={night:'#150d2e',night2:'#1f1442',cyan:'#3ddcf0',pink:'#ff4fa8',yellow:'#ffe14d',cream:'#fbf4e6'},SK='#fde4d4';
+  var ctx=null,t=0,C={night:'#150d2e',night2:'#1f1442',cyan:'#1ae9f5',pink:'#fc058f',yellow:'#fce91d',cream:'#fbf4e6'},SK='#fde4d4';
   function rr(x,y,w,h,r){r=Math.min(r,w/2,h/2);ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
   function tri(a,b,c,d,e,f){ctx.beginPath();ctx.moveTo(a,b);ctx.lineTo(c,d);ctx.lineTo(e,f);ctx.closePath();ctx.fill()}
   function circ(x,y,r){ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill()}
@@ -38,9 +38,9 @@
     if(c.necklace){ctx.strokeStyle='#1a1230';ctx.lineWidth=.8;ctx.beginPath();ctx.moveTo(29,-57);ctx.quadraticCurveTo(33,-48,37,-57);ctx.stroke();ctx.fillStyle='#1a1230';tri(31.5,-50,34.5,-50,33,-46.5)}
     if(c.belt){ctx.fillStyle='#7a4a24';ctx.fillRect(15,-32,34,4);ctx.fillStyle='#e0b64a';ctx.fillRect(30,-32.5,5,5)}
     if(c.shirt){ctx.save();ctx.translate(32,-44);
-      if(c.shirt==='logo'){ctx.fillStyle='#120a2c';circ(0,0,8);ctx.strokeStyle='#3ddcf0';ctx.lineWidth=1.6;ctx.beginPath();ctx.arc(0,0,7,0,Math.PI*2);ctx.stroke();ctx.fillStyle='#ff4fa8';circ(0,1,3);tri(-3,-1,-2,-5,0,-2);tri(3,-1,2,-5,0,-2)}
-      else if(c.shirt==='flames'){ctx.fillStyle='#e2561f';[-10,-5,0,5,10].forEach(function(fx,j){tri(fx-3,-1,fx,-8-(j%2)*2,fx+3,-1)});ctx.fillStyle='#ffe14d';ctx.font='900 6px Space Grotesk, sans-serif';ctx.textAlign='center';ctx.fillText('ROULETTES',0,4);ctx.textAlign='left'}
-      else if(c.shirt==='wheel'){ctx.fillStyle='#ffe14d';circ(0,0,8);ctx.fillStyle='#151515';circ(0,0,3);ctx.fillStyle='#ff4fa8';ctx.fillRect(-11,-1.5,22,3)}
+      if(c.shirt==='logo'){ctx.fillStyle='#120a2c';circ(0,0,8);ctx.strokeStyle='#1ae9f5';ctx.lineWidth=1.6;ctx.beginPath();ctx.arc(0,0,7,0,Math.PI*2);ctx.stroke();ctx.fillStyle='#fc058f';circ(0,1,3);tri(-3,-1,-2,-5,0,-2);tri(3,-1,2,-5,0,-2)}
+      else if(c.shirt==='flames'){ctx.fillStyle='#e2561f';[-10,-5,0,5,10].forEach(function(fx,j){tri(fx-3,-1,fx,-8-(j%2)*2,fx+3,-1)});ctx.fillStyle='#fce91d';ctx.font='900 6px Space Grotesk, sans-serif';ctx.textAlign='center';ctx.fillText('ROULETTES',0,4);ctx.textAlign='left'}
+      else if(c.shirt==='wheel'){ctx.fillStyle='#fce91d';circ(0,0,8);ctx.fillStyle='#151515';circ(0,0,3);ctx.fillStyle='#fc058f';ctx.fillRect(-11,-1.5,22,3)}
       ctx.restore()}
     else if(!c.print&&!c.jacket){ctx.fillStyle=c.top==='#ffffff'?'rgba(26,18,48,.55)':'rgba(255,255,255,.85)';ctx.font='700 6px Space Grotesk, sans-serif';ctx.textAlign='center';ctx.fillText('Roulettes',32,-40);ctx.textAlign='left'}
     // back hair

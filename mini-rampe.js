@@ -7,7 +7,7 @@
   var selEl=[document.getElementById('ramp-p1'),document.getElementById('ramp-p2')],lab2=document.getElementById('ramp-l2');
   var PHONE=matchMedia('(hover:none) and (pointer:coarse)').matches||window.innerWidth<600;
   var W=900,H=440,dpr=Math.min(window.devicePixelRatio||1,2);cv.width=W*dpr;cv.height=H*dpr;cv.style.aspectRatio=W+'/'+H;ctx.scale(dpr,dpr);
-  var C={night:'#150d2e',night2:'#1f1442',cyan:'#3ddcf0',pink:'#ff4fa8',yellow:'#ffe14d',cream:'#fbf4e6',grey:'#b9b3cc'};
+  var C={night:'#150d2e',night2:'#1f1442',cyan:'#1ae9f5',pink:'#fc058f',yellow:'#fce91d',cream:'#fbf4e6',grey:'#b9b3cc'};
   // ramp geometry: flat bottom, two quarter pipes, a deck on each side
   var RUN=60,GY=396,CX=W/2,F=150,RR=124,DECK=110,G=1300,VC=450,V0=Math.sqrt(VC*VC+2*G*RR),L=F+RR*Math.PI/2,SC=.92,AMAX=Math.PI/2*.8;
   var TR={ollie:{n:'Ollie',p:1,d:0},shove:{n:'Shove-it',p:3,d:.34},flip:{n:'Flip',p:5,d:.36},tre:{n:'3-6 Flip',p:10,d:.5}};
@@ -147,7 +147,7 @@
   function overlay(a,col,b,c){ctx.fillStyle='rgba(21,13,46,.72)';ctx.fillRect(0,0,W,H);txt(a,W/2,H/2-30,38,col);if(b)txt(b,W/2,H/2+10,'',C.cream,'center','700 17px Space Grotesk, sans-serif');if(c)txt(c,W/2,H/2+40,'',C.grey,'center','14px Space Grotesk, sans-serif')}
   function draw(){
     scene();
-    if(state==='run'){var cp=P[turn];if(onTime(cp)){var sg=cp.air?(cp.s>0?1:-1):(cp.dir>0?1:-1);ctx.fillStyle='rgba(255,225,77,.55)';ctx.beginPath();ctx.arc(CX+sg*(F+RR),GY-RR-1,15,0,Math.PI*2);ctx.fill()}}
+    if(state==='run'){var cp=P[turn];if(onTime(cp)){var sg=cp.air?(cp.s>0?1:-1):(cp.dir>0?1:-1);ctx.fillStyle='rgba(252,233,29,.55)';ctx.beginPath();ctx.arc(CX+sg*(F+RR),GY-RR-1,15,0,Math.PI*2);ctx.fill()}}
     var ps=players();ps.forEach(function(p){if(p.deck||p.i!==turn)drawP(p)});if(state==='run'||state==='count')drawP(P[turn]);
     pops.forEach(function(p){ctx.globalAlpha=Math.min(Math.max(p.life,0),1);txt(p.txt,p.x,p.y,16,p.col);ctx.globalAlpha=1});
     hud();

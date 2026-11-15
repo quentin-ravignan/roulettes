@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Roulettes : cours de skate pour les filles à Paris 19e.">
 <title>Roulettes</title>
-<link rel="icon" href="favicon.ico?v=2" sizes="any">
-<link rel="icon" type="image/png" href="favicon.png?v=2">
-<link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
+<link rel="icon" href="favicon.ico?v=3" sizes="any">
+<link rel="icon" type="image/png" href="favicon.png?v=3">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=3">
 <meta property="og:title" content="Roulettes · skate pour les filles à Paris 19e">
 <meta property="og:description" content="Cours de skate pensés par et pour les filles, dans le 19e arrondissement de Paris.">
-<meta property="og:image" content="https://roulettes.club/og-image.png?v=2">
+<meta property="og:image" content="https://roulettes.club/og-image.png?v=3">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -494,7 +494,7 @@ body.noscroll{overflow:hidden}
 <div class="stripe" aria-hidden="true"><i></i><i></i><i></i></div>
 <header>
   <nav class="wrap nav" aria-label="Navigation principale">
-    <a class="brand" href="#accueil"><img src="logo-roulettes.png?v=2" alt=""><span>Roulettes Club</span></a>
+    <a class="brand" href="#accueil"><img src="logo-roulettes.png?v=3" alt=""><span>Roulettes Club</span></a>
     <a class="backq" href="#accueil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Retour au quartier</a>
     <ul>
       <li><a class="link" href="#accueil">Accueil</a></li>
@@ -575,7 +575,7 @@ body.noscroll{overflow:hidden}
         <a class="btn ghost" href="#spots">Voir les spots</a>
       </div>
     </div>
-    <img class="logo" src="logo-roulettes.png?v=2" alt="Logo Roulettes Club : un chat brun sur un skate rose, dans un cercle néon">
+    <img class="logo" src="logo-roulettes.png?v=3" alt="Logo Roulettes Club : un chat noir et blanc sur un skate rose, dans un cercle bleu nuit">
   </div>
 </section>
 
@@ -798,7 +798,7 @@ body.noscroll{overflow:hidden}
     <div class="shop-r">
     <div class="products">
       <article class="product">
-        <img src="shop-logo.jpg?v=2" alt="T-shirt noir avec le logo Roulettes : le chat skateur dans le cercle néon" loading="lazy" width="900" height="900">
+        <img src="shop-logo.jpg?v=3" alt="T-shirt noir avec le logo Roulettes : le chat skateur dans le cercle néon" loading="lazy" width="900" height="900">
         <div class="pbody"><h3>Le Logo</h3><p>Le chat skateur du club, en couleurs néon, sur fond noir.</p>
           <div class="sizes" role="group" aria-label="Taille"><button type="button" aria-pressed="false">6 ans</button><button type="button" aria-pressed="false">8 ans</button><button type="button" aria-pressed="false">10 ans</button><button type="button" aria-pressed="false">12 ans</button><button type="button" aria-pressed="false">S</button><button type="button" aria-pressed="false">M</button><button type="button" aria-pressed="false">L</button><button type="button" aria-pressed="false">XL</button></div><p class="add-err" aria-live="polite"></p><button type="button" class="add">Ajouter au panier</button></div>
       </article>
@@ -1652,7 +1652,7 @@ document.querySelectorAll('.sizes').forEach(function(g){g.addEventListener('clic
     {id:'shop',x:975,y:200,w:430,h:430,door:1190,lx:1190,ly:214}
   ];
   var C={cyan:'#3ddcf0',pink:'#ff4fa8',yellow:'#ffe14d',cream:'#fbf4e6',night:'#150d2e'};
-  var IMG={};['logo-roulettes.png?v=2','shop-logo.jpg?v=2','shop-flames.jpg','shop-wheel.jpg'].forEach(function(f){var i=new Image();i.src=f;IMG[f]=i});
+  var IMG={};['logo-roulettes.png?v=3','shop-logo.jpg?v=3','shop-flames.jpg','shop-wheel.jpg'].forEach(function(f){var i=new Image();i.src=f;IMG[f]=i});
   var STARS=[];for(var i=0;i<130;i++)STARS.push([(i*397)%2500-950,(i*151)%760-450,(i%3)+1,i*.7]);
   var ROOFS=[];(function(){var x=-950,k=0;while(x<2000){var w=60+(k*37)%70,h=60+(k*53)%90;ROOFS.push([x,w,h]);x+=w+((k*17)%3)*6;k++}})();
   var R={x:470,y:640,vx:0,vy:0,dir:1,moved:0},MONA={x:300,dir:1};
@@ -1723,7 +1723,7 @@ document.querySelectorAll('.sizes').forEach(function(g){g.addEventListener('clic
     // round logo sign on the roof
     ctx.fillStyle='#1d1630';ctx.fillRect(x+w/2-4,170,8,40);
     ctx.save();ctx.shadowColor=C.cyan;ctx.shadowBlur=20;ctx.fillStyle='#120a2c';circ(x+w/2,140,62);ctx.restore();
-    var L=IMG['logo-roulettes.png?v=2'];if(L.complete&&L.naturalWidth){ctx.save();ctx.beginPath();ctx.arc(x+w/2,140,58,0,Math.PI*2);ctx.clip();ctx.drawImage(L,x+w/2-58,82,116,116);ctx.restore()}
+    var L=IMG['logo-roulettes.png?v=3'];if(L.complete&&L.naturalWidth){ctx.save();ctx.beginPath();ctx.arc(x+w/2,140,58,0,Math.PI*2);ctx.clip();ctx.drawImage(L,x+w/2-58,82,116,116);ctx.restore()}
     neon('LE CLUB',x+w/2,300,44,C.pink);
     // windows with the crew inside
     [[x+28,150],[x+w-178,150]].forEach(function(q){
@@ -1767,7 +1767,7 @@ document.querySelectorAll('.sizes').forEach(function(g){g.addEventListener('clic
     // shop windows: decks and the three t-shirts
     [[x+18,150],[x+w-168,150]].forEach(function(q,k){ctx.fillStyle='#fbf1d6';ctx.fillRect(q[0],372,q[1],140);ctx.fillStyle='rgba(255,255,255,.35)';poly([q[0]+10,372,q[0]+40,372,q[0]+10,420])});
     deck(x+26,388,112,'#ff4fa8','#ffe14d');deck(x+52,384,116,'#3ddcf0','#150d2e');
-    shirt(IMG['shop-logo.jpg?v=2'],x+84,394,76);
+    shirt(IMG['shop-logo.jpg?v=3'],x+84,394,76);
     shirt(IMG['shop-flames.jpg'],x+w-160,394,70);shirt(IMG['shop-wheel.jpg'],x+w-84,394,70);
     ctx.fillStyle='#0f2c40';ctx.fillRect(x+16,512,154,8);ctx.fillRect(x+w-170,512,154,8);
     awning(x+12,160,340,'#3ddcf0','#ffe14d');awning(x+w-176,160,340,'#3ddcf0','#ffe14d');
@@ -2055,14 +2055,14 @@ function rlScene(cv,W,H,draw,hit,click){
       place(l.length?l:fromPage());loaded=Date.now()}).catch(function(){if(!who.length)place(fromPage())})}
   place(fromPage());load();
   // fresh looks when someone comes back to the club
-  new IntersectionObserver(function(e){if(!e[0].isIntersecting)return;if(Date.now()-loaded>20000)load();if(!(sayT>0)){say=INTRO;sayT=12}},{threshold:.05}).observe(cv);
+  new IntersectionObserver(function(e){if(!e[0].isIntersecting)return;if(Date.now()-loaded>20000)load();},{threshold:.05}).observe(cv);
 
   // ---------- the bar: drinks on the chalkboard, shi-fu-mi next to Mimosa
   var DRINKS=[['Diabolo menthe','🍹','#3fd17a','1 €'],['Grenadine','🥤','#e0313a','1 €'],['Limonade','🍋','#f5f0c8','1 €'],['Chocolat chaud','☕','#7a4a2c','1,50 €'],['Bière','🍺','#f0b429','3 €']];
   var HANDS=['✊','✋','✌️'],HN=['Pierre','Feuille','Ciseaux'];
   window.RLBarSay=function(x){say=x;sayT=7};
   var INTRO='Installe-toi ! Commande à boire sur l’ardoise du comptoir, défie-moi au shi-fu-mi, et retrouve les riders des adhérent·es autour de la table de leur crew.';
-  var glasses=[],say=INTRO,sayT=12,score=[0,0],last='',served=0,T=0,serve=null,hand=null,TAP=262;
+  var glasses=[],say=INTRO,sayT=0,score=[0,0],last='',served=0,T=0,serve=null,hand=null,TAP=262;
   // a drink: Mimosa pours it under the tap, then slides it along the counter
   function drink(i){if(serve)return;var d=DRINKS[i];served++;serve={t0:T,c:d[2],beer:i===4,to:40+(glasses.length%8)*44};
     say=i===4?'Une bière pour les grands ! Les riders, eux, restent au sirop.':['Et un '+d[0].toLowerCase()+' ! Santé !','Un '+d[0].toLowerCase()+', bien frais.','Tchin ! Tournée n°'+served+'.'][served%3];sayT=4;
@@ -2078,7 +2078,7 @@ function rlScene(cv,W,H,draw,hit,click){
   function inBox(p,b){return p.x>b.x&&p.x<b.x+b.w&&p.y>b.y&&p.y<b.y+b.h}
 
   function minou(o,x,y){var c=o.ctx,b=Math.sin(o.t*2)*2,mi=window.RLMimosa&&RLMimosa('bow');
-    if(mi&&mi.complete&&mi.naturalWidth)c.drawImage(mi,x-84,y-70+b,168,163);else{
+    if(mi&&mi.complete&&mi.naturalWidth)c.drawImage(mi,x-84,y-68+b,168,161);else{
     c.fillStyle='#151021';o.rr(x-46,y-10+b,92,90,24);c.fill();c.fillStyle='#fbf4e6';o.poly([x-12,y-8+b,x+12,y-8+b,x,y+34+b]);c.fillStyle='#ff4fa8';o.poly([x-16,y-6+b,x,y+2+b,x-16,y+10+b]);o.poly([x+16,y-6+b,x,y+2+b,x+16,y+10+b]);
     c.fillStyle='#9a7e5e';o.circ(x,y-44+b,44);o.poly([x-40,y-62+b,x-34,y-108+b,x-6,y-84+b]);o.poly([x+40,y-62+b,x+34,y-108+b,x+6,y-84+b]);
     c.strokeStyle='#4a3a2a';c.lineWidth=5;c.lineCap='round';[[-14,-84,-9,-68],[0,-88,0,-70],[14,-84,9,-68],[-44,-50,-30,-47],[-43,-38,-30,-38],[44,-50,30,-47],[43,-38,30,-38]].forEach(function(l){c.beginPath();c.moveTo(x+l[0],y+l[1]+b);c.lineTo(x+l[2],y+l[3]+b);c.stroke()});
@@ -2162,7 +2162,7 @@ function rlScene(cv,W,H,draw,hit,click){
     else if(false)info.innerHTML='<b>'+h.k.name+'</b>'+(h.k.age?' · '+h.k.age+' ans':'')+' · '+stance(h.k.stance)+' · crew <b style="color:'+h.cr.col+'">'+h.cr.name+'</b> ('+h.cr.when+')';
     else if(h.v)info.innerHTML='<b>'+h.v.h+'</b> · '+h.v.p;
     else if(h.coach)info.innerHTML='<b>Laurène, la coach</b> · Coach professionnelle, 4ᵉ aux championnats de France de skate. Elle encadre tous les cours du club.';
-    else if(h.minou){say='Qu’est-ce que je te sers ? Ou un petit shi-fu-mi ?';sayT=4}}
+    else if(h.minou){say=say===INTRO?'Qu’est-ce que je te sers ? Ou un petit shi-fu-mi ?':INTRO;sayT=8}}
   rlScene(cv,W,H,draw,hit,click);
 })();
 
@@ -2170,9 +2170,9 @@ function rlScene(cv,W,H,draw,hit,click){
 (function(){
   var cv=document.getElementById('shop-cv'),log=document.getElementById('chat-log'),form=document.getElementById('chat-form'),inp=document.getElementById('chat-in'),chips=document.getElementById('chat-chips');if(!cv||!log)return;
   var W=1400,H=540,last='Salut ! Pose-moi une question.',OLLIE={name:'Mimosa',hair:'#9a7e5e',hair2:'#4a3a2a',top:'#151021',pants:'#2f3f6e',style:'cap',cap:'#ffe14d',size:1.35,noBoard:1};
-  var IMG={};['shop-logo.jpg?v=2','shop-flames.jpg','shop-wheel.jpg','logo-roulettes.png?v=2'].forEach(function(f){var i=new Image();i.src=f;IMG[f]=i});
+  var IMG={};['shop-logo.jpg?v=3','shop-flames.jpg','shop-wheel.jpg','logo-roulettes.png?v=3'].forEach(function(f){var i=new Image();i.src=f;IMG[f]=i});
   var DECKS=[['#ff4fa8','#ffe14d'],['#3ddcf0','#150d2e'],['#ffe14d','#ff4fa8'],['#9b6dff','#3ddcf0'],['#3fd17a','#fbf4e6'],['#e2561f','#ffe14d'],['#fbf4e6','#ff4fa8']];
-  var SHIRTS=[['shop-logo.jpg?v=2','Le Logo'],['shop-flames.jpg','Flames'],['shop-wheel.jpg','Wheel']];
+  var SHIRTS=[['shop-logo.jpg?v=3','Le Logo'],['shop-flames.jpg','Flames'],['shop-wheel.jpg','Wheel']];
   function draw(o){var c=o.ctx,t=o.t,hv=o.hover||{};
     c.fillStyle='#22163f';c.fillRect(0,0,W,430);c.fillStyle='rgba(255,255,255,.04)';for(var y=0;y<430;y+=28)for(var x=(y/28%2)*30;x<W;x+=60)c.fillRect(x,y,56,24);
     c.fillStyle='#7a4a2c';c.fillRect(0,430,W,H-430);c.fillStyle='rgba(0,0,0,.15)';for(var p=0;p<W;p+=70)c.fillRect(p,430,3,H-430);c.fillStyle='rgba(0,0,0,.25)';c.fillRect(0,430,W,8);
@@ -2191,10 +2191,10 @@ function rlScene(cv,W,H,draw,hit,click){
       c.fillStyle=on?'#ffe14d':'#fbf4e6';c.fillRect(x-5,y-5,w+10,w+36);if(im.complete&&im.naturalWidth)c.drawImage(im,im.naturalWidth*.12,im.naturalHeight*.08,im.naturalWidth*.76,im.naturalHeight*.8,x,y,w,w);
       o.txt(sh[1],x+w/2,y+w+22,'15px Bungee, Impact, sans-serif','#150d2e')});
     // counter, register and Ollie
-    var b=Math.sin(t*2)*2,mi=window.RLMimosa&&RLMimosa('cap');if(mi&&mi.complete&&mi.naturalWidth)c.drawImage(mi,968,150+b,224,217);else RL.draw(c,OLLIE,1080,350+b,1.5,t,false);
+    var b=Math.sin(t*2)*2,mi=window.RLMimosa&&RLMimosa('cap');if(mi&&mi.complete&&mi.naturalWidth)c.drawImage(mi,968,152+b,224,215);else RL.draw(c,OLLIE,1080,350+b,1.5,t,false);
     c.fillStyle='#3ddcf0';c.fillRect(900,330,420,14);c.fillStyle='#1d4d6b';c.fillRect(910,344,400,120);c.fillStyle='rgba(255,255,255,.08)';for(var k=0;k<4;k++)c.fillRect(930+k*95,360,70,86);
     c.fillStyle='#150d2e';o.rr(1200,282,90,50,8);c.fill();c.fillStyle='#3fd17a';c.fillRect(1212,292,66,16);c.fillStyle='#ffe14d';c.fillRect(1214,316,62,8);
-    var L=IMG['logo-roulettes.png?v=2'];if(L.complete&&L.naturalWidth)c.drawImage(L,1290,170,100,100);
+    var L=IMG['logo-roulettes.png?v=3'];if(L.complete&&L.naturalWidth)c.drawImage(L,1290,170,100,100);
     o.say(last.length>120?last.slice(0,117).replace(/\s\S*$/,'')+'…':last,1130,128,330);
     if(hv.ollie)o.tip('Mimosa, le vendeur : clique pour lui parler',1080,520);
   }
@@ -2418,9 +2418,9 @@ window.RLLoad=function(){if(window.RLD)return RLD.ready;if(!RLLoad.p)RLLoad.p=ne
   el.querySelector("button").onclick=done;port.addEventListener?port.addEventListener("change",function(){if(!port.matches)done();upd()}):port.addListener(upd);
   setTimeout(upd,600);setTimeout(function(){if(!el.hidden)done()},12000)})();</script>
 <div class="mimosa" id="mimosa" aria-live="polite">
-  <div class="mbub" id="mbub"><button type="button" class="mx" aria-label="Fermer la bulle">×</button><p></p><form class="mask"><input type="text" maxlength="200" autocomplete="off" placeholder="Pose-moi une question…" aria-label="Ta question"><button type="submit" aria-label="Envoyer">➤</button></form></div>
+  <div class="mbub" id="mbub" hidden><button type="button" class="mx" aria-label="Fermer la bulle">×</button><p></p><form class="mask"><input type="text" maxlength="200" autocomplete="off" placeholder="Pose-moi une question…" aria-label="Ta question"><button type="submit" aria-label="Envoyer">➤</button></form></div>
   <button type="button" class="mcat" aria-label="Mimosa, le chat du club : un conseil ?">
-    <img class="mimg" src="mimosa.png?v=2" alt="" width="380" height="368">
+    <img class="mimg" src="mimosa.png?v=3" alt="" width="380" height="364">
     <canvas class="lau" width="236" height="300" hidden></canvas>
   </button>
 </div>
@@ -2460,15 +2460,15 @@ window.RLLoad=function(){if(window.RLD)return RLD.ready;if(!RLLoad.p)RLLoad.p=ne
     if(best)return best;var a=window.RLAsk?RLAsk(q):'';return a||'Hmm, ça je ne sais pas encore… Écris-nous sur <a href="#contact">Contact</a>, on te répond vite !'};
   // the guide's picture, reused in the canvas scenes (shop counter, bar)
   var CACHE={};
-  var MIM=new Image();MIM.src='mimosa.png?v=2';window.RLMimosa=function(){return MIM};
+  var MIM=new Image();MIM.src='mimosa.png?v=3';window.RLMimosa=function(){return MIM};
   function drawLau(){if(!window.RL)return;var co=RL.chars.filter(function(c){return c.info==='Coach'})[0];if(!co)return;var x=lau.getContext('2d');x.clearRect(0,0,236,300);RL.draw(x,Object.assign({},co,{noBoard:1}),118,292,1.6,.3,false)}
   var page='',i=0,closed={};try{closed=JSON.parse(sessionStorage.getItem('rl-mimosa')||'{}')}catch(e){}
   function show(){var l=TIPS[page]||TIPS.accueil;p.innerHTML=l[i%l.length];bub.hidden=false;bub.style.animation='none';void bub.offsetWidth;bub.style.animation=''}
   function go(pg){page=pg||'accueil';i=0;var isL=page==='cours';box.dataset.acc=ACC[page]||'';box.classList.toggle('lau',isL);lau.hidden=!isL;if(isL)drawLau();
     cat.setAttribute('aria-label',isL?'Laurène, la coach : un conseil ?':'Mimosa, le chat du club : un conseil ?');
-    fm.querySelector('input').placeholder=isL?'Pose ta question à Laurène…':'Pose-moi une question…';if(closed[page])bub.hidden=true;else show()}
-  cat.onclick=function(){if(bub.hidden){closed[page]=false;i=0}else i++;show();save()};
-  bub.querySelector('.mx').onclick=function(){bub.hidden=true;closed[page]=true;save()};
+    fm.querySelector('input').placeholder=isL?'Pose ta question à Laurène…':'Pose-moi une question…';bub.hidden=true}
+  cat.onclick=function(){if(bub.hidden)i=0;else i++;show()};
+  bub.querySelector('.mx').onclick=function(){bub.hidden=true};
   fm.onsubmit=function(e){e.preventDefault();var inp=fm.querySelector('input'),q=inp.value.trim();if(!q)return;inp.value='';
     p.innerHTML='<span class="mq">« '+q.replace(/[<>&]/g,'')+' »</span>'+RLGuideAnswer(q);bub.scrollTop=0};
   bub.addEventListener('click',function(e){var a=e.target.closest('a[href^="#"]');if(a)setTimeout(function(){i=0},0)});

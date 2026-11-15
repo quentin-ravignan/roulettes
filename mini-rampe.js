@@ -12,12 +12,14 @@
   var RUN=60,GY=396,CX=W/2,F=150,RR=124,DECK=110,G=1300,VC=450,V0=Math.sqrt(VC*VC+2*G*RR),L=F+RR*Math.PI/2,SC=.92,AMAX=Math.PI/2*.8;
   var TR={ollie:{n:'Ollie',p:1,d:0},shove:{n:'Shove-it',p:3,d:.34},flip:{n:'Flip',p:5,d:.36},tre:{n:'3-6 Flip',p:10,d:.5}};
   var COL=[C.yellow,C.cyan];
+  // timing: the trick key must be hit right at the coping (a bit before take-off, or just after)
+  var EARLY=.18,LATE=.12;
 
   var best=0;try{best=+localStorage.getItem('rl-ramp-best')||0}catch(e){}
   function showBest(){bestEl.textContent=best?best+' pts':'–'}showBest();
 
   var MODE=1,state='select',turn=0,tm=RUN,cd=0,cdMsg='',t=0,last=0,pops=[],conf=[],winner=-1,visible=false;
-  function mk(i){return{i:i,side:i?1:-1,s:0,dir:1,air:false,h:0,vy:0,tk:null,tt:0,q:null,qt:0,pts:0,bail:0,spin:0,deck:true}}
+  function mk(i){return{i:i,side:i?1:-1,s:0,dir:1,air:false,h:0,vy:0,tk:null,tt:0,q:null,qt:0,at:0,late:0,pts:0,bail:0,spin:0,deck:true}}
   var P=[mk(0),mk(1)],sel=[null,null],picked=[false,false];
   function name(i){return sel[i]?sel[i].name:'J'+(i+1)}
 
@@ -76,24 +78,30 @@
     if(MODE===1){winner=0;if(P[0].pts>best){best=P[0].pts;try{localStorage.setItem('rl-ramp-best',best)}catch(e){}showBest()}}
     else winner=P[0].pts>P[1].pts?0:P[1].pts>P[0].pts?1:-1;
     for(var i=0;i<140;i++)conf.push({x:W/2,y:120,vx:(Math.random()-.5)*700,vy:-Math.random()*520-80,r:Math.random()*4+2,c:[C.pink,C.cyan,C.yellow,'#7aa8ff'][i%4],a:Math.random()*6})}
-  // a trick key: in the air it starts the trick, just before the coping it is kept for the take-off
+  function vel(s){return Math.sqrt(Math.max(V0*V0-2*G*hgt(s),VC*VC*.25))}
+  function tcop(p){return (L-p.dir*p.s)/vel(p.s)}
+  function onTime(p){return !p.deck&&!p.bail&&(p.air?p.at<=LATE&&!p.tk:p.dir*p.s>0&&tcop(p)<=EARLY)}
+  function fall(p,msg){p.bail=1.3;p.spin=0;p.tk=null;p.q=null;p.late=0;pop(p.i,msg,C.pink);sfx('bail')}
+  // a trick key must land right at the coping: too early on the wall or too late in the air = fall
   function act(i,k){
     if(MODE===3&&NET.role==='guest'){send({t:'in',k:k});return}
     if(state==='select'||state==='over'){if(MODE===3){NET.go[i]=true;tryStart();return}start();return}
     if(state!=='run'||i!==turn)return;
     var p=P[turn];if(p.bail>0||p.deck)return;
-    if(p.air){if(!p.tk){p.tk=k;p.tt=0;sfx(k==='ollie'?'pop':'trick')}return}
-    if(p.dir*p.s>0&&Math.abs(p.s)>L-90){p.q=k;p.qt=t}}
+    if(p.air){if(!p.tk){p.tk=k;p.tt=0;if(p.at>LATE)p.late=1;sfx(k==='ollie'?'pop':'trick')}return}
+    if(p.q||p.dir*p.s<=0)return;
+    if(tcop(p)<=EARLY){p.q=k;p.qt=t}else fall(p,'TROP TÔT !')}
   function land(p){var i=p.i;
+    if(p.late){p.late=0;p.bail=1.3;p.spin=0;p.tk=null;pop(i,'TROP TARD !',C.pink);sfx('bail');return}
     if(!p.tk){pop(i,'Pas de figure',C.grey);sfx('miss');return}
     var tr=TR[p.tk];
     if(p.tt<tr.d){p.bail=1.3;p.spin=0;p.tk=null;pop(i,'BAIL !',C.pink);sfx('bail');return}
     p.pts+=tr.p;pop(i,tr.n+' +'+tr.p,COL[i]);sfx('land');sfx('points',Math.min(4,Math.ceil(tr.p/3)));p.tk=null}
   function step(p,dt){
     if(p.bail>0){p.bail-=dt;p.spin+=dt*7;p.s*=Math.max(0,1-dt*2.5);if(p.bail<=0){p.bail=0;p.spin=0;p.dir=p.s>0?-1:1;if(!p.dir)p.dir=1}return}
-    if(p.air){p.vy-=G*dt;p.h+=p.vy*dt;if(p.tk)p.tt+=dt;if(p.h<=0&&p.vy<0){p.h=0;p.air=false;p.dir=-p.dir;land(p)}return}
-    var v=Math.sqrt(Math.max(V0*V0-2*G*hgt(p.s),VC*VC*.25));p.s+=p.dir*v*dt;
-    if(p.dir*p.s>=L){p.s=p.dir*L;p.air=true;p.vy=VC;p.h=0;p.tk=null;p.tt=0;sfx('pop');if(p.q&&t-p.qt<.4){p.tk=p.q;sfx(p.q==='ollie'?'pop':'trick')}p.q=null}}
+    if(p.air){p.vy-=G*dt;p.h+=p.vy*dt;p.at+=dt;if(p.tk)p.tt+=dt;if(p.h<=0&&p.vy<0){p.h=0;p.air=false;p.dir=-p.dir;land(p)}return}
+    var v=vel(p.s);p.s+=p.dir*v*dt;
+    if(p.dir*p.s>=L){p.s=p.dir*L;p.air=true;p.vy=VC;p.h=0;p.tk=null;p.tt=0;p.at=0;p.late=0;sfx('pop');if(p.q){p.tk=p.q;sfx(p.q==='ollie'?'pop':'trick')}p.q=null}}
   function update(dt){
     pops.forEach(function(q){q.life-=dt;q.y-=30*dt});pops=pops.filter(function(q){return q.life>0});
     conf.forEach(function(c){c.vy+=900*dt;c.x+=c.vx*dt;c.y+=c.vy*dt;c.a+=dt*8});conf=conf.filter(function(c){return c.y<H+20});
@@ -139,6 +147,7 @@
   function overlay(a,col,b,c){ctx.fillStyle='rgba(21,13,46,.72)';ctx.fillRect(0,0,W,H);txt(a,W/2,H/2-30,38,col);if(b)txt(b,W/2,H/2+10,'',C.cream,'center','700 17px Space Grotesk, sans-serif');if(c)txt(c,W/2,H/2+40,'',C.grey,'center','14px Space Grotesk, sans-serif')}
   function draw(){
     scene();
+    if(state==='run'){var cp=P[turn];if(onTime(cp)){var sg=cp.air?(cp.s>0?1:-1):(cp.dir>0?1:-1);ctx.fillStyle='rgba(255,225,77,.55)';ctx.beginPath();ctx.arc(CX+sg*(F+RR),GY-RR-1,15,0,Math.PI*2);ctx.fill()}}
     var ps=players();ps.forEach(function(p){if(p.deck||p.i!==turn)drawP(p)});if(state==='run'||state==='count')drawP(P[turn]);
     pops.forEach(function(p){ctx.globalAlpha=Math.min(Math.max(p.life,0),1);txt(p.txt,p.x,p.y,16,p.col);ctx.globalAlpha=1});
     hud();
@@ -146,8 +155,8 @@
     if(state==='select'){
       if(MODE===3&&!NET.conn)overlay('MINI RAMPE',C.yellow,'Appuie sur « Trouver un·e adversaire »','Chacun·e son run d’1 minute, une figure à chaque mur');
       else if(MODE===3)overlay('MINI RAMPE',C.yellow,NET.go[me()]?'En attente de l’adversaire…':tap+' quand tu es prêt·e','Tu es J'+(me()+1)+(me()?' · plateforme de droite':' · plateforme de gauche'));
-      else overlay('MINI RAMPE',C.yellow,tap+' pour dropper',MODE===1?'1 minute pour placer un max de figures':'J1 roule d’abord, puis J2 · le plus de points gagne')}
-    if(state==='count')overlay(String(Math.max(1,Math.ceil(cd))),COL[turn],cdMsg,PHONE?'Une figure en l’air à chaque mur':(MODE===2?(turn?'Flèches':'Z Q S D')+' · une figure en l’air à chaque mur':'Une figure en l’air à chaque mur'));
+      else overlay('MINI RAMPE',C.yellow,tap+' pour dropper',MODE===1?'Figure pile au coping (le haut du mur) : trop tôt ou trop tard = chute !':'J1 puis J2 · figure pile au coping, sinon chute !')}
+    if(state==='count')overlay(String(Math.max(1,Math.ceil(cd))),COL[turn],cdMsg,PHONE?'Figure pile au coping : trop tôt ou trop tard = chute':(MODE===2?(turn?'Flèches':'Z Q S D')+' · figure pile au coping, sinon chute':'Figure pile au coping : trop tôt ou trop tard = chute'));
     if(state==='over'){
       if(MODE===1)overlay(P[0].pts+' POINTS',C.yellow,'Bravo '+name(0)+' ! Record : '+best+' pts',tap+' pour rejouer');
       else overlay(winner<0?'ÉGALITÉ !':name(winner).toUpperCase()+' GAGNE !',winner<0?C.cream:COL[winner],'J1 '+name(0)+' : '+P[0].pts+' pts · J2 '+name(1)+' : '+P[1].pts+' pts',MODE===3?tap+' pour la revanche':tap+' pour la revanche');

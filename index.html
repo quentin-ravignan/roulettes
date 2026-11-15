@@ -881,7 +881,7 @@ body.noscroll{overflow:hidden}
     <div class="head">
       <p class="eyebrow">Mini Rampe Game</p>
       <h2>Mini rampe · Battle</h2>
-      <p class="lead">Chaque rider attend sur sa plateforme, puis fait son <b>run d’1 minute</b>. Une figure en l’air à chaque mur : le plus de points gagne !</p>
+      <p class="lead">Chaque rider attend sur sa plateforme, puis fait son <b>run d’1 minute</b>. Une figure <b>pile au coping</b> à chaque mur, sinon c’est la chute : le plus de points gagne !</p>
     </div>
     <div class="modes" id="ramp-modes" role="group" aria-label="Mode de jeu">
       <button type="button" data-m="1" aria-pressed="true">Solo</button>
@@ -906,7 +906,7 @@ body.noscroll{overflow:hidden}
       <button type="button" data-k="tre"><b>3-6 Flip</b><span><kbd>↓</kbd> <kbd>S</kbd> · +10</span></button>
     </div>
     <div class="game-bar">
-      <p>Tu peux lancer ta figure juste avant d’arriver en haut du mur ou une fois en l’air. Une figure pas finie quand tu retombes, c’est la <b>chute</b> : tu perds du temps. Un mur sans figure ne rapporte rien. Le 3-6 flip est long, lance-le tôt ! À 2 sur le même écran : J1 (plateforme de gauche) avec <b>Z Q S D</b>, puis J2 (plateforme de droite) avec les <b>flèches</b>.</p>
+      <p>Lance ta figure <b>pile au moment où tu passes le coping</b> (le tube en haut du mur, il s’allume) : <b>trop tôt ou trop tard, c’est la chute</b> et tu perds du temps. Une figure pas finie quand tu retombes, c’est aussi la chute. Un mur sans figure ne rapporte rien. Le 3-6 flip est long, lance-le tôt ! À 2 sur le même écran : J1 (plateforme de gauche) avec <b>Z Q S D</b>, puis J2 (plateforme de droite) avec les <b>flèches</b>.</p>
       <p>Record solo : <b id="ramp-best">–</b></p>
     </div>
   </div>
@@ -1066,7 +1066,7 @@ document.querySelectorAll('.sizes').forEach(function(g){g.addEventListener('clic
 })();
 </script>
 
-<script src="mini-rampe.js?v=1"></script>
+<script src="mini-rampe.js?v=2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
 (function(){

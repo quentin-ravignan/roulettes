@@ -331,7 +331,7 @@ body.vm #vcv{flex:1 1 0;height:auto;min-height:170px}
 .mask{display:flex;gap:6px;margin-top:10px}.mask input{flex:1;min-width:0;font:inherit;font-size:.9rem;border:2px solid #150d2e;border-radius:12px;padding:7px 10px;background:#fff;color:#150d2e}
 .mask button{border:0;border-radius:12px;background:#150d2e;color:#ffe14d;font-weight:700;padding:0 12px;cursor:pointer}
 .mimosa .mcat canvas{display:block;width:100%;height:auto}.mimosa .mcat canvas[hidden]{display:none}.mimosa.lau .mimg{display:none}
-body[data-page=club] .mimosa,body[data-page=shop] .mimosa{display:none}
+body[data-page=club] .mimosa,body[data-page=shop] .mimosa,body[data-page=games] .mimosa,body[data-page=game] .mimosa,body[data-page=rampe] .mimosa{display:none}
 @keyframes mpop{0%{transform:scale(.6) translateY(10px);opacity:0}70%{transform:scale(1.04)}100%{transform:none;opacity:1}}
 @media (max-width:640px){body[data-page=accueil] .mimosa{top:calc(var(--hdr,56px) + 14px);bottom:auto;align-items:flex-start}body[data-page=accueil] .mbub{margin:18px 0 0}body[data-page=accueil] .mbub::after{bottom:auto;top:20px}body[data-page=accueil] .mbub::before{bottom:auto;top:23px}.mimosa .mcat{width:84px}.mbub{max-width:calc(100vw - 120px);font-size:.86rem;margin-bottom:44px;padding:10px 26px 10px 12px}}
 
@@ -1770,7 +1770,7 @@ document.querySelectorAll('.sizes').forEach(function(g){g.addEventListener('clic
     awning(x+12,160,340,'#3ddcf0','#ffe14d');awning(x+w-176,160,340,'#3ddcf0','#ffe14d');
     // door with the vendor cat behind the glass
     ctx.fillStyle='#0f2c40';ctx.fillRect(x+w/2-40,372,80,188);ctx.fillStyle='#bfe6f0';ctx.fillRect(x+w/2-32,380,64,170);
-    var mi=window.RLMimosa&&RLMimosa('cap');if(mi&&mi.complete&&mi.naturalWidth){ctx.save();ctx.beginPath();ctx.rect(x+w/2-32,380,64,170);ctx.clip();ctx.drawImage(mi,x+w/2-36,476,72,70);ctx.restore()}else if(window.RL){ctx.save();ctx.beginPath();ctx.rect(x+w/2-32,380,64,170);ctx.clip();RL.draw(ctx,OLLIE,x+w/2+2,560,.72,t,true);ctx.restore()}
+    
     ctx.fillStyle='rgba(255,255,255,.3)';poly([x+w/2-32,380,x+w/2-12,380,x+w/2-32,430]);
     ctx.fillStyle='#ff4fa8';rr(x+w/2-26,452,52,18,4);ctx.fill();txt('OUVERT',x+w/2,465,'700 11px Space Grotesk, sans-serif','#fff');
   }
@@ -2081,7 +2081,7 @@ function rlScene(cv,W,H,draw,hit,click){
   function inBox(p,b){return p.x>b.x&&p.x<b.x+b.w&&p.y>b.y&&p.y<b.y+b.h}
 
   function minou(o,x,y){var c=o.ctx,b=Math.sin(o.t*2)*2,mi=window.RLMimosa&&RLMimosa('bow');
-    if(mi&&mi.complete&&mi.naturalWidth)c.drawImage(mi,x-84,y-112+b,168,163);else{
+    if(mi&&mi.complete&&mi.naturalWidth)c.drawImage(mi,x-84,y-70+b,168,163);else{
     c.fillStyle='#151021';o.rr(x-46,y-10+b,92,90,24);c.fill();c.fillStyle='#fbf4e6';o.poly([x-12,y-8+b,x+12,y-8+b,x,y+34+b]);c.fillStyle='#ff4fa8';o.poly([x-16,y-6+b,x,y+2+b,x-16,y+10+b]);o.poly([x+16,y-6+b,x,y+2+b,x+16,y+10+b]);
     c.fillStyle='#9a7e5e';o.circ(x,y-44+b,44);o.poly([x-40,y-62+b,x-34,y-108+b,x-6,y-84+b]);o.poly([x+40,y-62+b,x+34,y-108+b,x+6,y-84+b]);
     c.strokeStyle='#4a3a2a';c.lineWidth=5;c.lineCap='round';[[-14,-84,-9,-68],[0,-88,0,-70],[14,-84,9,-68],[-44,-50,-30,-47],[-43,-38,-30,-38],[44,-50,30,-47],[43,-38,30,-38]].forEach(function(l){c.beginPath();c.moveTo(x+l[0],y+l[1]+b);c.lineTo(x+l[2],y+l[3]+b);c.stroke()});

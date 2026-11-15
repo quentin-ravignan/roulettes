@@ -28,7 +28,7 @@
   function key(ch){return ch?ch.name+'|'+(ch.top||'')+'|'+(ch.hair||''):''}
   function buildList(){var l=[],seen={};function add(ch,tag){if(!ch||!ch.name||seen[key(ch)])return;seen[key(ch)]=1;l.push({ch:ch,tag:tag||''})}
     if(window.RL&&RL.me)add(RL.me,'mon rider');PUB.forEach(function(p){add(Object.assign({},p.ch,{name:p.name||p.ch.name}),p.crew)});
-    (window.RL?RL.chars:[]).forEach(function(c){add(c,c.info||'')});return l}
+    (window.RL?RL.chars:[]).forEach(function(c){add(c,c.info||c.crew||'')});return l}
   function fill(){LIST=buildList();if(!LIST.length)return;
     if(!picked[0]||!sel[0])sel[0]=(window.RL&&RL.me)||LIST[0].ch;
     if(!picked[1]||!sel[1]||key(sel[1])===key(sel[0]))sel[1]=(LIST.filter(function(o){return key(o.ch)!==key(sel[0])})[0]||LIST[0]).ch;
@@ -41,7 +41,7 @@
   selEl.forEach(function(el,i){el.addEventListener('change',function(){var o=LIST[+el.value];if(!o)return;sel[i]=o.ch;picked[i]=true;
     if(MODE>=2&&key(sel[1-i])===key(o.ch)){var other=LIST.filter(function(x){return key(x.ch)!==key(o.ch)})[0];if(other){sel[1-i]=other.ch;fill()}}
     if(MODE===3)sendPick();cv.focus({preventScroll:true})})});
-  fill();
+  fill();document.addEventListener('rl-crew',function(){setTimeout(fill,0)});
 
   // ---- sound (generated)
   var AC=null,muted=false;try{muted=localStorage.getItem('msc-mute')==='1'}catch(e){}

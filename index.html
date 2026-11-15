@@ -315,6 +315,7 @@ body.vm #vcv{flex:1 1 0;height:auto;min-height:170px}
 .gcard p{color:var(--muted);margin:0}.gcard .gshot{display:block;width:100%;height:auto;aspect-ratio:2/1;object-fit:cover;border-radius:14px;border:2px solid var(--c);min-height:0;flex:0 1 auto}.gcard .go{margin-top:auto;font-weight:700;color:var(--c)}
 @media (max-width:700px){.gcards{grid-template-columns:1fr}}
 /* Mimosa, the club's tabby cat, gives tips everywhere in white comic bubbles */
+.rotate-tip{position:fixed;left:12px;right:12px;bottom:max(12px,env(safe-area-inset-bottom));z-index:45;display:flex;align-items:center;gap:12px;padding:12px 12px 12px 14px;border-radius:16px;background:#ffd23f;color:#150d2e;border:2px solid #150d2e;box-shadow:0 4px 0 #ff4fa8,0 10px 24px rgba(0,0,0,.4);font-weight:700;font-size:.92rem;line-height:1.3}.rotate-tip[hidden]{display:none}.rotate-tip .ph{flex:none;width:30px;height:30px;animation:rl-rot 2.4s ease-in-out infinite}.rotate-tip p{margin:0;flex:1}.rotate-tip button{flex:none;border:0;background:#150d2e;color:#ffd23f;border-radius:999px;width:32px;height:32px;font-size:1.1rem;cursor:pointer}@keyframes rl-rot{0%,30%{transform:rotate(0)}55%,85%{transform:rotate(-90deg)}100%{transform:rotate(0)}}@media (prefers-reduced-motion:reduce){.rotate-tip .ph{animation:none}}
 .mimosa{position:fixed;right:max(12px,env(safe-area-inset-right));bottom:max(10px,env(safe-area-inset-bottom));z-index:30;display:flex;align-items:flex-end;gap:2px;pointer-events:none}
 .mimosa .mcat{pointer-events:auto;border:0;background:none;padding:0;cursor:pointer;width:118px;flex:none;filter:drop-shadow(0 6px 10px rgba(0,0,0,.45));transition:transform .2s}
 .mimosa .mcat:hover{transform:translateY(-3px) rotate(-2deg)}.mimosa .mcat .mimg{display:block;width:100%;height:auto}
@@ -481,6 +482,8 @@ body.noscroll{overflow:hidden}
 .cart-member[hidden]{display:none}
 .cart-member select{font:inherit;border-radius:10px;padding:8px 10px;background:var(--night-2);color:var(--cream);border:1.5px solid var(--line)}
 .cart-member p{margin:0;width:100%;color:var(--yellow);font-weight:700}
+/* phone held sideways: the village fills the screen, compact header and guide */
+@media (orientation:landscape) and (max-height:500px){.nav{padding-block:4px}.brand img{width:34px;height:34px}body.vm #village{min-height:0;height:calc(100svh - var(--hdr,56px))}body.vm #vcv{min-height:0}.mimosa .mcat{width:62px}.mbub{max-width:280px;font-size:.8rem;padding:8px 24px 8px 10px}}
 </style>
 <script src="firebase-config.js?v=3"></script>
 </head>
@@ -920,7 +923,7 @@ body.noscroll{overflow:hidden}
       <p class="lead">Choisis une leçon : Laurène te montre la figure, te donne les étapes, et la vidéo se lance au tableau. Ensuite, on la travaille ensemble en vrai pendant les cours !</p>
     </div>
     <div class="scene-wrap"><div class="class-inner">
-      <canvas id="cours-cv" class="scene" style="aspect-ratio:1400/620" aria-label="La classe : Laurène la coach devant le tableau, le programme des figures au mur et les riders qui écoutent"></canvas>
+      <canvas id="cours-cv" class="scene" style="aspect-ratio:1400/620" aria-label="La classe : Laurène la coach devant le tableau et les riders qui écoutent"></canvas>
       <iframe class="class-board" id="class-board" hidden title="Vidéo de la leçon" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
     </div></div>
     <div class="cours-side">
@@ -1066,7 +1069,7 @@ document.querySelectorAll('.sizes').forEach(function(g){g.addEventListener('clic
 })();
 </script>
 
-<script src="mini-rampe.js?v=2"></script>
+<script src="mini-rampe.js?v=3"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
 (function(){
@@ -1981,7 +1984,7 @@ function rlScene(cv,W,H,draw,hit,click){
       steps:['Pied arrière sur le coin du tail, pied avant au milieu.','Gros scoop vers l’arrière : c’est le pied arrière qui fait presque tout.','Petite pichenette du pied avant, juste pour aider la planche à flipper.','Saute haut, attends que la planche ait fini et attrape-la.'],
       say:'Le 3-6 flip, c’est le pied arrière qui travaille : gros scoop, et on reste bien au-dessus !'}
   ];
-  var cur=-1,say='Salut ! Je suis Laurène. Choisis une leçon sur le programme, et on regarde la vidéo au tableau.',sayT=10,t0=0,T=0;
+  var cur=-1,say='Salut ! Je suis Laurène. Choisis une leçon dans la liste à droite, et on regarde la vidéo au tableau.',sayT=10,t0=0,T=0;
   var COACH=RL.chars.filter(function(c){return c.info==='Coach'})[0]||RL.chars[0];
   function kids(){var me=RL.pick(),k=RL.chars.filter(function(c){return c.age&&c!==me}).slice(0,3);if(me&&me!==COACH)k.splice(1,0,me);return k.slice(0,4)}
   function draw(o){var c=o.ctx,t=o.t,hv=o.hover;T=t;
@@ -1997,13 +2000,7 @@ function rlScene(cv,W,H,draw,hit,click){
     if(cur<0){o.txt('LES LEÇONS DE LAURÈNE',BX+BW/2,BY+70,'30px Bungee, Impact, sans-serif','rgba(255,255,255,.9)');
       c.strokeStyle='rgba(255,255,255,.8)';c.lineWidth=3;c.setLineDash([10,8]);c.beginPath();c.moveTo(BX+160,BY+270);c.quadraticCurveTo(BX+BW/2,BY+110,BX+BW-160,BY+270);c.stroke();c.setLineDash([]);
       RL.draw(c,COACH,BX+BW/2,BY+230-Math.abs(Math.sin(t*2))*30,.9,t,false,0,'ollie',(t*.6)%1);
-      o.txt('Choisis une leçon sur le programme →',BX+BW/2,BY+BH-26,'700 20px Space Grotesk, sans-serif','rgba(255,255,255,.85)')}
-    // the programme on the right wall: click a line to start the lesson
-    c.fillStyle='#fbf4e6';o.rr(PX,PY,300,400,12);c.fill();c.fillStyle=C2.pink;o.circ(PX+150,PY+8,8);
-    o.txt('PROGRAMME',PX+150,PY+44,'24px Bungee, Impact, sans-serif','#150d2e');
-    L.forEach(function(l,i){var y=PY+76+i*36,on=i===cur,h=hv==='L'+i;if(on||h){c.fillStyle=on?C2.yellow:'rgba(61,220,240,.25)';o.rr(PX+12,y-4,276,32,8);c.fill()}
-      c.strokeStyle='#150d2e';c.lineWidth=2;c.strokeRect(PX+22,y+4,16,16);if(on)o.txt('✓',PX+30,y+19,'700 16px Space Grotesk, sans-serif','#c2187a');
-      o.txt(l.n,PX+48,y+19,(on?'700 ':'500 ')+'17px Space Grotesk, sans-serif','#150d2e','left')});
+      o.txt('Choisis une leçon à droite →',BX+BW/2,BY+BH-26,'700 20px Space Grotesk, sans-serif','rgba(255,255,255,.85)')}
     // Laurène: rolls back and forth for the first lessons, or shows the trick
     var l=L[cur]||{k:'idle'},cx=250,cy=560,tk=null,tp=0,fl=false,e=(t-t0)%3.2;
     if(l.k==='roll'){cx=250+Math.sin((t-t0)*1.3)*90;fl=Math.cos((t-t0)*1.3)<0}
@@ -2017,7 +2014,7 @@ function rlScene(cv,W,H,draw,hit,click){
     if(hv==='coach')o.tip('Laurène, la coach · 4ᵉ aux championnats de France',cx,cy-170);
     if(sayT>0){sayT-=1/60;o.say(say,230,360,240)}}
   var C2={pink:'#ff4fa8',yellow:'#ffe14d'};
-  function hit(p){if(p.x>PX&&p.x<PX+300)for(var i=0;i<L.length;i++){var y=PY+72+i*36;if(p.y>y&&p.y<y+34)return'L'+i}
+  function hit(p){
     if(p.x>140&&p.x<360&&p.y>380&&p.y<570)return'coach';if(cur<0&&p.x>BX&&p.x<BX+BW&&p.y>BY&&p.y<BY+BH)return'board';return null}
   function click(h){if(h==='coach'){say=(L[cur]||{}).say||'Choisis une leçon, je te montre !';sayT=8}else if(h==='board')choose(0);else choose(+h.slice(1))}
   var o=rlScene(cv,W,H,draw,hit,click);
@@ -2041,8 +2038,8 @@ function rlScene(cv,W,H,draw,hit,click){
   function hsh(s){var h=7;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h}
   // the members' riders, as they look in their family space (public list: first name, initial, crew, age, look)
   var who=[],tables=crews.map(function(cr,ci){return{x:650+ci*240,cr:cr}});
-  // Romeo (Benihana, lundi 18h) is shown until his own rider record is published, then that record takes over
-  var ROMEO={name:'Romeo',crew:'Benihana',stance:'?',ch:{name:'Romeo',hair:'#3a2618',hair2:'#24170e',style:'messy',top:'#ff4fa8',pants:'#2f3f6e',size:1}};
+  // Roméo (Benihana, lundi 18h) is shown until his own rider record is published, then that record takes over
+  var ROMEO={name:'Roméo',crew:'Benihana',stance:'?',ch:{name:'Roméo',hair:'#3a2618',hair2:'#24170e',style:'messy',top:'#ff4fa8',pants:'#2f3f6e',size:1}};
   function place(list){if(!list.some(function(k){return /^rom[eé]o/i.test(k.name||'')}))list=list.concat([ROMEO]);window.RLCrew=list;document.dispatchEvent(new Event('rl-crew'));who=[];tables.forEach(function(tb){var kids=list.filter(function(k){return k.crew===tb.cr.name}).sort(function(a,b){return a.name.localeCompare(b.name)});
     var back=kids.slice(0,3),front=kids.slice(3);
     function put(l,y,sp,row){l.forEach(function(k,j){var x=tb.x+(j-(l.length-1)/2)*sp,ch=Object.assign({},k.ch,{noBoard:1});who.push({k:k,cr:tb.cr,x:x,y:y,row:row,ph:(hsh(k.name)%100)/16,flip:x>tb.x,c:ch})})}
@@ -2377,7 +2374,8 @@ window.RLLoad=function(){if(window.RLD)return RLD.ready;if(!RLLoad.p)RLLoad.p=ne
     [].forEach.call(sec.querySelectorAll('.crew'),function(c){var cn=c.querySelector('h3').textContent.trim(),col=COL[cn]||'#3ddcf0',box=c.querySelector('.rcards');c.hidden=grp!=='all'&&grp!==cn;box.innerHTML='';box.classList.toggle('adm',!!useAdm);
       var l=(useAdm?adm.filter(function(r){return r.crew===cn&&r.status!=='en attente'}):pub.filter(function(k){return k.crew===cn})).sort(byName);
       l.forEach(function(k){box.appendChild(useAdm?admCard(k,col):pubCard(k,col))});
-      if(!l.length)box.innerHTML='<small class="muted">Personne pour l’instant.</small>'});
+      if(useAdm){var fn=function(n){return String(n||'').split(/[ .]/)[0].toLowerCase()},have=l.map(function(r){return fn(r.firstName||r.name)});pub.filter(function(k){return k.crew===cn&&have.indexOf(fn(k.name))<0}).forEach(function(k){box.appendChild(pubCard(k,col))})}
+      if(!box.children.length)box.innerHTML='<small class="muted">Personne pour l’instant.</small>'});
     extra.innerHTML='';
     if(useAdm&&grp==='all'){var known=[].map.call(sec.querySelectorAll('.crew h3'),function(h){return h.textContent.trim()});
       [['En attente de validation',function(r){return r.status==='en attente'}],['Sans crew',function(r){return r.status!=='en attente'&&known.indexOf(r.crew)<0}]].forEach(function(g){
@@ -2412,6 +2410,13 @@ window.RLLoad=function(){if(window.RLD)return RLD.ready;if(!RLLoad.p)RLLoad.p=ne
 })();
 </script>
 
+<div class="rotate-tip" id="rotate-tip" role="status" hidden><svg class="ph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2.5"/><path d="M11 18.5h2"/></svg><p>Tourne ton téléphone à l’horizontale pour mieux tout voir !</p><button type="button" aria-label="Fermer">×</button></div>
+<script>(function(){var el=document.getElementById("rotate-tip"),seen=false;try{seen=sessionStorage.getItem("rl-rotate")}catch(e){}
+  var touch=matchMedia("(pointer:coarse)"),port=matchMedia("(orientation:portrait)");
+  function upd(){el.hidden=seen||!touch.matches||!port.matches||Math.min(screen.width,screen.height)>820}
+  function done(){seen=true;try{sessionStorage.setItem("rl-rotate","1")}catch(e){}upd()}
+  el.querySelector("button").onclick=done;port.addEventListener?port.addEventListener("change",function(){if(!port.matches)done();upd()}):port.addListener(upd);
+  setTimeout(upd,600);setTimeout(function(){if(!el.hidden)done()},12000)})();</script>
 <div class="mimosa" id="mimosa" aria-live="polite">
   <div class="mbub" id="mbub"><button type="button" class="mx" aria-label="Fermer la bulle">×</button><p></p><form class="mask"><input type="text" maxlength="200" autocomplete="off" placeholder="Pose-moi une question…" aria-label="Ta question"><button type="submit" aria-label="Envoyer">➤</button></form></div>
   <button type="button" class="mcat" aria-label="Mimosa, le chat du club : un conseil ?">

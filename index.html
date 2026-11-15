@@ -217,7 +217,7 @@ td.num.cy{color:var(--cyan)}
 .modes{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
 .modes button{flex:1;min-width:0;font-family:var(--display);font-size:1rem;padding:12px 10px;border-radius:14px;border:2.5px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer}
 .modes button[aria-pressed="true"]{background:var(--ink);color:var(--yellow)}
-.modes.phone .m-screen{display:none}
+.modes.phone .m-screen{display:none}#game-modes{display:none}
 .tricks{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:16px}
 .tricks button{font:inherit;cursor:pointer;background:var(--night);color:var(--cream);border:0;border-radius:14px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;touch-action:manipulation;-webkit-user-select:none;user-select:none;border-bottom:4px solid var(--c,var(--cyan))}
 .tricks button:nth-child(2){--c:var(--pink)}.tricks button:nth-child(3){--c:var(--yellow)}.tricks button:nth-child(4){--c:#7aa8ff}
@@ -2041,7 +2041,9 @@ function rlScene(cv,W,H,draw,hit,click){
   function hsh(s){var h=7;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h}
   // the members' riders, as they look in their family space (public list: first name, initial, crew, age, look)
   var who=[],tables=crews.map(function(cr,ci){return{x:650+ci*240,cr:cr}});
-  function place(list){window.RLCrew=list;document.dispatchEvent(new Event('rl-crew'));who=[];tables.forEach(function(tb){var kids=list.filter(function(k){return k.crew===tb.cr.name}).sort(function(a,b){return a.name.localeCompare(b.name)});
+  // Romeo (Benihana, lundi 18h) is shown until his own rider record is published, then that record takes over
+  var ROMEO={name:'Romeo',crew:'Benihana',stance:'?',ch:{name:'Romeo',hair:'#3a2618',hair2:'#24170e',style:'messy',top:'#ff4fa8',pants:'#2f3f6e',size:1}};
+  function place(list){if(!list.some(function(k){return /^rom[eé]o/i.test(k.name||'')}))list=list.concat([ROMEO]);window.RLCrew=list;document.dispatchEvent(new Event('rl-crew'));who=[];tables.forEach(function(tb){var kids=list.filter(function(k){return k.crew===tb.cr.name}).sort(function(a,b){return a.name.localeCompare(b.name)});
     var back=kids.slice(0,3),front=kids.slice(3);
     function put(l,y,sp,row){l.forEach(function(k,j){var x=tb.x+(j-(l.length-1)/2)*sp,ch=Object.assign({},k.ch,{noBoard:1});who.push({k:k,cr:tb.cr,x:x,y:y,row:row,ph:(hsh(k.name)%100)/16,flip:x>tb.x,c:ch})})}
     put(back,548,80,0);put(front,646,Math.min(84,236/Math.max(front.length,1)),1)})}

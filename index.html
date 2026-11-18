@@ -2267,7 +2267,7 @@ function rlScene(cv,W,H,draw,hit,click){
 })();
 
 /* ===== online registration: Google sign-in, then the family, the rider and their village character ===== */
-window.RLLoad=function(){if(window.RLD)return RLD.ready;if(!RLLoad.p)RLLoad.p=new Promise(function(ok,ko){var s=document.createElement('script');s.src='rl-data.js?v=7';s.onload=function(){RLD.ready.then(ok,ko)};s.onerror=ko;document.body.appendChild(s)});return RLLoad.p};
+window.RLLoad=function(){if(window.RLD)return RLD.ready;if(!RLLoad.p)RLLoad.p=new Promise(function(ok,ko){var s=document.createElement('script');s.src='rl-data.js?v=8';s.onload=function(){RLD.ready.then(ok,ko)};s.onerror=ko;document.body.appendChild(s)});return RLLoad.p};
 (function(){
   var form=document.getElementById('form-inscription');if(!form||!(window.RL_FB||{}).config&&!/^(localhost|127\.0\.0\.1)$/.test(location.hostname))return;
   form.addEventListener('focusin',function(){RLLoad()},{once:true});

@@ -93,7 +93,7 @@ dialog::backdrop{background:rgba(8,4,20,.75)}
 <div class="toast" id="toast" role="status" hidden></div>
 
 <script src="firebase-config.js?v=3"></script>
-<script src="rl-data.js?v=7"></script>
+<script src="rl-data.js?v=8"></script>
 <script src="rl-rider.js?v=4"></script>
 <script>
 (function(){
@@ -179,13 +179,13 @@ dialog::backdrop{background:rgba(8,4,20,.75)}
       '<label class="f">Stance<select name="stance">'+['?','Regular','Goofy'].map(function(s){return'<option'+(r.stance===s?' selected':'')+' value="'+s+'">'+(s==='?'?'À découvrir':s)+'</option>'}).join('')+'</select></label>'+
       (admin?'<label class="f">Crew<select name="crew"><option value="">—</option>'+crews.map(function(c){return'<option'+(r.crew===c.name?' selected':'')+'>'+esc(c.name)+'</option>'}).join('')+'</select></label>':'<label class="f">Crew<input disabled value="'+esc(r.crew||'—')+'"></label>')+
       '<label class="f">Contact d’urgence<input name="emergency" value="'+esc(r.emergency)+'" placeholder="Nom et téléphone"></label>'+
-      (admin?'<label class="f">Formule de ce rider<select name="plan"><option value="">— (formule de la famille)</option>'+PLANS.map(function(x){return'<option value="'+x[0]+'"'+(r.plan!=null&&r.plan!==''&&+r.plan===+x[0]?' selected':'')+'>'+planName(x[0])+'</option>'}).join('')+'</select></label><label class="f">Adhésion de ce rider (€)<input type="number" name="adhesion" value="'+esc(r.adhesion==null?'':r.adhesion)+'"></label><label class="f">Premier cours (arrivée en cours d’année : le prix est calculé au prorata)<input type="date" name="startDate" value="'+esc(r.startDate||'')+'"></label>':'')+'</div>'+
+      (admin?'<label class="f">Formule de ce rider<select name="plan"><option value="">— (formule de la famille)</option>'+PLANS.map(function(x){return'<option value="'+x[0]+'"'+(r.plan!=null&&r.plan!==''&&+r.plan===+x[0]?' selected':'')+'>'+planName(x[0])+'</option>'}).join('')+'</select></label><label class="f">Adhésion de ce rider (€)<input type="number" name="adhesion" value="'+esc(r.adhesion==null?'':r.adhesion)+'"></label><label class="f">Premier cours (arrivée en cours d’année : le prix est calculé au prorata)<input type="date" name="startDate" value="'+esc(r.startDate||'')+'"></label><label class="f">Prix convenu des cours (€, remplace la formule et le prorata)<input type="number" step="1" name="price" value="'+esc(r.price==null?'':r.price)+'"></label>':'')+'</div>'+
       '<label class="f">Infos santé (allergies, traitement…)<textarea name="medical">'+esc(r.medical)+'</textarea></label>'+
       '<label><input type="checkbox" name="imageRights"'+(r.imageRights?' checked':'')+'> J’autorise le club à publier des photos où mon enfant apparaît</label>'+
       '<div class="row end" style="margin-top:16px">'+(admin&&r.id?'<button type="button" class="btn small ghost due" id="rdel">Supprimer</button>':'')+'<button class="btn primary">Enregistrer</button></div></form>',function(b){
       var f=b.querySelector('#rf');f.onsubmit=function(e){e.preventDefault();
         var data={firstName:val(f,'[name=firstName]'),lastName:val(f,'[name=lastName]'),birthDate:val(f,'[name=birthDate]'),stance:val(f,'[name=stance]'),emergency:val(f,'[name=emergency]'),medical:val(f,'[name=medical]'),imageRights:val(f,'[name=imageRights]')};
-        if(admin){data.crew=val(f,'[name=crew]');var pl=val(f,'[name=plan]');data.plan=pl===''?null:+pl;var ad=val(f,'[name=adhesion]');data.adhesion=ad===''?null:+ad;data.startDate=val(f,'[name=startDate]')||null}
+        if(admin){data.crew=val(f,'[name=crew]');var pl=val(f,'[name=plan]');data.plan=pl===''?null:+pl;var ad=val(f,'[name=adhesion]');data.adhesion=ad===''?null:+ad;data.startDate=val(f,'[name=startDate]')||null;var pc=val(f,'[name=price]');data.price=pc===''?null:+pc}
         var pr=r.id?RLD.update('riders',r.id,data).then(function(){return pub(Object.assign({},r,data))}):RLD.add('riders',Object.assign(data,{familyId:famId,emails:emails||[],look:RLD.defaultLook(),owned:[],status:'validée'})).then(function(id){return pub(Object.assign({id:id},data))});
         pr.then(function(){dlg.close();toast('Fiche enregistrée');done&&done()},fail)};
       var del=b.querySelector('#rdel');if(del)del.onclick=function(){if(confirm('Supprimer la fiche de '+r.firstName+' ?'))RLD.del('riders',r.id).then(function(){dlg.close();done&&done()},fail)}})}
@@ -249,7 +249,7 @@ dialog::backdrop{background:rgba(8,4,20,.75)}
       var html='';fams.forEach(function(F){var r=F.r,n=F.l.length;F.l.forEach(function(x,i){var k=x.k,a=k?RLD.age(k.birthDate):null,top=i===0;
         html+='<tr class="'+(top?'ffirst':'fnext')+'"><td>'+(k&&k.crew?'<span class="tag">'+esc(k.crew)+'</span>':'<span class="muted">—</span>')+'</td>'+
           '<td>'+(k?'<b>'+esc(k.firstName+' '+(k.lastName||''))+'</b>'+(k.status==='en attente'?' <span class="tag warn">à valider</span>':'')+'<br><span class="muted" style="font-size:.8rem">'+(a!=null?a+' ans':'')+(k.stance&&k.stance!=='?'?' · '+esc(k.stance):'')+(k.startDate?' · dès le '+fd(k.startDate)+' (prorata)':'')+'</span>':'<span class="muted">aucun rider</span>')+'</td>'+
-          '<td class="num">'+(k&&k.plan!=null&&k.plan!==''?eur(RLD.prorata(+k.plan,k.startDate,S))+(k.startDate?'<br><span class="muted" style="font-size:.75rem">au lieu de '+eur(k.plan)+'</span>':''):eur(r.B.plan))+'</td>'+
+          '<td class="num">'+(k&&k.plan!=null&&k.plan!==''?eur(RLD.riderPrice(k,S))+(k.price!=null&&k.price!==''?'<br><span class="muted" style="font-size:.75rem">prix convenu</span>':k.startDate?'<br><span class="muted" style="font-size:.75rem">au lieu de '+eur(k.plan)+'</span>':''):eur(r.B.plan))+'</td>'+
           '<td>'+(k?'<button class="btn small" data-rider="'+k.id+'">Rider</button>':'')+'</td>'+
           (top?'<td rowspan="'+n+'" class="fcell">'+esc(r.f.name)+(r.f.status==='en attente'?' <span class="tag warn">à valider</span>':'')+'<br><span class="muted" style="font-size:.8rem">'+esc(r.f.phone||'')+(r.riders.length>1?' · '+r.riders.length+' riders':'')+'</span></td>'+
           '<td rowspan="'+n+'" class="num fcell">'+eur(r.B.due)+'</td><td rowspan="'+n+'" class="num ok fcell">'+eur(r.B.paid)+'</td>'+

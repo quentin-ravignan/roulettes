@@ -39,9 +39,11 @@
   RLD.weeksMissed=function(start,S){var C=Object.assign({},RLD.SEASON,(S&&S.prorata)||{});if(!start||start<=C.start)return 0;var n=0,end=monday(start);
     for(var d=monday(C.start);d<end;d.setDate(d.getDate()+7)){var m=iso(d);if(!C.holidays.some(function(h){return m>=h[0]&&m<h[1]}))n++}return Math.min(n,C.weeks)};
   RLD.prorata=function(price,start,S){var C=Object.assign({},RLD.SEASON,(S&&S.prorata)||{}),m=RLD.weeksMissed(start,S);return m?Math.round(price*(C.weeks-m)/C.weeks):price};
+  // the course price of a rider: an agreed price when one is set, otherwise the plan, prorated from the first course
+  RLD.riderPrice=function(r,S){return r.price!=null&&r.price!==''?+r.price:RLD.prorata(+r.plan||0,r.startDate,S)};
   RLD.balance=function(fam,payments,orders,S,riders){S=S||{};var shop=0,plan=+fam.plan||0,adh=fam.adhesion==null?(+S.adhesion||20):+fam.adhesion;
     var per=(riders||[]).filter(function(r){return r.plan!=null&&r.plan!==''});
-    if(per.length){plan=0;adh=0;per.forEach(function(r){plan+=RLD.prorata(+r.plan||0,r.startDate,S);adh+=+r.adhesion||0})}
+    if(per.length){plan=0;adh=0;per.forEach(function(r){plan+=RLD.riderPrice(r,S);adh+=+r.adhesion||0})}
     else if(riders&&riders.length===1&&riders[0].startDate)plan=RLD.prorata(plan,riders[0].startDate,S);
     (orders||[]).forEach(function(o){if(o.status!=='annulé')shop+=+o.total||0});
     var due=plan+adh+shop,paid=0;(payments||[]).forEach(function(p){paid+=+p.amount||0});return{plan:plan,adh:adh,shop:shop,due:due,paid:paid,left:Math.round((due-paid)*100)/100}};

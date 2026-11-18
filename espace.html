@@ -262,7 +262,7 @@ dialog::backdrop{background:rgba(8,4,20,.75)}
       [].forEach.call(p.querySelectorAll('[data-open]'),function(b){b.onclick=function(){famForm(rows.filter(function(r){return r.f.id===b.dataset.open})[0])}});
       [].forEach.call(p.querySelectorAll('[data-ok]'),function(b){b.onclick=function(){validate(rows.filter(function(r){return r.f.id===b.dataset.ok})[0])}});
       [].forEach.call(p.querySelectorAll('[data-rel]'),function(b){b.onclick=function(){b.disabled=true;remind([rows.filter(function(r){return r.f.id===b.dataset.rel})[0]]).then(function(){go('crm')})}})}
-    document.getElementById('cq').oninput=function(e){q=e.target.value.toLowerCase().trim();draw()};document.getElementById('cf').onchange=function(e){filter=e.target.value;draw()};document.getElementById('cg').onchange=function(e){grp=e.target.value;draw()};
+    if(!document.getElementById('cq'))return;document.getElementById('cq').oninput=function(e){q=e.target.value.toLowerCase().trim();draw()};document.getElementById('cf').onchange=function(e){filter=e.target.value;draw()};document.getElementById('cg').onchange=function(e){grp=e.target.value;draw()};
     document.getElementById('cadd').onclick=function(){famForm(null)};document.getElementById('cimp').onclick=importMembers;
     document.getElementById('crel').onclick=function(){var late=rows.filter(function(r){return r.B.left>0&&(r.f.emails||[]).length});if(!late.length){toast('Personne à relancer');return}if(confirm('Envoyer une relance à '+late.length+' famille(s) ?'))remind(late).then(function(){go('crm')})};
     draw()})}

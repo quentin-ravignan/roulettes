@@ -80,6 +80,7 @@ dialog::backdrop{background:rgba(8,4,20,.75)}
 .chart{width:100%;height:220px;display:block;background:var(--night);border-radius:14px}
 .big{font-family:var(--display);font-weight:400;font-size:2rem}
 @media (max-width:640px){.form2{grid-template-columns:1fr}.rider{grid-template-columns:90px 1fr}.rider canvas{width:90px;height:110px}}
+.tbl.fam tr.ffirst td{border-top:2px solid rgba(255,255,255,.18)}.tbl.fam tr.fnext td{border-top:1px dashed rgba(255,255,255,.07)}.tbl.fam td.fcell{vertical-align:middle;background:rgba(255,255,255,.025)}
 </style>
 </head>
 <body>
@@ -241,15 +242,22 @@ dialog::backdrop{background:rgba(8,4,20,.75)}
       return l.sort(function(a,b){var ga=a.k?a.k.crew||'':'',gb=b.k?b.k.crew||'':'';return(ORD.indexOf(ga)+1||99)-(ORD.indexOf(gb)+1||99)||ga.localeCompare(gb)||(a.k?a.k.firstName:'').localeCompare(b.k?b.k.firstName:'','fr')})}
     function draw(){var list=lines().filter(function(x){var r=x.r,k=x.k;if(filter==='late'&&r.B.left<=0)return false;if(filter==='ok'&&r.B.left>0)return false;if(grp!=='all'&&(k?k.crew||'':'')!==grp)return false;if(!q)return true;
         var h=(r.f.name+' '+(r.f.emails||[]).join(' ')+' '+(r.f.phone||'')+' '+(k?k.firstName+' '+k.lastName:'')).toLowerCase();return h.indexOf(q)>=0});
-      document.getElementById('ct').innerHTML='<table class="tbl"><tr><th>Groupe</th><th>Rider</th><th>Famille</th><th class="num">Formule</th><th class="num" title="Montants de la famille">Dû (famille)</th><th class="num">Payé</th><th class="num">Reste</th><th>Dernière relance</th><th></th></tr>'+
-        (list.length?list.map(function(x){var r=x.r,k=x.k,a=k?RLD.age(k.birthDate):null,many=r.riders.length>1;
-          return'<tr><td>'+(k&&k.crew?'<span class="tag">'+esc(k.crew)+'</span>':'<span class="muted">—</span>')+'</td>'+
+      // one line per rider, the riders of a family side by side; the family's money is shown once for the whole family
+      var fams=[],byF={};list.forEach(function(x){var id=x.r.f.id;if(!byF[id]){byF[id]={r:x.r,l:[]};fams.push(byF[id])}byF[id].l.push(x)});
+      function gi(x){var g=x.k?x.k.crew||'':'';return ORD.indexOf(g)+1||99}
+      fams.sort(function(a,b){var ga=Math.min.apply(null,a.l.map(gi)),gb=Math.min.apply(null,b.l.map(gi));return ga-gb||a.r.f.name.localeCompare(b.r.f.name,'fr')});
+      var html='';fams.forEach(function(F){var r=F.r,n=F.l.length;F.l.forEach(function(x,i){var k=x.k,a=k?RLD.age(k.birthDate):null,top=i===0;
+        html+='<tr class="'+(top?'ffirst':'fnext')+'"><td>'+(k&&k.crew?'<span class="tag">'+esc(k.crew)+'</span>':'<span class="muted">—</span>')+'</td>'+
           '<td>'+(k?'<b>'+esc(k.firstName+' '+(k.lastName||''))+'</b>'+(k.status==='en attente'?' <span class="tag warn">à valider</span>':'')+'<br><span class="muted" style="font-size:.8rem">'+(a!=null?a+' ans':'')+(k.stance&&k.stance!=='?'?' · '+esc(k.stance):'')+(k.startDate?' · dès le '+fd(k.startDate)+' (prorata)':'')+'</span>':'<span class="muted">aucun rider</span>')+'</td>'+
-          '<td>'+esc(r.f.name)+(r.f.status==='en attente'?' <span class="tag warn">à valider</span>':'')+'<br><span class="muted" style="font-size:.8rem">'+esc(r.f.phone||'')+(many?' · '+r.riders.length+' riders':'')+'</span></td>'+
-          '<td class="num">'+eur(k&&k.plan!=null&&k.plan!==''?k.plan:r.B.plan)+'</td><td class="num">'+eur(r.B.due)+'</td><td class="num ok">'+eur(r.B.paid)+'</td>'+
-          '<td class="num '+(r.B.left>0?'due':'ok')+'"><b>'+(r.B.left>0?eur(r.B.left):'À jour')+'</b></td><td class="muted">'+(r.rem[0]?fd(r.rem[0].date):'—')+'</td>'+
-          '<td class="num" style="white-space:nowrap">'+(r.f.status==='en attente'?'<button class="btn small primary" data-ok="'+r.f.id+'">Valider</button> ':'')+(k?'<button class="btn small" data-rider="'+k.id+'">Rider</button> ':'')+'<button class="btn small" data-open="'+r.f.id+'">Famille</button> '+
-            (wa(r.f.phone)?'<a class="btn small" style="text-decoration:none" href="'+wa(r.f.phone)+'" target="_blank" rel="noopener" title="WhatsApp : '+esc(r.f.phone)+'">WhatsApp</a> ':'')+(r.B.left>0?'<button class="btn small pink" data-rel="'+r.f.id+'">Relancer</button>':'')+'</td></tr>'}).join(''):'<tr><td colspan="9" class="muted">Personne.</td></tr>')+'</table>';
+          '<td class="num">'+(k&&k.plan!=null&&k.plan!==''?eur(RLD.prorata(+k.plan,k.startDate,S))+(k.startDate?'<br><span class="muted" style="font-size:.75rem">au lieu de '+eur(k.plan)+'</span>':''):eur(r.B.plan))+'</td>'+
+          '<td>'+(k?'<button class="btn small" data-rider="'+k.id+'">Rider</button>':'')+'</td>'+
+          (top?'<td rowspan="'+n+'" class="fcell">'+esc(r.f.name)+(r.f.status==='en attente'?' <span class="tag warn">à valider</span>':'')+'<br><span class="muted" style="font-size:.8rem">'+esc(r.f.phone||'')+(r.riders.length>1?' · '+r.riders.length+' riders':'')+'</span></td>'+
+          '<td rowspan="'+n+'" class="num fcell">'+eur(r.B.due)+'</td><td rowspan="'+n+'" class="num ok fcell">'+eur(r.B.paid)+'</td>'+
+          '<td rowspan="'+n+'" class="num fcell '+(r.B.left>0?'due':'ok')+'"><b>'+(r.B.left>0?eur(r.B.left):'À jour')+'</b></td><td rowspan="'+n+'" class="muted fcell">'+(r.rem[0]?fd(r.rem[0].date):'—')+'</td>'+
+          '<td rowspan="'+n+'" class="num fcell" style="white-space:nowrap">'+(r.f.status==='en attente'?'<button class="btn small primary" data-ok="'+r.f.id+'">Valider</button> ':'')+'<button class="btn small" data-open="'+r.f.id+'">Famille</button> '+
+            (wa(r.f.phone)?'<a class="btn small" style="text-decoration:none" href="'+wa(r.f.phone)+'" target="_blank" rel="noopener" title="WhatsApp : '+esc(r.f.phone)+'">WhatsApp</a> ':'')+(r.B.left>0?'<button class="btn small pink" data-rel="'+r.f.id+'">Relancer</button>':'')+'</td>':'')+'</tr>'})});
+      document.getElementById('ct').innerHTML='<table class="tbl fam"><tr><th>Groupe</th><th>Rider</th><th class="num">Formule</th><th></th><th>Famille</th><th class="num">Dû (famille)</th><th class="num">Payé</th><th class="num">Reste</th><th>Dernière relance</th><th></th></tr>'+
+        (html||'<tr><td colspan="10" class="muted">Personne.</td></tr>')+'</table>';
       [].forEach.call(p.querySelectorAll('[data-rider]'),function(b){b.onclick=function(){var k=d.riders.filter(function(y){return y.id===b.dataset.rider})[0];if(k)riderForm(k,true,function(){go('crm')})}});
       [].forEach.call(p.querySelectorAll('[data-open]'),function(b){b.onclick=function(){famForm(rows.filter(function(r){return r.f.id===b.dataset.open})[0])}});
       [].forEach.call(p.querySelectorAll('[data-ok]'),function(b){b.onclick=function(){validate(rows.filter(function(r){return r.f.id===b.dataset.ok})[0])}});

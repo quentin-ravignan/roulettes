@@ -32,9 +32,17 @@
   RLD.publicOf=function(r){var a=RLD.age(r.birthDate);return{name:r.firstName+(r.lastName?' '+r.lastName.charAt(0).toUpperCase()+'.':''),crew:r.crew||'',age:a==null?(+r.ageHint||0):a,stance:r.stance||'?',ch:RLD.charOf(r)}};
   // money owed by one family for the season
   // the yearly plan and the membership fee are per rider when set on the riders, otherwise per family
+  // late start: the yearly course price is cut by the course weeks already gone (36 weeks from the first Monday of the season, school holidays skipped)
+  RLD.SEASON={start:'2026-09-07',weeks:36,holidays:[['2026-10-17','2026-11-02'],['2026-12-19','2027-01-04']]};
+  function monday(s){var d=new Date(s+'T12:00:00');d.setDate(d.getDate()-(d.getDay()+6)%7);return d}
+  function iso(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
+  RLD.weeksMissed=function(start,S){var C=Object.assign({},RLD.SEASON,(S&&S.prorata)||{});if(!start||start<=C.start)return 0;var n=0,end=monday(start);
+    for(var d=monday(C.start);d<end;d.setDate(d.getDate()+7)){var m=iso(d);if(!C.holidays.some(function(h){return m>=h[0]&&m<h[1]}))n++}return Math.min(n,C.weeks)};
+  RLD.prorata=function(price,start,S){var C=Object.assign({},RLD.SEASON,(S&&S.prorata)||{}),m=RLD.weeksMissed(start,S);return m?Math.round(price*(C.weeks-m)/C.weeks):price};
   RLD.balance=function(fam,payments,orders,S,riders){S=S||{};var shop=0,plan=+fam.plan||0,adh=fam.adhesion==null?(+S.adhesion||20):+fam.adhesion;
     var per=(riders||[]).filter(function(r){return r.plan!=null&&r.plan!==''});
-    if(per.length){plan=0;adh=0;per.forEach(function(r){plan+=+r.plan||0;adh+=+r.adhesion||0})}
+    if(per.length){plan=0;adh=0;per.forEach(function(r){plan+=RLD.prorata(+r.plan||0,r.startDate,S);adh+=+r.adhesion||0})}
+    else if(riders&&riders.length===1&&riders[0].startDate)plan=RLD.prorata(plan,riders[0].startDate,S);
     (orders||[]).forEach(function(o){if(o.status!=='annulé')shop+=+o.total||0});
     var due=plan+adh+shop,paid=0;(payments||[]).forEach(function(p){paid+=+p.amount||0});return{plan:plan,adh:adh,shop:shop,due:due,paid:paid,left:Math.round((due-paid)*100)/100}};
 

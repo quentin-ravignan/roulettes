@@ -92,7 +92,7 @@ dialog::backdrop{background:rgba(8,4,20,.75)}
 <div class="toast" id="toast" role="status" hidden></div>
 
 <script src="firebase-config.js?v=3"></script>
-<script src="rl-data.js?v=6"></script>
+<script src="rl-data.js?v=7"></script>
 <script src="rl-rider.js?v=4"></script>
 <script>
 (function(){
@@ -178,13 +178,13 @@ dialog::backdrop{background:rgba(8,4,20,.75)}
       '<label class="f">Stance<select name="stance">'+['?','Regular','Goofy'].map(function(s){return'<option'+(r.stance===s?' selected':'')+' value="'+s+'">'+(s==='?'?'À découvrir':s)+'</option>'}).join('')+'</select></label>'+
       (admin?'<label class="f">Crew<select name="crew"><option value="">—</option>'+crews.map(function(c){return'<option'+(r.crew===c.name?' selected':'')+'>'+esc(c.name)+'</option>'}).join('')+'</select></label>':'<label class="f">Crew<input disabled value="'+esc(r.crew||'—')+'"></label>')+
       '<label class="f">Contact d’urgence<input name="emergency" value="'+esc(r.emergency)+'" placeholder="Nom et téléphone"></label>'+
-      (admin?'<label class="f">Formule de ce rider<select name="plan"><option value="">— (formule de la famille)</option>'+PLANS.map(function(x){return'<option value="'+x[0]+'"'+(r.plan!=null&&r.plan!==''&&+r.plan===+x[0]?' selected':'')+'>'+planName(x[0])+'</option>'}).join('')+'</select></label><label class="f">Adhésion de ce rider (€)<input type="number" name="adhesion" value="'+esc(r.adhesion==null?'':r.adhesion)+'"></label>':'')+'</div>'+
+      (admin?'<label class="f">Formule de ce rider<select name="plan"><option value="">— (formule de la famille)</option>'+PLANS.map(function(x){return'<option value="'+x[0]+'"'+(r.plan!=null&&r.plan!==''&&+r.plan===+x[0]?' selected':'')+'>'+planName(x[0])+'</option>'}).join('')+'</select></label><label class="f">Adhésion de ce rider (€)<input type="number" name="adhesion" value="'+esc(r.adhesion==null?'':r.adhesion)+'"></label><label class="f">Premier cours (arrivée en cours d’année : le prix est calculé au prorata)<input type="date" name="startDate" value="'+esc(r.startDate||'')+'"></label>':'')+'</div>'+
       '<label class="f">Infos santé (allergies, traitement…)<textarea name="medical">'+esc(r.medical)+'</textarea></label>'+
       '<label><input type="checkbox" name="imageRights"'+(r.imageRights?' checked':'')+'> J’autorise le club à publier des photos où mon enfant apparaît</label>'+
       '<div class="row end" style="margin-top:16px">'+(admin&&r.id?'<button type="button" class="btn small ghost due" id="rdel">Supprimer</button>':'')+'<button class="btn primary">Enregistrer</button></div></form>',function(b){
       var f=b.querySelector('#rf');f.onsubmit=function(e){e.preventDefault();
         var data={firstName:val(f,'[name=firstName]'),lastName:val(f,'[name=lastName]'),birthDate:val(f,'[name=birthDate]'),stance:val(f,'[name=stance]'),emergency:val(f,'[name=emergency]'),medical:val(f,'[name=medical]'),imageRights:val(f,'[name=imageRights]')};
-        if(admin){data.crew=val(f,'[name=crew]');var pl=val(f,'[name=plan]');data.plan=pl===''?null:+pl;var ad=val(f,'[name=adhesion]');data.adhesion=ad===''?null:+ad}
+        if(admin){data.crew=val(f,'[name=crew]');var pl=val(f,'[name=plan]');data.plan=pl===''?null:+pl;var ad=val(f,'[name=adhesion]');data.adhesion=ad===''?null:+ad;data.startDate=val(f,'[name=startDate]')||null}
         var pr=r.id?RLD.update('riders',r.id,data).then(function(){return pub(Object.assign({},r,data))}):RLD.add('riders',Object.assign(data,{familyId:famId,emails:emails||[],look:RLD.defaultLook(),owned:[],status:'validée'})).then(function(id){return pub(Object.assign({id:id},data))});
         pr.then(function(){dlg.close();toast('Fiche enregistrée');done&&done()},fail)};
       var del=b.querySelector('#rdel');if(del)del.onclick=function(){if(confirm('Supprimer la fiche de '+r.firstName+' ?'))RLD.del('riders',r.id).then(function(){dlg.close();done&&done()},fail)}})}
@@ -244,7 +244,7 @@ dialog::backdrop{background:rgba(8,4,20,.75)}
       document.getElementById('ct').innerHTML='<table class="tbl"><tr><th>Groupe</th><th>Rider</th><th>Famille</th><th class="num">Formule</th><th class="num" title="Montants de la famille">Dû (famille)</th><th class="num">Payé</th><th class="num">Reste</th><th>Dernière relance</th><th></th></tr>'+
         (list.length?list.map(function(x){var r=x.r,k=x.k,a=k?RLD.age(k.birthDate):null,many=r.riders.length>1;
           return'<tr><td>'+(k&&k.crew?'<span class="tag">'+esc(k.crew)+'</span>':'<span class="muted">—</span>')+'</td>'+
-          '<td>'+(k?'<b>'+esc(k.firstName+' '+(k.lastName||''))+'</b>'+(k.status==='en attente'?' <span class="tag warn">à valider</span>':'')+'<br><span class="muted" style="font-size:.8rem">'+(a!=null?a+' ans':'')+(k.stance&&k.stance!=='?'?' · '+esc(k.stance):'')+'</span>':'<span class="muted">aucun rider</span>')+'</td>'+
+          '<td>'+(k?'<b>'+esc(k.firstName+' '+(k.lastName||''))+'</b>'+(k.status==='en attente'?' <span class="tag warn">à valider</span>':'')+'<br><span class="muted" style="font-size:.8rem">'+(a!=null?a+' ans':'')+(k.stance&&k.stance!=='?'?' · '+esc(k.stance):'')+(k.startDate?' · dès le '+fd(k.startDate)+' (prorata)':'')+'</span>':'<span class="muted">aucun rider</span>')+'</td>'+
           '<td>'+esc(r.f.name)+(r.f.status==='en attente'?' <span class="tag warn">à valider</span>':'')+'<br><span class="muted" style="font-size:.8rem">'+esc(r.f.phone||'')+(many?' · '+r.riders.length+' riders':'')+'</span></td>'+
           '<td class="num">'+eur(k&&k.plan!=null&&k.plan!==''?k.plan:r.B.plan)+'</td><td class="num">'+eur(r.B.due)+'</td><td class="num ok">'+eur(r.B.paid)+'</td>'+
           '<td class="num '+(r.B.left>0?'due':'ok')+'"><b>'+(r.B.left>0?eur(r.B.left):'À jour')+'</b></td><td class="muted">'+(r.rem[0]?fd(r.rem[0].date):'—')+'</td>'+

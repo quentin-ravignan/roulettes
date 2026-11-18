@@ -148,7 +148,7 @@ dialog::backdrop{background:rgba(8,4,20,.75)}
     .then(function(r){return{fams:r[0],riders:r[1],pays:r[2],orders:r[3]}})}
 
   // ---------- app shell
-  var TABS_M=[['riders','Mes riders'],['pay','Paiements'],['orders','Commandes']],TABS_A=[['crm','Adhérent·es'],['coach','Prof'],['bank','Banque'],['set','Réglages']];
+  var TABS_M=[['riders','Mes riders'],['pay','Paiements'],['orders','Commandes']],TABS_A=[['crm','Adhérent·es'],['coach','Prof'],['bank','Banque'],['part','Partenaires'],['set','Réglages']];
   function shell(){main.innerHTML=(RLD.mode==='demo'?'<p class="demo">Mode démo : données fictives, gardées seulement dans ce navigateur.</p>':'')+'<h1>Salut '+esc((user.name||'').split(' ')[0])+' !</h1><div class="tabs" role="tablist" id="tabs"></div><div id="panel"></div>';
     var tb=document.getElementById('tabs'),list=TABS_M.slice();if(user.admin)list=list.concat([['|']],TABS_A);
     tb.innerHTML=list.map(function(x){return x[0]==='|'?'<span class="sep"></span>':'<button role="tab" data-t="'+x[0]+'" aria-selected="false">'+x[1]+'</button>'}).join('');
@@ -156,7 +156,7 @@ dialog::backdrop{background:rgba(8,4,20,.75)}
     go(tab||(user.admin?'crm':'riders'))}
   function go(t){tab=t;[].forEach.call(document.querySelectorAll('#tabs [data-t]'),function(b){b.setAttribute('aria-selected',String(b.dataset.t===t))});
     var p=document.getElementById('panel');p.innerHTML='<p class="muted">Chargement…</p>';
-    ({riders:pRiders,pay:pPay,orders:pOrders,crm:pCrm,kids:pKids,coach:pCoach,bank:pBank,set:pSet}[t])(p).catch(fail)}
+    ({riders:pRiders,pay:pPay,orders:pOrders,crm:pCrm,kids:pKids,coach:pCoach,bank:pBank,part:pPart,set:pSet}[t])(p).catch(fail)}
 
   // ---------- parent: riders
   function pRiders(p){return mine().then(function(d){
@@ -443,6 +443,37 @@ dialog::backdrop{background:rgba(8,4,20,.75)}
     x.strokeStyle='#1ae9f5';x.lineWidth=2.5;x.beginPath();pts.forEach(function(p,i){var px=X(p[0]),py=Y(p[1]);if(i)x.lineTo(px,py);else x.moveTo(px,py)});x.stroke()}
 
   // ---------- admin: settings
+  // ---------- admin: partnership follow-up (kept in an admin-only settings document)
+  var PST=[['todo','À contacter'],['msg','Appelé · message laissé'],['nomsg','Appelé · pas de message'],['talk','En discussion'],['ok','Partenaire'],['no','Refus / pas possible']];
+  function pstName(k){return(PST.filter(function(x){return x[0]===k})[0]||PST[0])[1]}
+  function partLoad(){return RLD.get('settings','partners').then(function(d){return(d&&d.list)||[]})}
+  function partSave(list){return RLD.set('settings','partners',{list:list})}
+  function pPart(p){return partLoad().then(function(list){
+    var cnt={};list.forEach(function(x){cnt[x.status]=(cnt[x.status]||0)+1});
+    p.innerHTML='<div class="stats"><div class="stat"><span>Partenaires suivis</span><b>'+list.length+'</b></div><div class="stat"><span>En attente de réponse</span><b class="due">'+((cnt.msg||0)+(cnt.nomsg||0)+(cnt.todo||0))+'</b></div><div class="stat"><span>En discussion</span><b>'+(cnt.talk||0)+'</b></div><div class="stat"><span>Partenaires</span><b class="ok">'+(cnt.ok||0)+'</b></div></div>'+
+      '<div class="tools"><button class="btn primary" id="padd">+ Partenaire</button><span class="muted" style="font-size:.85rem">Chaque lieu ou structure contacté : coordonnées, où on en est, et l’historique des échanges.</span></div>'+
+      (list.length?list.map(function(x,i){var tel=String(x.phone||'').split(/\s*(?:\/|\bou\b)\s*/).filter(Boolean);
+        return'<div class="card" style="margin-top:12px"><div class="row" style="justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap"><div><h3 style="margin:0">'+esc(x.name)+'</h3><span class="muted" style="font-size:.85rem">'+esc(x.kind||'')+'</span></div>'+
+          '<div class="row" style="gap:6px"><select data-pst="'+i+'" style="width:auto">'+PST.map(function(t){return'<option value="'+t[0]+'"'+(x.status===t[0]?' selected':'')+'>'+t[1]+'</option>'}).join('')+'</select><button class="btn small" data-pedit="'+i+'">Modifier</button></div></div>'+
+          '<p style="margin:8px 0 4px;font-size:.92rem;line-height:1.6">'+(x.address?'📍 '+esc(x.address)+'<br>':'')+tel.map(function(t){return'📞 <a href="tel:'+esc(t.replace(/[^\d+]/g,''))+'">'+esc(t)+'</a>'}).join(' · ')+(tel.length?'<br>':'')+
+          (x.email?'✉️ '+String(x.email).split(/[\s,;]+/).filter(Boolean).map(function(m){return'<a href="mailto:'+esc(m)+'">'+esc(m)+'</a>'}).join(' · ')+'<br>':'')+
+          (x.site?'🌐 <a href="'+esc(x.site)+'" target="_blank" rel="noopener">'+esc(x.site.replace(/^https?:\/\/(www\.)?/,'').replace(/\/$/,''))+'</a><br>':'')+(x.contact?'👤 '+esc(x.contact)+'<br>':'')+(x.info?'<span class="muted">'+esc(x.info)+'</span>':'')+'</p>'+
+          (x.next?'<p style="margin:6px 0"><span class="tag warn">À faire</span> '+esc(x.next)+(x.nextDate?' · <b>'+fd(x.nextDate)+'</b>':'')+'</p>':'')+
+          '<div class="sub" style="margin-top:8px"><h4 style="margin:0 0 6px">Historique</h4>'+((x.log||[]).length?(x.log||[]).slice().sort(function(a,b){return a.date<b.date?1:-1}).map(function(l){return'<p class="muted" style="margin:2px 0;font-size:.88rem"><b>'+fd(l.date)+'</b> · '+esc(l.text)+'</p>'}).join(''):'<p class="muted">Aucun échange noté.</p>')+
+          '<form class="row" data-plog="'+i+'" style="margin-top:8px;gap:6px"><input type="date" name="date" value="'+today()+'" style="width:auto"><input name="text" placeholder="Nouvel échange : appel, mail, visite…" required style="flex:1;min-width:160px"><button class="btn small primary">+ Noter</button></form></div></div>'}).join(''):'<p class="muted" style="margin-top:14px">Aucun partenaire pour l’instant.</p>');
+    function save(msg){return partSave(list).then(function(){toast(msg||'Enregistré');go('part')},fail)}
+    function form(i){var x=i==null?{status:'todo',log:[]}:list[i];
+      open(i==null?'Nouveau partenaire':x.name,'<form id="ptf"><label class="f">Nom<input name="name" required value="'+esc(x.name)+'"></label><label class="f">Type de lieu / structure<input name="kind" value="'+esc(x.kind)+'"></label><label class="f">Adresse<input name="address" value="'+esc(x.address)+'"></label>'+
+        '<div class="form2"><label class="f">Téléphone(s)<input name="phone" value="'+esc(x.phone)+'"></label><label class="f">E-mail(s)<input name="email" value="'+esc(x.email)+'"></label></div><div class="form2"><label class="f">Site<input name="site" value="'+esc(x.site)+'"></label><label class="f">Personne à contacter<input name="contact" value="'+esc(x.contact)+'"></label></div>'+
+        '<label class="f">Infos utiles<textarea name="info">'+esc(x.info)+'</textarea></label><div class="form2"><label class="f">Prochaine action<input name="next" value="'+esc(x.next)+'"></label><label class="f">Pour le<input type="date" name="nextDate" value="'+esc(x.nextDate)+'"></label></div>'+
+        '<div class="row end">'+(i!=null?'<button type="button" class="btn small ghost due" id="pdel">Supprimer</button>':'')+'<button class="btn primary">Enregistrer</button></div></form>',function(b){var f=b.querySelector('#ptf');
+        f.onsubmit=function(e){e.preventDefault();var d={};['name','kind','address','phone','email','site','contact','info','next','nextDate'].forEach(function(k){d[k]=val(f,'[name='+k+']')});
+          if(i==null)list.push(Object.assign({status:'todo',log:[]},d));else Object.assign(list[i],d);dlg.close();save(i==null?'Partenaire ajouté':'Enregistré')};
+        var del=b.querySelector('#pdel');if(del)del.onclick=function(){if(confirm('Supprimer '+x.name+' du suivi ?')){list.splice(i,1);dlg.close();save('Supprimé')}}})}
+    document.getElementById('padd').onclick=function(){form(null)};
+    [].forEach.call(p.querySelectorAll('[data-pedit]'),function(b){b.onclick=function(){form(+b.dataset.pedit)}});
+    [].forEach.call(p.querySelectorAll('[data-pst]'),function(s){s.onchange=function(){var x=list[+s.dataset.pst];x.status=s.value;(x.log=x.log||[]).push({date:today(),text:'Statut : '+pstName(s.value)});save()}});
+    [].forEach.call(p.querySelectorAll('[data-plog]'),function(f){f.onsubmit=function(e){e.preventDefault();var x=list[+f.dataset.plog];(x.log=x.log||[]).push({date:val(f,'[name=date]'),text:val(f,'[name=text]')});save('Échange noté')}})})}
   function pSet(p){return Promise.all([settings(),RLD.q('admins')]).then(function(r){var adm=r[1];
     p.innerHTML='<form id="sf" class="card"><h2>Saison et tarifs</h2><div class="form2"><label class="f">Saison<input name="season" value="'+esc(S.season)+'" placeholder="2026-2027"></label><label class="f">Adhésion (€)<input type="number" name="adhesion" value="'+esc(S.adhesion)+'"></label>'+
       [0,1,2].map(function(i){return'<label class="f">Formule '+(i+1)+' (€)<input type="number" name="p'+i+'" value="'+esc(S.prices[i])+'"></label>'}).join('')+'<span></span>'+

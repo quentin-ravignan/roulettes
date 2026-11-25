@@ -399,7 +399,7 @@ body.vm #vcv{flex:1 1 0;height:auto;min-height:170px}
   #game .tricks,#rampe .tricks{margin-top:8px;flex:none}#game .tricks button,#rampe .tricks button{padding:6px 8px;flex-direction:row;justify-content:center;gap:10px}
   #game .game-bar,#rampe .game-bar{margin-top:8px;flex:none}
   /* contact: the five ways in one row */
-  #contact .contacts{grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}#contact .contact{padding:18px}
+  #contact .contacts{grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}#contact .contact{padding:18px}
   #games .gcards{flex:1;min-height:0}#games .gcard{min-height:0;overflow:hidden;padding:20px 22px}#games .gcard .gshot{flex:1 1 0;aspect-ratio:auto;min-height:80px}
 }
 /* pages: only the sections of the current page are shown */
@@ -484,6 +484,7 @@ body.noscroll{overflow:hidden}
 .cart-member p{margin:0;width:100%;color:var(--yellow);font-weight:700}
 /* phone held sideways: the village fills the screen, compact header and guide */
 @media (orientation:landscape) and (max-height:500px){.nav{padding-block:4px}.brand img{width:34px;height:34px}body.vm #village{min-height:0;height:calc(100svh - var(--hdr,56px))}body.vm #vcv{min-height:0}.mimosa .mcat{width:62px}.mbub{max-width:280px;font-size:.8rem;padding:8px 24px 8px 10px}}
+.cv-box{background:#0d0820;border-radius:20px;overflow:hidden;border:3px solid var(--pink);max-width:980px;margin:0 auto}.cv-box canvas{display:block;width:100%}.cv-ctrl{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#150d2e}.cv-ctrl button{font:inherit;font-size:1.05rem;width:40px;height:36px;border-radius:10px;border:0;background:var(--yellow);color:#150d2e;cursor:pointer;flex:none}.cv-bar{flex:1;height:10px;border-radius:999px;background:rgba(255,255,255,.15);cursor:pointer;overflow:hidden}.cv-bar i{display:block;height:100%;width:0;background:var(--pink)}#cv-step{font-weight:700;font-size:.9rem;color:var(--muted);min-width:52px;text-align:right}.charte-text{max-width:860px;margin:34px auto 0;background:var(--night-2);border-radius:20px;padding:22px 26px;line-height:1.6}.charte-text h3{font-family:var(--display);font-weight:400;color:var(--yellow);margin:18px 0 6px}.charte-text h3:first-child{margin-top:0}.charte-text ul{margin:0;padding-left:20px}.charte-text a{color:var(--cyan)}.charte-sign{max-width:860px;margin:22px auto 0;background:var(--night-2);border-radius:20px;padding:22px 26px;display:grid;gap:12px}.charte-sign h3{font-family:var(--display);font-weight:400;color:var(--pink);margin:0}.charte-sign .form2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.charte-sign .f{display:grid;gap:6px;font-weight:700;font-size:.9rem}.charte-sign input:not([type=checkbox]){font:inherit;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--night);color:var(--cream)}.charte-sign .chk{display:flex;gap:10px;align-items:flex-start}.charte-sign .btn{justify-self:start}@media (max-width:640px){.charte-sign .form2{grid-template-columns:1fr}.charte-text,.charte-sign{padding:18px}}@media (min-width:900px){section#charte{height:auto!important;min-height:calc(100svh - var(--hdr,62px))}}
 </style>
 <script src="firebase-config.js?v=3"></script>
 </head>
@@ -934,6 +935,89 @@ body.noscroll{overflow:hidden}
   </div>
 </section>
 
+<section id="charte" class="night">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow">Charte du club · saison 2026-27</p>
+      <h2>La charte Roulettes Club</h2>
+      <p class="lead">Regarde la vidéo avec ton enfant, puis lis la charte et signe-la en bas de la page.</p>
+    </div>
+    <div class="cv-box">
+      <canvas id="charte-cv" class="scene" style="aspect-ratio:16/9" aria-label="Vidéo animée de la charte du club : valeurs, horaires, sécurité, règles, sortie des cours, contact avec la prof, paiements et assurance"></canvas>
+      <div class="cv-ctrl">
+        <button type="button" id="cv-play" aria-label="Pause">⏸</button>
+        <button type="button" id="cv-restart" aria-label="Recommencer">⟲</button>
+        <div class="cv-bar" id="cv-bar" role="slider" aria-label="Avancement de la vidéo" tabindex="0"><i></i></div>
+        <span id="cv-step">1 / 11</span>
+      </div>
+    </div>
+
+    <article class="charte-text" id="charte-text">
+      <h3>1. Nos valeurs</h3>
+      <ul>
+        <li><b>Féministe</b> : une coach femme, des modèles féminins. Oser, tomber, se relever, ensemble.</li>
+        <li><b>Inclusif</b> : ouvert à toutes et tous, quels que soient l’âge ou le niveau. Personne n’est trop « nul·le » pour commencer.</li>
+        <li><b>Accessible</b> : des tarifs selon le quotient familial.</li>
+        <li><b>Ancré dans le 19e</b> : né dans le quartier, par et pour ses habitant·e·s. Le club fait vivre l’espace public.</li>
+      </ul>
+      <h3>2. Les horaires (très important)</h3>
+      <ul>
+        <li>Lundi 16h30 : AlleyOop · Lundi 18h : Benihana · Mardi 16h30 : Caballerial · Mardi 18h : Disaster. 1 h de cours, 6 élèves maximum par groupe.</li>
+        <li>35 semaines dans l’année, hors vacances scolaires.</li>
+        <li><b>On arrive 5 minutes avant le début</b>, prêt·e à rouler. <b>On vient chercher l’enfant à l’heure pile</b> à la fin du cours : la coach enchaîne avec le groupe suivant.</li>
+        <li>En cas d’absence, on prévient le club à l’avance. S’il pleut, le cours est annulé ou remplacé, et on vous prévient sur WhatsApp.</li>
+      </ul>
+      <h3>3. La sécurité</h3>
+      <ul>
+        <li><b>Casque obligatoire</b> et <b>toutes les protections</b> (genouillères, coudières, protège-poignets) <b>à chaque cours</b>, et un skateboard en bon état.</li>
+        <li>Sans casque et sans protections, l’enfant ne peut pas rouler.</li>
+        <li>On attache ses cheveux, on porte des chaussures fermées et des vêtements confortables.</li>
+      </ul>
+      <h3>4. Les règles du cours</h3>
+      <ul>
+        <li>On respecte la coach, les autres riders, les passant·e·s et le matériel.</li>
+        <li>On écoute les consignes de Laurène, on attend son tour et on encourage les autres.</li>
+        <li>Pas de moquerie : tout le monde tombe, tout le monde apprend.</li>
+        <li>On reste avec le groupe et on ne quitte pas le spot sans le dire à la coach.</li>
+      </ul>
+      <h3>5. Arrivée et sortie</h3>
+      <ul>
+        <li>L’enfant est sous la responsabilité du club uniquement pendant l’heure de cours. Avant et après, il est sous la responsabilité de ses parents.</li>
+        <li>Seules les personnes autorisées par la famille (jusqu’à 3, indiquées au club) peuvent venir chercher l’enfant. Si c’est quelqu’un d’autre, on prévient le club avant.</li>
+      </ul>
+      <h3>6. Contact avec la prof</h3>
+      <ul>
+        <li>Vous pouvez parler à Laurène <b>en direct</b>, quelques minutes avant ou après le cours.</li>
+        <li>Ou <b>par téléphone / WhatsApp</b> au <a href="tel:+33768774819">07 68 77 48 19</a>, pour une absence, un retard ou une question.</li>
+      </ul>
+      <h3>7. Les paiements</h3>
+      <ul>
+        <li>Tarif annuel selon le quotient familial : 390 € (T1 à T4), 450 € (T5 à T7), 490 € (T8 à T10), plus l’adhésion à l’association de 20 €.</li>
+        <li>La cotisation est réglée selon la formule choisie à l’inscription (virement, chèque, espèces ou Pass’Sport). En cas d’arrivée en cours d’année, le prix est calculé au prorata des semaines restantes.</li>
+        <li>Chaque famille peut suivre ses paiements dans « Mon espace » sur roulettes.club.</li>
+      </ul>
+      <h3>8. L’assurance</h3>
+      <ul>
+        <li>L’adhésion à l’association permet à l’enfant d’être couvert par l’assurance du club pendant les cours.</li>
+        <li>Une assurance responsabilité civile familiale est aussi recommandée.</li>
+      </ul>
+    </article>
+
+    <form class="charte-sign" id="charte-sign" novalidate>
+      <h3>Je signe la charte</h3>
+      <div class="form2">
+        <label class="f">Prénom et nom du ou de la responsable légal·e *<input name="signer" required autocomplete="name"></label>
+        <label class="f">Prénom du ou des enfants *<input name="kids" required></label>
+      </div>
+      <label class="chk"><input type="checkbox" name="ok" required> J’ai lu la charte avec mon enfant et nous nous engageons à la respecter.</label>
+      <div class="sign-wrap"><canvas id="charte-pad" aria-label="Zone de signature"></canvas><span class="sign-hint" id="charte-hint">Signe ici avec la souris ou le doigt</span><button type="button" class="sign-clear" id="charte-clear">Effacer</button></div>
+      <p class="form-error" id="charte-err" role="alert" hidden></p>
+      <button type="submit" class="btn primary">Signer la charte</button>
+      <p class="muted" id="charte-ok" role="status" hidden></p>
+    </form>
+  </div>
+</section>
+
 <section id="contact" class="night">
   <div class="wrap">
     <div class="head">
@@ -962,6 +1046,10 @@ body.noscroll{overflow:hidden}
         <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
         <h3>Inscription</h3><p>Saison 2026-27 · 4 groupes de 6 maximum.</p><span class="go">S’inscrire →</span>
       </a>
+      <a class="contact" style="--c:var(--pink)" href="#charte">
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg></span>
+        <h3>La charte</h3><p>Vidéo, règles, horaires, sécurité : à lire et signer.</p><span class="go">Voir la charte →</span>
+      </a>
     </div>
   </div>
 </section>
@@ -989,9 +1077,10 @@ document.querySelectorAll('.sizes').forEach(function(g){g.addEventListener('clic
     shop:{t:'Shop',s:['shop']},
     game:{t:'Street Game',s:['game']},
     rampe:{t:'Mini Rampe Game',s:['rampe']},
-    contact:{t:'Contact',s:['contact']}
+    contact:{t:'Contact',s:['contact']},
+    charte:{t:'Charte du club',s:['charte']}
   };
-  var ALIAS={village:'accueil',projet:'club',valeurs:'club','form-inscription':'inscription'},MENU={game:'games',rampe:'games',inscription:'contact'};
+  var ALIAS={village:'accueil',projet:'club',valeurs:'club','form-inscription':'inscription'},MENU={game:'games',rampe:'games',inscription:'contact',charte:'contact'};
   var sub=document.getElementById('subnav'),tab='';
   var secs=[].slice.call(document.querySelectorAll('main>section')),links=[].slice.call(document.querySelectorAll('.nav a.link')),cur='';
   function pageOf(id){return PAGES[id]?id:ALIAS[id]||(function(){var el=id&&document.getElementById(id),sec=el&&el.closest('main>section');if(!sec)return'';for(var k in PAGES)if(PAGES[k].s.indexOf(sec.id)>=0)return k;return''})()}
@@ -2409,6 +2498,108 @@ window.RLLoad=function(){if(window.RLD)return RLD.ready;if(!RLLoad.p)RLLoad.p=ne
   var flag=false;try{flag=localStorage.getItem('rl-auth')==='1'}catch(e){}
   if(/[?&]mode=signIn/.test(location.search)&&/[?&]oobCode=/.test(location.search))flag=true;
   if(window.RLLoad){if(flag)RLLoad().then(hook);else document.addEventListener('rl-page',function(e){if(e.detail==='riders')RLLoad().catch(function(){})})}
+})();
+</script>
+
+<script>
+/* ===== the club charter: an animated "video" (canvas scenes with the riders), then the text and a signature ===== */
+(function(){
+  var cv=document.getElementById('charte-cv');if(!cv||!window.rlScene)return;
+  var W=1280,H=720,DUR=7,C={night:'#150d2e',n2:'#1f1442',cyan:'#1ae9f5',pink:'#fc058f',yellow:'#fce91d',cream:'#fbf4e6',muted:'#b9addb'};
+  var LOGO=new Image();LOGO.src='logo-roulettes.png?v=3';
+  var vt=0,playing=true,lastT=null,seen=false;
+  function ch(i){var l=(window.RL&&RL.chars)||[];return l[i%Math.max(l.length,1)]}
+  function coach(){var l=(window.RL&&RL.chars)||[];return l.filter(function(c){return c.info==='Coach'})[0]||l[0]}
+  function ease(x){x=Math.max(0,Math.min(1,x));return 1-Math.pow(1-x,3)}
+  function rider(o,c,x,y,s,t,flip,tk,tp){if(c&&window.RL)RL.draw(o.ctx,c,x,y,s,t,flip,0,tk||null,tp||0)}
+  function title(o,s,y,col,size){o.neon(s,W/2,y,size||54,col||C.yellow)}
+  function card(o,x,y,w,h,col,a){var c=o.ctx;c.globalAlpha=a;c.fillStyle='rgba(0,0,0,.3)';o.rr(x+6,y+8,w,h,18);c.fill();c.fillStyle=C.n2;o.rr(x,y,w,h,18);c.fill();c.strokeStyle=col;c.lineWidth=4;c.stroke();c.globalAlpha=1}
+  function line(o,s,y,size,col,a){o.ctx.globalAlpha=a==null?1:a;o.wrap(s,W/2,y,1080,size*1.35,'700 '+size+'px Space Grotesk, sans-serif',col||C.cream);o.ctx.globalAlpha=1}
+  function ground(o){var c=o.ctx;c.fillStyle='#2a1858';c.fillRect(0,640,W,80);c.fillStyle=C.cyan;c.fillRect(0,640,W,4)}
+  // the safety icons
+  function helmet(c,x,y,s){c.save();c.translate(x,y);c.scale(s,s);c.fillStyle=C.pink;c.beginPath();c.arc(0,0,40,Math.PI,0);c.lineTo(46,8);c.lineTo(-46,8);c.closePath();c.fill();c.fillStyle='rgba(255,255,255,.35)';c.fillRect(-26,-26,10,22);c.strokeStyle=C.cream;c.lineWidth=4;c.beginPath();c.moveTo(-30,8);c.quadraticCurveTo(0,40,30,8);c.stroke();c.restore()}
+  function kneePad(c,x,y,s,col){c.save();c.translate(x,y);c.scale(s,s);c.fillStyle='#3a3a52';c.beginPath();c.ellipse(0,0,30,38,0,0,Math.PI*2);c.fill();c.fillStyle=col;c.beginPath();c.ellipse(0,-4,22,24,0,0,Math.PI*2);c.fill();c.fillStyle='#3a3a52';c.fillRect(-30,22,60,8);c.fillRect(-30,-30,60,8);c.restore()}
+  function wrist(c,x,y,s){c.save();c.translate(x,y);c.scale(s,s);c.fillStyle='#3a3a52';c.beginPath();c.moveTo(-26,-36);c.lineTo(26,-36);c.lineTo(30,36);c.lineTo(-30,36);c.closePath();c.fill();c.fillStyle=C.cyan;c.fillRect(-8,-40,16,72);c.restore()}
+  function deck(c,x,y,s){c.save();c.translate(x,y);c.scale(s,s);c.fillStyle=C.yellow;c.beginPath();c.ellipse(0,0,70,16,0,0,Math.PI*2);c.fill();c.fillStyle='#222';c.beginPath();c.arc(-44,22,10,0,Math.PI*2);c.arc(44,22,10,0,Math.PI*2);c.fill();c.restore()}
+  function tick(c,x,y,a){c.save();c.globalAlpha=a;c.strokeStyle='#3fd17a';c.lineWidth=9;c.lineCap='round';c.beginPath();c.moveTo(x-14,y);c.lineTo(x-3,y+12);c.lineTo(x+18,y-14);c.stroke();c.restore()}
+  function clock(c,x,y,r,t){c.save();c.fillStyle=C.cream;c.beginPath();c.arc(x,y,r,0,Math.PI*2);c.fill();c.strokeStyle=C.pink;c.lineWidth=8;c.stroke();c.strokeStyle=C.night;c.lineCap='round';c.lineWidth=7;var a=t*1.6-Math.PI/2;c.beginPath();c.moveTo(x,y);c.lineTo(x+Math.cos(a)*r*.7,y+Math.sin(a)*r*.7);c.stroke();c.lineWidth=9;var b=t*.13-Math.PI/2;c.beginPath();c.moveTo(x,y);c.lineTo(x+Math.cos(b)*r*.45,y+Math.sin(b)*r*.45);c.stroke();c.restore()}
+  function list(o,items,y0,t,col){items.forEach(function(s,i){var a=ease((t-.5-i*.55)/.5);o.ctx.globalAlpha=a;o.txt(s,W/2-(1-a)*40,y0+i*62,'700 30px Space Grotesk, sans-serif',col||C.cream);o.ctx.globalAlpha=1})}
+  var SC=[
+    {n:'Bienvenue',d:function(o,t){var c=o.ctx;if(LOGO.complete&&LOGO.naturalWidth){var s=260*ease(t/1.2);c.drawImage(LOGO,W/2-s/2,150-s/2+40,s,s)}
+      title(o,'LA CHARTE DU CLUB',400,C.yellow,58);line(o,'Ce qu’on vit ensemble, et ce qu’on respecte, pour rouler en confiance.',460,28,C.cream,ease((t-1)/1));ground(o);
+      for(var i=0;i<4;i++){var x=((t*170+i*330)%(W+200))-100;rider(o,ch(i),x,640,1.25,t+i,false)}}},
+    {n:'Nos valeurs',d:function(o,t){title(o,'NOS VALEURS',96,C.pink);
+      [['FÉMINISTE','Une coach femme, des modèles féminins. Oser, tomber, se relever, ensemble.',C.pink],['INCLUSIF','Ouvert à toutes et tous, quel que soit l’âge ou le niveau.',C.cyan],['ACCESSIBLE','Des tarifs selon le quotient familial.',C.yellow],['ANCRÉ DANS LE 19E','Né dans le quartier, par et pour ses habitant·e·s.','#7aa8ff']].forEach(function(v,i){var a=ease((t-.4-i*.6)/.6),x=70+i*290,y=150+(1-a)*40;
+        card(o,x,y,260,300,v[2],a);o.ctx.globalAlpha=a;o.txt(v[0],x+130,y+60,(v[0].length>12?20:26)+'px Bungee, Impact, sans-serif',v[2]);o.wrap(v[1],x+130,y+110,220,30,'500 21px Space Grotesk, sans-serif',C.cream);o.ctx.globalAlpha=1});
+      ground(o);rider(o,coach(),640,640,1.4,t,false,t%2.4<.7?'ollie':null,(t%2.4)/.7)}},
+    {n:'Les horaires',d:function(o,t){title(o,'⏰ LES HORAIRES',90,C.yellow,56);o.txt('TRÈS IMPORTANT',W/2,140,'26px Bungee, Impact, sans-serif',C.pink);
+      [['LUNDI 16H30','AlleyOop',C.cyan],['LUNDI 18H','Benihana',C.pink],['MARDI 16H30','Caballerial',C.yellow],['MARDI 18H','Disaster','#7aa8ff']].forEach(function(g,i){var a=ease((t-.3-i*.35)/.5),x=110+i*270;card(o,x,190,240,130,g[2],a);o.ctx.globalAlpha=a;o.txt(g[0],x+120,245,'26px Bungee, Impact, sans-serif',g[2]);o.txt(g[1],x+120,290,'700 26px Space Grotesk, sans-serif',C.cream);o.ctx.globalAlpha=1});
+      clock(o.ctx,150,500,80,t);line(o,'On arrive 5 minutes avant, prêt·e à rouler.',410,34,C.yellow,ease((t-2)/.6));line(o,'On vient chercher l’enfant à l’heure pile.',480,34,C.yellow,ease((t-3)/.6));
+      line(o,'1 h par semaine · 35 semaines, hors vacances scolaires',570,26,C.muted,ease((t-4)/.6))}},
+    {n:'Absence et pluie',d:function(o,t){var c=o.ctx;title(o,'ABSENCE OU PLUIE ?',100,C.cyan);
+      for(var i=0;i<40;i++){var x=(i*97)%W,y=((t*420+i*61)%560)+140;c.strokeStyle='rgba(26,233,245,.35)';c.lineWidth=3;c.beginPath();c.moveTo(x,y);c.lineTo(x-6,y+20);c.stroke()}
+      list(o,['Ton enfant ne vient pas ? On prévient le club avant le cours.','Il pleut ? Le cours est annulé ou remplacé.','On vous prévient sur le groupe WhatsApp.'],250,t);ground(o);rider(o,ch(2),980,640,1.3,t,true)}},
+    {n:'La sécurité',d:function(o,t){var c=o.ctx;title(o,'LA SÉCURITÉ',90,C.pink);o.txt('OBLIGATOIRE À CHAQUE COURS',W/2,140,'26px Bungee, Impact, sans-serif',C.yellow);
+      var it=[['Casque',function(x,y,s){helmet(c,x,y,s)}],['Genouillères',function(x,y,s){kneePad(c,x,y,s,C.cyan)}],['Coudières',function(x,y,s){kneePad(c,x,y,s*.8,C.yellow)}],['Protège-poignets',function(x,y,s){wrist(c,x,y,s)}],['Skateboard',function(x,y,s){deck(c,x,y,s)}]];
+      it.forEach(function(v,i){var a=ease((t-.4-i*.5)/.5),x=170+i*235;c.globalAlpha=a;v[1](x,270,1.3*a+.001);c.globalAlpha=1;o.ctx.globalAlpha=a;o.txt(v[0],x,370,'700 24px Space Grotesk, sans-serif',C.cream);o.ctx.globalAlpha=1;tick(c,x+50,220,ease((t-1-i*.5)/.3))});
+      line(o,'Pas de casque, pas de protections = pas de skate.',450,36,C.pink,ease((t-3.2)/.6));ground(o);rider(o,ch(0),W/2,640,1.3,t,false,t%2<.7?'flip':null,(t%2)/.7)}},
+    {n:'Les règles',d:function(o,t){title(o,'LES RÈGLES DU COURS',90,C.cyan);
+      list(o,['🤝 On respecte la coach, les riders, les passant·e·s et le matériel.','👂 On écoute les consignes et on attend son tour.','📣 On encourage les autres. Pas de moquerie : tout le monde tombe.','👀 On reste avec le groupe.'],190,t);
+      ground(o);for(var i=0;i<3;i++)rider(o,ch(i+3),360+i*280,640,1.2,t+i,i===2,(t+i*.8)%3<.7?'ollie':null,((t+i*.8)%3)/.7)}},
+    {n:'Arrivée et sortie',d:function(o,t){title(o,'ARRIVÉE ET SORTIE',90,C.yellow);
+      list(o,['Le club s’occupe de l’enfant pendant l’heure de cours.','Avant et après, il est sous la responsabilité de ses parents.','Seules les personnes autorisées par la famille','(jusqu’à 3, indiquées au club) peuvent venir le chercher.'],190,t);
+      ground(o);var a=ease((t-2)/2);rider(o,ch(1),760-a*200,640,1.2,t,true);rider(o,coach(),960,640,1.3,t,true)}},
+    {n:'Contact avec la prof',d:function(o,t){var c=o.ctx;title(o,'PARLER À LAURÈNE',90,C.pink);
+      card(o,120,170,480,230,C.cyan,ease((t-.3)/.5));c.globalAlpha=ease((t-.3)/.5);o.txt('🗣️ EN DIRECT',360,235,'30px Bungee, Impact, sans-serif',C.cyan);o.wrap('Quelques minutes avant ou après le cours, sur le spot.',360,290,400,34,'600 24px Space Grotesk, sans-serif',C.cream);c.globalAlpha=1;
+      card(o,680,170,480,230,C.yellow,ease((t-1.2)/.5));c.globalAlpha=ease((t-1.2)/.5);o.txt('📞 PAR TÉLÉPHONE',920,235,'30px Bungee, Impact, sans-serif',C.yellow);o.wrap('Ou WhatsApp au 07 68 77 48 19 : absence, retard, question.',920,290,400,34,'600 24px Space Grotesk, sans-serif',C.cream);c.globalAlpha=1;
+      ground(o);rider(o,coach(),W/2,640,1.45,t,false)}},
+    {n:'Les paiements',d:function(o,t){title(o,'LES PAIEMENTS',90,C.yellow);
+      [['T1 À T4','390 €',C.cyan],['T5 À T7','450 €',C.pink],['T8 À T10','490 €',C.yellow]].forEach(function(p,i){var a=ease((t-.3-i*.4)/.5),x=190+i*320;card(o,x,140,260,150,p[2],a);o.ctx.globalAlpha=a;o.txt('QF '+p[0],x+130,195,'22px Bungee, Impact, sans-serif',p[2]);o.txt(p[1],x+130,260,'48px Bungee, Impact, sans-serif',C.cream);o.ctx.globalAlpha=1});
+      list(o,['+ 20 € d’adhésion à l’association','Réglé selon la formule choisie à l’inscription.','Arrivée en cours d’année : prix au prorata. Suivi dans « Mon espace ».'],360,t-1.2);ground(o)}},
+    {n:'L’assurance',d:function(o,t){var c=o.ctx;title(o,'L’ASSURANCE',100,C.cyan);
+      var a=ease(t/.8);c.save();c.translate(W/2,290);c.scale(a,a);c.fillStyle=C.cyan;c.beginPath();c.moveTo(0,-110);c.lineTo(90,-70);c.lineTo(80,40);c.quadraticCurveTo(40,100,0,120);c.quadraticCurveTo(-40,100,-80,40);c.lineTo(-90,-70);c.closePath();c.fill();c.restore();tick(c,W/2,290,ease((t-.8)/.4));
+      line(o,'Avec l’adhésion, l’enfant est couvert par l’assurance du club pendant les cours.',460,30,C.cream,ease((t-1.2)/.6));line(o,'Une assurance responsabilité civile familiale est aussi recommandée.',540,26,C.muted,ease((t-2.2)/.6));ground(o)}},
+    {n:'À toi de signer',d:function(o,t){title(o,'MERCI !',170,C.pink,80);line(o,'Lis la charte avec ton enfant et signe-la juste en dessous.',280,34,C.cream,ease((t-.5)/.6));o.txt('↓',W/2,380+Math.sin(t*5)*10,'70px Bungee, Impact, sans-serif',C.yellow);
+      ground(o);for(var i=0;i<5;i++){var j=(t*1.3+i*.37)%2.2;rider(o,ch(i),160+i*240,640,1.2,t+i,i%2===1,j<.7?['ollie','flip','shove'][i%3]:null,j/.7)}}}
+  ];
+  var TOTAL=SC.length*DUR,stepEl=document.getElementById('cv-step'),bar=document.getElementById('cv-bar'),fill=bar.querySelector('i'),playB=document.getElementById('cv-play');
+  function draw(o){var c=o.ctx,now=performance.now()/1000;if(lastT==null)lastT=now;var dt=Math.min(now-lastT,.25);lastT=now;if(playing&&document.body.dataset.page==='charte'){vt+=dt;if(vt>=TOTAL){vt=TOTAL-.001;setPlay(false);if(!seen){seen=true}}}
+    var k=Math.min(SC.length-1,Math.floor(vt/DUR)),t=vt-k*DUR;
+    var g=c.createLinearGradient(0,0,0,H);g.addColorStop(0,'#1f1442');g.addColorStop(1,'#3a2466');c.fillStyle=g;c.fillRect(0,0,W,H);
+    c.fillStyle='rgba(255,255,255,.5)';for(var i=0;i<50;i++){c.fillRect((i*233)%W,(i*137)%600,2,2)}
+    c.save();var fa=Math.min(1,t/.35,(DUR-t)/.35);c.globalAlpha=1;SC[k].d(o,t);c.restore();
+    if(fa<1){c.fillStyle='rgba(21,13,46,'+(1-fa)+')';c.fillRect(0,0,W,H)}
+    c.fillStyle='rgba(21,13,46,.75)';o.rr(18,18,250,40,12);c.fill();o.txt((k+1)+'. '+SC[k].n,32,46,'700 20px Space Grotesk, sans-serif',C.cream,'left');
+    fill.style.width=(vt/TOTAL*100)+'%';stepEl.textContent=(k+1)+' / '+SC.length}
+  function setPlay(p){playing=p;playB.textContent=p?'⏸':'▶';playB.setAttribute('aria-label',p?'Pause':'Lecture')}
+  playB.onclick=function(){if(!playing&&vt>=TOTAL-.01)vt=0;setPlay(!playing)};
+  document.getElementById('cv-restart').onclick=function(){vt=0;setPlay(true)};
+  function seek(e){var r=bar.getBoundingClientRect();vt=Math.max(0,Math.min(TOTAL-.01,(e.clientX-r.left)/r.width*TOTAL))}
+  bar.addEventListener('pointerdown',seek);
+  bar.addEventListener('keydown',function(e){if(e.key==='ArrowRight')vt=Math.min(TOTAL-.01,(Math.floor(vt/DUR)+1)*DUR);if(e.key==='ArrowLeft')vt=Math.max(0,(Math.floor(vt/DUR)-1)*DUR)});
+  rlScene(cv,W,H,draw,function(){return null},function(){});
+  document.addEventListener('rl-page',function(e){if(e.detail==='charte'){vt=0;setPlay(true)}});
+
+  // ---- the signature: kept with the family's registration files (Mon espace)
+  var pad=document.getElementById('charte-pad'),pc=pad.getContext('2d'),drawn=false,down=false,hint=document.getElementById('charte-hint');
+  function fit(){var r=pad.getBoundingClientRect();if(!r.width)return;pad.width=r.width*2;pad.height=r.height*2;pc.scale(2,2);pc.lineWidth=2.5;pc.lineCap='round';pc.strokeStyle='#fbf4e6';drawn=false;hint.hidden=false}
+  document.addEventListener('rl-page',function(e){if(e.detail==='charte')setTimeout(fit,50)});window.addEventListener('resize',fit);
+  function pos(e){var r=pad.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top]}
+  pad.addEventListener('pointerdown',function(e){down=true;pad.setPointerCapture(e.pointerId);var p=pos(e);pc.beginPath();pc.moveTo(p[0],p[1])});
+  pad.addEventListener('pointermove',function(e){if(!down)return;var p=pos(e);pc.lineTo(p[0],p[1]);pc.stroke();drawn=true;hint.hidden=true});
+  pad.addEventListener('pointerup',function(){down=false});
+  document.getElementById('charte-clear').onclick=fit;
+  var fm=document.getElementById('charte-sign'),err=document.getElementById('charte-err'),ok=document.getElementById('charte-ok');
+  function fail(m){err.textContent=m;err.hidden=false}
+  fm.onsubmit=function(e){e.preventDefault();err.hidden=true;var signer=fm.signer.value.trim(),kids=fm.kids.value.trim();
+    if(!signer||!kids)return fail('Indique ton nom et le prénom de ton ou tes enfants.');if(!fm.ok.checked)return fail('Coche la case pour t’engager à respecter la charte.');if(!drawn)return fail('Signe dans le cadre.');
+    var btn=fm.querySelector('button[type=submit]');btn.disabled=true;ok.hidden=false;ok.textContent='Connexion à ton espace famille…';
+    var sign=pad.toDataURL('image/png');
+    (window.RLLoad?RLLoad():Promise.reject()).then(function(){var u=RLD.user();return u?u:RLD.signIn().then(function(r){return(r&&r.user)||RLD.user()})}).then(function(u){var me=String(u&&u.email||'').toLowerCase();if(!me)throw new Error('no user');
+      return RLD.q('families',[['emails','array-contains',me]]).then(function(f){if(!f.length)throw new Error('no family');
+        return RLD.add('inscriptionFiles',{familyId:f[0].id,emails:[me],kind:'charte',signer:signer,kids:kids,sign:sign,date:new Date().toISOString().slice(0,10),season:'2026-27'})})})
+      .then(function(){ok.textContent='Merci '+signer+' ! La charte est signée et enregistrée dans ton espace famille.';btn.textContent='Charte signée ✓'})
+      .catch(function(x){btn.disabled=false;ok.hidden=true;fail(x&&x.message==='no family'?'Ton compte n’est relié à aucune famille du club. Connecte-toi avec l’adresse e-mail donnée à l’inscription, ou écris-nous.':'Pour enregistrer ta signature, connecte-toi avec l’adresse e-mail donnée à l’inscription (Google), puis réessaie.')})};
 })();
 </script>
 

@@ -2366,6 +2366,7 @@ window.RLLoad=function(){if(window.RLD)return RLD.ready;if(!RLLoad.p)RLLoad.p=ne
       (r.emergency?'<span class="note">🚨 Urgence : '+esc(r.emergency)+'</span>':'')+
       (r.medical?'<span class="note">🩹 Santé : '+esc(r.medical)+'</span>':'')+
       '<span class="note">📷 Photos : '+(r.imageRights?'autorisées':'non autorisées')+'</span>'+
+      ((f.pickup||[]).length?'<span class="note">🧑‍🤝‍🧑 Peuvent venir le chercher : '+f.pickup.map(function(q){var t2=tel(q.phone);return esc((q.first+' '+(q.last||'')).trim())+(q.rel?' ('+esc(q.rel)+')':'')+(t2?' · <a href="tel:'+esc(t2)+'">'+esc(q.phone)+'</a>':'')}).join(' ; ')+'</span>':'')+
       '<div class="racts">'+(w?'<a class="wa" href="'+w+'" target="_blank" rel="noopener">WhatsApp</a>':'')+(t?'<a href="tel:'+esc(t)+'">Appeler</a>':'')+(mail?'<a href="mailto:'+esc(mail)+'">E-mail</a>':'')+'</div></div>');return d}
   function byName(a,b){return String(a.name||a.firstName).localeCompare(String(b.name||b.firstName),'fr')}
   function chips(){var names=[].map.call(sec.querySelectorAll('.crew h3'),function(h){return h.textContent.trim()});if(grp!=='all'&&names.indexOf(grp)<0)grp='all';
